@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   CloudFileExplorer,
   type CloudFileExplorerClassNames,
@@ -9,7 +8,7 @@ import {
 import type {
   CloudFile,
 } from 'strata-adapters/cloud';
-import { GOOGLE_DRIVE_EXPLORER_CSS } from './google-drive-explorer.css';
+import driveExplorerCss from './google-drive-explorer.css?inline';
 import {
   BackIcon,
   CloseIcon,
@@ -22,20 +21,16 @@ import {
 
 const STYLE_TAG_ATTR = 'data-strata-gdrive-explorer';
 
-let stylesInjected = false;
-
-function injectStyles() {
-  if (stylesInjected || typeof document === 'undefined') return;
-  if (document.querySelector(`style[${STYLE_TAG_ATTR}]`)) {
-    stylesInjected = true;
-    return;
-  }
+function ensureStyles() {
+  if (typeof document === 'undefined') return;
+  if (document.querySelector(`style[${STYLE_TAG_ATTR}]`)) return;
   const style = document.createElement('style');
   style.setAttribute(STYLE_TAG_ATTR, '');
-  style.textContent = GOOGLE_DRIVE_EXPLORER_CSS;
+  style.textContent = driveExplorerCss;
   document.head.appendChild(style);
-  stylesInjected = true;
 }
+
+ensureStyles();
 
 const BASE_CLASS_NAMES: CloudFileExplorerClassNames = {
   overlay: 'strata-gdrive-overlay',
@@ -111,18 +106,15 @@ export type GoogleDriveExplorerProps = Omit<
 
 /**
  * Google-Drive-themed wrapper around `<CloudFileExplorer>`. Preconfigures
- * classNames, icons, and labels; injects Drive's palette (light + dark) on
- * first mount. Consumers supply `service`, `open`, `onOpenChange`, `onSelect`.
+ * classNames, icons, and labels and ships Drive's palette (light + dark) via
+ * a side-effect CSS import. Consumers supply `service`, `open`, `onOpenChange`,
+ * `onSelect`.
  */
 export function GoogleDriveExplorer({
   theme,
   labels,
   ...rest
 }: GoogleDriveExplorerProps) {
-  useEffect(() => {
-    injectStyles();
-  }, []);
-
   const classNames: CloudFileExplorerClassNames = theme
     ? {
         ...BASE_CLASS_NAMES,

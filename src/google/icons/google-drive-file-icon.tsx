@@ -1,13 +1,13 @@
 import type { CloudFile } from 'strata-adapters/cloud';
 import type { GoogleIconProps } from './icon-base';
-import { FolderIcon } from './folder-icon';
-import { GenericFileIcon } from './generic-file-icon';
-import { GoogleDocIcon } from './google-doc-icon';
-import { GoogleSheetIcon } from './google-sheet-icon';
-import { GoogleSlidesIcon } from './google-slides-icon';
-import { GoogleFormIcon } from './google-form-icon';
-import { PdfIcon } from './pdf-icon';
-import { ImageIcon } from './image-icon';
+import FolderIcon from './folder.svg?react';
+import GenericFileIcon from './generic-file.svg?react';
+import GoogleDocIcon from './google-doc.svg?react';
+import GoogleSheetIcon from './google-sheet.svg?react';
+import GoogleSlidesIcon from './google-slides.svg?react';
+import GoogleFormIcon from './google-form.svg?react';
+import PdfIcon from './pdf.svg?react';
+import ImageIcon from './image.svg?react';
 
 /**
  * Picks the correct file-type icon for a Drive `CloudFile` based on its

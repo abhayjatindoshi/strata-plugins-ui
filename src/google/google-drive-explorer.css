@@ -1,13 +1,3 @@
-/**
- * All styles for `<GoogleDriveExplorer>`. Shipped as a string because
- * `strata-adapters` is built with `tsc` only (no CSS bundler) — we inject
- * this via a `<style>` tag at runtime the first time the explorer mounts.
- *
- * Class names are prefixed with `strata-gdrive-` to avoid collisions. The
- * component supports a `theme` prop that toggles `data-theme="light"` or
- * `data-theme="dark"`; when unset, `prefers-color-scheme` drives it.
- */
-export const GOOGLE_DRIVE_EXPLORER_CSS = `
 .strata-gdrive-overlay {
   position: fixed;
   inset: 0;
@@ -558,4 +548,3 @@ export const GOOGLE_DRIVE_EXPLORER_CSS = `
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
 }
-`;

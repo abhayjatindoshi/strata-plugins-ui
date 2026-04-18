@@ -1,4 +1,3 @@
-export type { GoogleIconProps, GoogleIconComponent } from './icon-base';
 export { default as FolderIcon } from './folder.svg?react';
 export { default as GenericFileIcon } from './generic-file.svg?react';
 export { default as GoogleDocIcon } from './google-doc.svg?react';
@@ -13,4 +12,3 @@ export { default as RefreshIcon } from './refresh.svg?react';
 export { default as NewFolderIcon } from './new-folder.svg?react';
 export { default as BackIcon } from './back.svg?react';
 export { default as DriveSpinnerIcon } from './drive-spinner.svg?react';
-export { GoogleDriveFileIcon } from './google-drive-file-icon';

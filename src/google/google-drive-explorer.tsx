@@ -9,11 +9,11 @@ import type {
   CloudFile,
 } from 'strata-adapters/cloud';
 import driveExplorerCss from './google-drive-explorer.css?inline';
+import { GoogleDriveFileIcon } from './google-drive-file-icon';
 import {
   BackIcon,
   CloseIcon,
   DriveSpinnerIcon,
-  GoogleDriveFileIcon,
   NewFolderIcon,
   RefreshIcon,
   SearchIcon,

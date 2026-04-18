@@ -1,13 +1,13 @@
+import type { SVGProps } from 'react';
 import type { CloudFile } from 'strata-adapters/cloud';
-import type { GoogleIconProps } from './icon-base';
-import FolderIcon from './folder.svg?react';
-import GenericFileIcon from './generic-file.svg?react';
-import GoogleDocIcon from './google-doc.svg?react';
-import GoogleSheetIcon from './google-sheet.svg?react';
-import GoogleSlidesIcon from './google-slides.svg?react';
-import GoogleFormIcon from './google-form.svg?react';
-import PdfIcon from './pdf.svg?react';
-import ImageIcon from './image.svg?react';
+import FolderIcon from './icons/folder.svg?react';
+import GenericFileIcon from './icons/generic-file.svg?react';
+import GoogleDocIcon from './icons/google-doc.svg?react';
+import GoogleSheetIcon from './icons/google-sheet.svg?react';
+import GoogleSlidesIcon from './icons/google-slides.svg?react';
+import GoogleFormIcon from './icons/google-form.svg?react';
+import PdfIcon from './icons/pdf.svg?react';
+import ImageIcon from './icons/image.svg?react';
 
 /**
  * Picks the correct file-type icon for a Drive `CloudFile` based on its
@@ -16,7 +16,7 @@ import ImageIcon from './image.svg?react';
 export function GoogleDriveFileIcon({
   file,
   ...props
-}: { readonly file: CloudFile } & GoogleIconProps) {
+}: { readonly file: CloudFile } & SVGProps<SVGSVGElement>) {
   if (file.isFolder) return <FolderIcon {...props} />;
   switch (file.mimeType) {
     case 'application/vnd.google-apps.document':

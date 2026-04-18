@@ -1,0 +1,13 @@
+import { ICON_DEFAULTS, type GoogleIconProps } from './icon-base';
+
+/** Filled folder icon matching Drive's style. Two-tone grey. */
+export function FolderIcon(props: GoogleIconProps) {
+  return (
+    <svg {...ICON_DEFAULTS} {...props} viewBox="0 0 24 24">
+      <path
+        fill="#5f6368"
+        d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+      />
+    </svg>
+  );
+}

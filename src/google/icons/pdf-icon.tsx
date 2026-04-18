@@ -1,0 +1,17 @@
+import { ICON_DEFAULTS, type GoogleIconProps } from './icon-base';
+
+/** PDF file icon — red page with "PDF" label. */
+export function PdfIcon(props: GoogleIconProps) {
+  return (
+    <svg {...ICON_DEFAULTS} {...props} viewBox="0 0 24 24">
+      <path
+        fill="#ea4335"
+        d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6H6zm7 1.5L18.5 9H14a1 1 0 0 1-1-1V3.5z"
+      />
+      <path
+        fill="#ffffff"
+        d="M8.3 13.1h1q.4 0 .6.2.3.2.3.5 0 .4-.3.6-.2.2-.6.2h-.5v.9h-.5v-2.4zm.5.4v.7h.5q.2 0 .3-.1.1 0 .1-.2 0-.2-.1-.3-.1-.1-.3-.1h-.5zm2-.4h.8q.5 0 .8.3.4.3.4.9t-.4 1q-.3.2-.8.2h-.8v-2.4zm.5.4v1.6h.3q.3 0 .5-.2.2-.2.2-.6 0-.4-.2-.6-.2-.2-.5-.2h-.3zm2.2-.4h1.5v.4h-1v.6h.9v.4h-.9v1h-.5v-2.4z"
+      />
+    </svg>
+  );
+}

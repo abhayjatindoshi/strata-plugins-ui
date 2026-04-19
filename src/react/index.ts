@@ -30,7 +30,6 @@ export { useLogin } from './hooks/use-login';
 export { useFeature } from './hooks/use-feature';
 export { useTenant, useTenantList } from './hooks/use-tenant';
 export { useSyncStatus, useDirtyState } from './hooks/use-sync-status';
-export { useStrataError } from './hooks/use-strata-error';
 export { useEncryption } from './hooks/use-encryption';
-export { useRepo, useEntity, useQuery } from './hooks/use-repo';
+export { useRepo } from './hooks/use-repo';
 export { useObservable } from './hooks/use-observable';

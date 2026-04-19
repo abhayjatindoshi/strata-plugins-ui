@@ -8,37 +8,47 @@ export type TenantProviderProps = {
   readonly children: ReactNode;
 };
 
+/**
+ * Opens/closes the active tenant on `strata` as `tenantId` changes. Tenant
+ * transitions are serialized via a chained-promise queue so rapid switches
+ * cannot interleave (the previous open/close always settles before the next
+ * one begins).
+ */
 export function TenantProvider({ tenantId, children }: TenantProviderProps) {
   const { strata } = useStrata();
   const [tenant, setTenant] = useState<Tenant | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  // Per-instance serialization queue. Every transition appends to `queueRef`,
+  // so they always run in submission order even when re-renders fire fast.
+  const queueRef = useRef<Promise<void>>(Promise.resolve());
   const currentTenantId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!strata || !tenantId) {
-      if (currentTenantId.current) {
-        strata?.tenants.close();
-        currentTenantId.current = undefined;
-        setTenant(undefined);
-      }
-      return;
-    }
-
-    if (tenantId === currentTenantId.current) return;
+    if (!strata) return;
 
     let cancelled = false;
 
-    const loadTenant = async () => {
+    const transition = async () => {
+      if (cancelled) return;
+      // No-op if we're already on this tenant (or both undefined).
+      if ((tenantId ?? null) === (currentTenantId.current ?? null)) return;
+
       setLoading(true);
       setError(null);
-
       try {
         if (currentTenantId.current) {
           await strata.tenants.close();
+          currentTenantId.current = undefined;
         }
-        await strata.tenants.open(tenantId);
-        if (!cancelled) {
+        if (tenantId) {
+          await strata.tenants.open(tenantId);
+          if (cancelled) {
+            // A newer transition superseded us — close before bailing.
+            await strata.tenants.close().catch(() => {});
+            return;
+          }
           currentTenantId.current = tenantId;
         }
       } catch (err) {
@@ -47,13 +57,11 @@ export function TenantProvider({ tenantId, children }: TenantProviderProps) {
           currentTenantId.current = undefined;
         }
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        if (!cancelled) setLoading(false);
       }
     };
 
-    loadTenant();
+    queueRef.current = queueRef.current.then(transition, transition);
 
     return () => {
       cancelled = true;

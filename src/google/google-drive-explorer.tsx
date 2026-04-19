@@ -8,7 +8,7 @@ import {
 import type {
   CloudFile,
 } from 'strata-adapters/cloud';
-import driveExplorerCss from './google-drive-explorer.css?inline';
+import './google-drive-explorer.css';
 import { GoogleDriveFileIcon } from './google-drive-file-icon';
 import {
   BackIcon,
@@ -18,19 +18,6 @@ import {
   RefreshIcon,
   SearchIcon,
 } from './icons';
-
-const STYLE_TAG_ATTR = 'data-strata-gdrive-explorer';
-
-function ensureStyles() {
-  if (typeof document === 'undefined') return;
-  if (document.querySelector(`style[${STYLE_TAG_ATTR}]`)) return;
-  const style = document.createElement('style');
-  style.setAttribute(STYLE_TAG_ATTR, '');
-  style.textContent = driveExplorerCss;
-  document.head.appendChild(style);
-}
-
-ensureStyles();
 
 const BASE_CLASS_NAMES: CloudFileExplorerClassNames = {
   overlay: 'strata-gdrive-overlay',
@@ -53,6 +40,8 @@ const BASE_CLASS_NAMES: CloudFileExplorerClassNames = {
   breadcrumbItem: 'strata-gdrive-breadcrumb-item',
   breadcrumbSeparator: 'strata-gdrive-breadcrumb-sep',
   refreshButton: 'strata-gdrive-refresh',
+  retryPanel: 'strata-gdrive-retry-panel',
+  retryButton: 'strata-gdrive-retry-button',
   columnHeader: 'strata-gdrive-col-header',
   list: 'strata-gdrive-list',
   row: 'strata-gdrive-row',
@@ -60,6 +49,7 @@ const BASE_CLASS_NAMES: CloudFileExplorerClassNames = {
   rowDate: 'strata-gdrive-row-date',
   rowSize: 'strata-gdrive-row-size',
   rowIcon: 'strata-gdrive-row-icon',
+  rowOpen: 'strata-gdrive-row-open',
   empty: 'strata-gdrive-empty',
   loading: 'strata-gdrive-loading',
   footer: 'strata-gdrive-footer',

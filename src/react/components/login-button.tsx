@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { GoogleLoginButton } from '../../google/google-login-button';
 
-export type LoginButtonTheme = 'light' | 'dark';
+export type LoginButtonTheme = 'light' | 'dark' | 'auto';
 export type LoginButtonVariant = 'pill' | 'icon';
 
 /**

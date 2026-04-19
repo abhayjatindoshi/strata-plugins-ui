@@ -13,6 +13,11 @@ export function TenantGuard({ paramId, redirect, loading = null }: TenantGuardPr
   const params = useParams();
   const tenantId = params[paramId];
 
+  // Param missing entirely (route misconfigured or trailing slash) — redirect
+  // immediately rather than mounting TenantProvider with `undefined` and
+  // ending up in an indefinite loading state.
+  if (tenantId === undefined) return <Navigate to={redirect} replace />;
+
   return (
     <TenantProvider tenantId={tenantId}>
       <TenantGate redirect={redirect} loading={loading} />

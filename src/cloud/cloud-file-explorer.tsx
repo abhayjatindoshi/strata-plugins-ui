@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { Fragment, useState, type KeyboardEvent, type ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import type {
@@ -8,6 +8,7 @@ import type {
   CloudSpace,
 } from 'strata-adapters/cloud';
 import { useCloudFileExplorer, type CloudFileExplorerApi } from './use-cloud-file-explorer';
+import { defaultFormatDate, defaultFormatSize } from './format';
 
 /** className hooks for every slot. Brand wrappers pass classes per slot. */
 export type CloudFileExplorerClassNames = {
@@ -34,6 +35,8 @@ export type CloudFileExplorerClassNames = {
   readonly breadcrumbItem?: string;
   readonly breadcrumbSeparator?: string;
   readonly refreshButton?: string;
+  readonly retryPanel?: string;
+  readonly retryButton?: string;
   readonly columnHeader?: string;
   readonly colName?: string;
   readonly colDate?: string;
@@ -46,6 +49,7 @@ export type CloudFileExplorerClassNames = {
   readonly rowDate?: string;
   readonly rowSize?: string;
   readonly rowIcon?: string;
+  readonly rowOpen?: string;
   readonly empty?: string;
   readonly loading?: string;
   readonly footer?: string;
@@ -70,6 +74,7 @@ export type CloudFileExplorerIcons = {
   readonly search?: ReactNode;
   readonly loading?: ReactNode;
   readonly back?: ReactNode;
+  readonly open?: ReactNode;
 };
 
 /** User-facing labels. All optional with English defaults. */
@@ -87,6 +92,10 @@ export type CloudFileExplorerLabels = {
   readonly select?: string;
   readonly close?: string;
   readonly back?: string;
+  readonly refresh?: string;
+  readonly retry?: string;
+  readonly open?: string;
+  readonly errorTitle?: string;
   readonly columnName?: string;
   readonly columnDate?: string;
   readonly columnSize?: string;
@@ -106,6 +115,10 @@ const DEFAULT_LABELS: Required<CloudFileExplorerLabels> = {
   select: 'Select',
   close: 'Close',
   back: 'Back',
+  refresh: 'Refresh',
+  retry: 'Retry',
+  open: 'Open',
+  errorTitle: 'Something went wrong',
   columnName: 'Name',
   columnDate: 'Date modified',
   columnSize: 'File size',
@@ -235,7 +248,7 @@ export function CloudFileExplorer({
                 type="button"
                 className={classNames.refreshButton}
                 onClick={api.refresh}
-                aria-label={l.loading}
+                aria-label={l.refresh}
                 data-loading={api.state.loading ? '' : undefined}
               >
                 {icons.refresh}
@@ -257,23 +270,27 @@ export function CloudFileExplorer({
                     {icons.back}
                   </button>
                   <nav aria-label="breadcrumb" className={classNames.breadcrumb}>
-                    {api.state.history.map((folder, index) => (
-                      <span key={folder.id} style={{ display: 'contents' }}>
-                        {index > 0 && (
-                          <span
-                            className={classNames.breadcrumbSeparator}
-                            aria-hidden="true"
-                          >
-                            {icons.separator ?? '›'}
-                          </span>
-                        )}
+                    <BreadcrumbButton
+                      className={classNames.breadcrumbItem}
+                      onClick={() => api.navigateUpTo(undefined)}
+                    >
+                      <span>{l.home}</span>
+                    </BreadcrumbButton>
+                    {api.state.history.map((folder) => (
+                      <Fragment key={folder.id}>
+                        <span
+                          className={classNames.breadcrumbSeparator}
+                          aria-hidden="true"
+                        >
+                          {icons.separator ?? '›'}
+                        </span>
                         <BreadcrumbButton
                           className={classNames.breadcrumbItem}
                           onClick={() => api.navigateUpTo(folder)}
                         >
                           <span>{folder.name}</span>
                         </BreadcrumbButton>
-                      </span>
+                      </Fragment>
                     ))}
                   </nav>
                 </div>
@@ -288,13 +305,32 @@ export function CloudFileExplorer({
               <div
                 className={classNames.list}
                 data-loading={api.state.loading ? '' : undefined}
+                data-error={api.state.error ? '' : undefined}
               >
+                {api.state.error && !api.state.loading && (
+                  <div
+                    className={classNames.retryPanel}
+                    role="alert"
+                  >
+                    <div>
+                      <strong>{l.errorTitle}</strong>
+                      <div>{api.state.error.message}</div>
+                    </div>
+                    <button
+                      type="button"
+                      className={classNames.retryButton}
+                      onClick={api.retry}
+                    >
+                      {l.retry}
+                    </button>
+                  </div>
+                )}
                 {api.state.loading && (
                   <div className={classNames.loading} role="status" aria-live="polite">
                     {icons.loading ?? <span>{l.loading}</span>}
                   </div>
                 )}
-                {!api.state.loading && api.state.files?.length === 0 && (
+                {!api.state.loading && !api.state.error && api.state.files?.length === 0 && (
                   <div className={classNames.empty}>{l.empty}</div>
                 )}
                 {api.state.files?.map((file) => {
@@ -305,6 +341,12 @@ export function CloudFileExplorer({
                     isSelected ? classNames.rowSelected : undefined,
                     disabled ? classNames.rowDisabled : undefined,
                   );
+                  const handleKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+                    if (file.isFolder && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      api.openFolder(file);
+                    }
+                  };
                   return (
                     <button
                       key={file.id}
@@ -316,10 +358,8 @@ export function CloudFileExplorer({
                       onDoubleClick={() => {
                         if (file.isFolder) api.openFolder(file);
                       }}
-                      onClick={() => {
-                        if (file.isFolder) api.openFolder(file);
-                        else api.selectFile(file);
-                      }}
+                      onKeyDown={handleKey}
+                      onClick={() => api.selectFile(file)}
                     >
                       <div className={classNames.rowName}>
                         <span className={classNames.rowIcon}>
@@ -335,6 +375,20 @@ export function CloudFileExplorer({
                       <div className={classNames.rowSize}>
                         {fmt.formatSize(file.size)}
                       </div>
+                      {file.isFolder && (
+                        <span
+                          role="button"
+                          tabIndex={-1}
+                          aria-label={l.open}
+                          className={classNames.rowOpen}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            api.openFolder(file);
+                          }}
+                        >
+                          {icons.open ?? '›'}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -414,32 +468,6 @@ function joinClasses(...parts: ReadonlyArray<string | undefined>): string {
   return parts.filter(Boolean).join(' ');
 }
 
-function defaultFormatDate(iso: string | undefined): string {
-  if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  const now = new Date();
-  const sameYear = d.getFullYear() === now.getFullYear();
-  return d.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: sameYear ? undefined : 'numeric',
-  });
-}
-
-function defaultFormatSize(bytes: number | undefined): string {
-  if (bytes === undefined || !Number.isFinite(bytes)) return '—';
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  let size = bytes / 1024;
-  let unitIndex = 0;
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex += 1;
-  }
-  return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[unitIndex]}`;
-}
-
 function NewFolderPopover({
   disabled,
   classNames,
@@ -485,23 +513,29 @@ function NewFolderPopover({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content className={classNames.newFolderPopoverContent}>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={labels.newFolderPlaceholder}
-            className={classNames.newFolderInput}
-            autoFocus
-          />
-          <button
-            type="button"
-            className={classNames.newFolderCreate}
-            disabled={busy || !name.trim()}
-            onClick={() => void submit()}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void submit();
+            }}
           >
-            {labels.create}
-          </button>
-          {error && <div role="alert">{error}</div>}
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={labels.newFolderPlaceholder}
+              className={classNames.newFolderInput}
+              autoFocus
+            />
+            <button
+              type="submit"
+              className={classNames.newFolderCreate}
+              disabled={busy || !name.trim()}
+            >
+              {labels.create}
+            </button>
+            {error && <div role="alert">{error}</div>}
+          </form>
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import type { AuthState } from 'strata-adapters';
 import { AuthService } from 'strata-adapters';
-import { LOGIN_FEATURE } from 'strata-adapters';
 import type { StrataConfig } from 'strata-adapters';
 import { createStrataInstance, type StrataInstance } from 'strata-adapters';
 import { StrataContext } from './context';
@@ -12,16 +11,21 @@ export type StrataProviderProps = {
 };
 
 export function StrataProvider({ config, children }: StrataProviderProps) {
+  // Snapshot config on first render. Subsequent prop changes are ignored to
+  // avoid recreating AuthService / Strata mid-session (which would lose state).
+  const configRef = useRef<StrataConfig>(config);
+  const cfg = configRef.current;
+
   const authService = useMemo(
     () =>
       new AuthService({
-        providers: config.providers,
-        strategy: config.strategy,
-        sessionKey: config.storageKeys.session,
-        returnUrlKey: config.storageKeys.returnUrl,
-        featureCredsKey: config.storageKeys.featureCreds,
+        providers: cfg.providers,
+        strategy: cfg.strategy,
+        sessionKey: cfg.storageKeys.session,
+        returnUrlKey: cfg.storageKeys.returnUrl,
+        featureCredsKey: cfg.storageKeys.featureCreds,
       }),
-    [config],
+    [cfg],
   );
 
   const [authState, setAuthState] = useState<AuthState>({ status: 'loading' });
@@ -50,28 +54,26 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
 
     if (!next) return;
 
-    const provider = config.providers.find((p) => p.name === next);
-    if (!provider?.cloud) {
-      throw new Error(`Provider "${next}" has no cloud factory registered`);
-    }
-    if (!provider.features[LOGIN_FEATURE]) {
-      throw new Error(`Provider "${next}" is not a login provider`);
-    }
+    const provider = cfg.providers.find((p) => p.name === next);
+    // Provider invariants (login feature requires cloud) are validated by
+    // `defineProvider().build()`. Bail silently if the provider was removed
+    // from config between sessions.
+    if (!provider?.cloud) return;
 
     const inst = createStrataInstance({
       auth: authService,
       cloud: provider.cloud,
-      appId: config.appId,
-      deviceIdKey: config.storageKeys.deviceId,
-      entities: config.entities,
-      encryption: config.encryption,
-      migrations: config.migrations,
-      options: config.options,
+      appId: cfg.appId,
+      deviceIdKey: cfg.storageKeys.deviceId,
+      entities: cfg.entities,
+      encryption: cfg.encryption,
+      migrations: cfg.migrations,
+      options: cfg.options,
     });
     instanceRef.current = inst;
     activeProviderRef.current = next;
     setInstance(inst);
-  }, [authState, authService, config]);
+  }, [authState, authService, cfg]);
 
   useEffect(() => {
     return () => {
@@ -86,7 +88,6 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
       value={{
         strata: instance?.strata ?? null,
         authState,
-        errorBus: instance?.errorBus ?? null,
         authService,
       }}
     >

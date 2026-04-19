@@ -1,35 +1,28 @@
+import { useEffect, useState } from 'react';
 import type { LoginButtonBaseProps } from '../react/components/login-button';
 import GoogleGIcon from './icons/google-g.svg?react';
-import gsiCss from './google-login-button.css?inline';
+import './google-login-button.css';
 
-const STYLE_TAG_ATTR = 'data-strata-gsi-button';
-
-/** Inject the GSI stylesheet once per document at module load — before first paint,
- * so the SVG never flashes unstyled. */
-function ensureStyles(): void {
-  if (typeof document === 'undefined') return;
-  if (document.head.querySelector(`style[${STYLE_TAG_ATTR}]`)) return;
-  const style = document.createElement('style');
-  style.setAttribute(STYLE_TAG_ATTR, '');
-  style.textContent = gsiCss;
-  document.head.appendChild(style);
-}
-
-ensureStyles();
-
-/**
- * Google brand-conformant sign-in button. Renders the exact markup + styles
- * from Google's GSI branding guidelines (hover / focus / active state layers,
- * multi-color G logo). Four variants: pill/icon × light/dark.
- *
- * Pure UI — wire up `onClick` yourself (typically `() => login('google')`).
- *
- * ```tsx
- * <GoogleLoginButton onClick={() => login('google')} />
- * <GoogleLoginButton theme="dark" variant="icon" onClick={handler} />
- * ```
- */
 export type GoogleLoginButtonProps = LoginButtonBaseProps;
+
+/** Resolve `theme="auto"` against `prefers-color-scheme`. SSR-safe: defaults to `light`. */
+function useResolvedTheme(theme: 'light' | 'dark' | 'auto'): 'light' | 'dark' {
+  const [resolved, setResolved] = useState<'light' | 'dark'>(
+    theme === 'auto' ? 'light' : theme,
+  );
+  useEffect(() => {
+    if (theme !== 'auto' || typeof window === 'undefined' || !window.matchMedia) {
+      setResolved(theme === 'auto' ? 'light' : theme);
+      return;
+    }
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const update = () => setResolved(mq.matches ? 'dark' : 'light');
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, [theme]);
+  return resolved;
+}
 
 export function GoogleLoginButton({
   variant = 'pill',
@@ -38,6 +31,7 @@ export function GoogleLoginButton({
   children,
   ...rest
 }: GoogleLoginButtonProps) {
+  const resolvedTheme = useResolvedTheme(theme);
   const label = typeof children === 'string' ? children : 'Sign in with Google';
   const isIcon = variant === 'icon';
 
@@ -46,7 +40,7 @@ export function GoogleLoginButton({
       type="button"
       className={['gsi-material-button', className].filter(Boolean).join(' ')}
       data-gsi-variant={variant}
-      data-gsi-theme={theme}
+      data-gsi-theme={resolvedTheme}
       aria-label={isIcon ? label : undefined}
       {...rest}
     >

@@ -1,0 +1,97 @@
+import { useCallback, useMemo, useRef } from 'react';
+import type { EncryptionService, Strata, Tenant } from 'strata-data-sync';
+import type { ClientAuthService } from 'strata-adapters';
+import {
+  useWizardHost,
+  type WizardClassNames,
+  type WizardLabels,
+} from '../wizard/use-wizard-host';
+import { WizardCancelled } from '../wizard/types';
+import type {
+  CloudProvider,
+  CommonStepFactories,
+  OpContext,
+  ProviderOp,
+  TenantOpsApi,
+} from './provider';
+
+export type UseOpRunnerOptions = {
+  readonly strata: Strata;
+  readonly authService: ClientAuthService;
+  readonly commonSteps: CommonStepFactories;
+  readonly encryption?: EncryptionService;
+  readonly wizardClassNames?: WizardClassNames;
+  readonly wizardLabels?: WizardLabels;
+  readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
+};
+
+export type UseOpRunnerResult = {
+  /** Mount once near the top of the page — provides the wizard modal. */
+  readonly wizardElement: import('react').ReactNode;
+  /** Invoke an op against a provider; resolves when the op completes or cancels. */
+  runOp(provider: CloudProvider, op: ProviderOp, tenant?: Tenant): Promise<void>;
+  readonly isRunning: boolean;
+};
+
+/**
+ * Builds an `OpContext` per invocation, mounts a `WizardController`, and
+ * dispatches `op.run(ctx)`. Used internally by `<TenantsPage>` and exposed
+ * for apps building their own tenants page.
+ *
+ * Per PLUGGABLES_V2 §13 + §19.
+ */
+export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
+  const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
+
+  const wizard = useWizardHost({
+    providerTheme: themeRef.current,
+    classNames: opts.wizardClassNames,
+    labels: opts.wizardLabels,
+  });
+
+  const tenants = useMemo<TenantOpsApi>(
+    () => ({
+      list: () => opts.strata.tenants.list(),
+      create: (o) => opts.strata.tenants.create(o),
+      open: (id, o) => opts.strata.tenants.open(id, o),
+      remove: (id, o) => opts.strata.tenants.remove(id, o),
+    }),
+    [opts.strata],
+  );
+
+  const runOp = useCallback(
+    async (provider: CloudProvider, op: ProviderOp, tenant?: Tenant) => {
+      themeRef.current = {
+        color: provider.theme.color,
+        accent: provider.theme.accent,
+      };
+      wizard.open();
+      const ctx: OpContext = {
+        auth: opts.authService,
+        tenants,
+        encryption: opts.encryption,
+        wizard: wizard.controller,
+        commonSteps: opts.commonSteps,
+        providerTheme: provider.theme,
+        tenant,
+      };
+      try {
+        await op.run(ctx);
+      } catch (err) {
+        if (err instanceof WizardCancelled) return;
+        const e = err instanceof Error ? err : new Error(String(err));
+        opts.onError?.(e, op, provider);
+        throw e;
+      } finally {
+        wizard.close();
+      }
+    },
+    [opts, tenants, wizard],
+  );
+
+  return {
+    wizardElement: wizard.element,
+    runOp,
+    isRunning: wizard.isOpen,
+  };
+}

@@ -1,97 +1,137 @@
-import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react';
-import type { AuthState } from 'strata-adapters';
-import { AuthService } from 'strata-adapters';
-import type { StrataConfig } from 'strata-adapters';
-import { createStrataInstance, type StrataInstance } from 'strata-adapters';
-import { StrataContext } from './context';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Strata } from 'strata-data-sync';
+import type { AccessToken, AuthState } from 'strata-adapters';
+import type { StrataConfig } from './create-strata-config';
+
+type StrataContextValue = {
+  readonly config: StrataConfig;
+  readonly strata: Strata | null;
+  readonly authState: AuthState;
+};
+
+const StrataContext = createContext<StrataContextValue | null>(null);
 
 export type StrataProviderProps = {
   readonly config: StrataConfig;
   readonly children: ReactNode;
 };
 
+/**
+ * Top-level provider. Owns auth subscription, `Strata` lifecycle, and
+ * exposes config + state to the tree via context.
+ */
 export function StrataProvider({ config, children }: StrataProviderProps) {
-  // Snapshot config on first render. Subsequent prop changes are ignored to
-  // avoid recreating AuthService / Strata mid-session (which would lose state).
-  const configRef = useRef<StrataConfig>(config);
-  const cfg = configRef.current;
+  const { auth } = config;
 
-  const authService = useMemo(
-    () =>
-      new AuthService({
-        providers: cfg.providers,
-        strategy: cfg.strategy,
-        sessionKey: cfg.storageKeys.session,
-        returnUrlKey: cfg.storageKeys.returnUrl,
-        featureCredsKey: cfg.storageKeys.featureCreds,
-      }),
-    [cfg],
+  // ── Auth state ───────────────────────────────────────────
+  const [authState, setAuthState] = useState<AuthState>(
+    auth ? { status: 'loading' } : { status: 'signed-out' },
   );
 
-  const [authState, setAuthState] = useState<AuthState>({ status: 'loading' });
-  const [instance, setInstance] = useState<StrataInstance | null>(null);
-  const instanceRef = useRef<StrataInstance | null>(null);
-  const activeProviderRef = useRef<string | null>(null);
-
   useEffect(() => {
-    void authService.tryRestoreSession();
-    const sub = authService.state$.subscribe(setAuthState);
-    return () => sub.unsubscribe();
-  }, [authService]);
-
-  useEffect(() => {
-    const isAuthed = authState.status === 'authenticated' && !!authState.provider;
-    const next = isAuthed ? authState.provider! : null;
-    if (next === activeProviderRef.current) return;
-
-    if (instanceRef.current) {
-      const prev = instanceRef.current;
-      instanceRef.current = null;
-      activeProviderRef.current = null;
-      setInstance(null);
-      void prev.dispose();
+    if (!auth) {
+      setAuthState({ status: 'signed-out' });
+      return;
     }
+    const sub = auth.state$.subscribe(setAuthState);
+    return () => sub.unsubscribe();
+  }, [auth]);
 
-    if (!next) return;
-
-    const provider = cfg.providers.find((p) => p.name === next);
-    // Provider invariants (login feature requires cloud) are validated by
-    // `defineProvider().build()`. Bail silently if the provider was removed
-    // from config between sessions.
-    if (!provider?.cloud) return;
-
-    const inst = createStrataInstance({
-      auth: authService,
-      cloud: provider.cloud,
-      appId: cfg.appId,
-      deviceIdKey: cfg.storageKeys.deviceId,
-      entities: cfg.entities,
-      encryption: cfg.encryption,
-      migrations: cfg.migrations,
-      options: cfg.options,
-    });
-    instanceRef.current = inst;
-    activeProviderRef.current = next;
-    setInstance(inst);
-  }, [authState, authService, cfg]);
+  // ── Strata lifecycle ─────────────────────────────────────
+  // Construct when signed-in (or when auth-less); dispose via
+  // the effect cleanup. The null state between sign-out and
+  // the next render is handled by the cleanup setting strata
+  // to null before the next effect run.
+  const [strata, setStrata] = useState<Strata | null>(null);
 
   useEffect(() => {
+    const shouldBuild = !auth || authState.status === 'signed-in';
+    if (!shouldBuild) return;
+
+    const authName = authState.status === 'signed-in' ? authState.name : undefined;
+    const cloudAdapter = authName ? config.cloud.resolve(authName) : undefined;
+
+    const instance = new Strata({
+      appId: config.appId,
+      deviceId: config.deviceId,
+      entities: config.entities,
+      migrations: config.migrations,
+      localAdapter: config.localAdapter,
+      cloudAdapter,
+      encryptionService: config.encryption,
+    });
+    setStrata(instance);
+
     return () => {
-      void instanceRef.current?.dispose();
-      instanceRef.current = null;
-      activeProviderRef.current = null;
+      setStrata(null);
+      void instance.dispose();
     };
-  }, []);
+    // `config` is module-scope and stable; `authState.status` drives rebuild.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config, authState.status]);
+
+  // ── Context value ────────────────────────────────────────
+  const value = useMemo<StrataContextValue>(
+    () => ({ config, strata, authState }),
+    [config, strata, authState],
+  );
 
   return (
-    <StrataContext.Provider
-      value={{
-        strata: instance?.strata ?? null,
-        authState,
-        authService,
-      }}
-    >
-      {children}
-    </StrataContext.Provider>
+    <StrataContext.Provider value={value}>{children}</StrataContext.Provider>
   );
+}
+
+// ─── Internal hook (used by guards, pages within strata-plugins-ui) ────
+
+export function useStrataContext(): StrataContextValue {
+  const ctx = useContext(StrataContext);
+  if (!ctx) throw new Error('useStrataContext: missing <StrataProvider>');
+  return ctx;
+}
+
+// ─── Public hooks ──────────────────────────────────────────
+
+export function useStrata(): Strata | null {
+  return useStrataContext().strata;
+}
+
+export type SupportedAuthEntry = {
+  readonly name: string;
+  readonly login: () => Promise<void>;
+};
+
+export type UseAuthResult = {
+  readonly status: 'loading' | 'signed-in' | 'signed-out';
+  readonly name?: string;
+  readonly supportedAuths: readonly SupportedAuthEntry[];
+  readonly logout: () => Promise<void>;
+  readonly getAccessToken: () => Promise<AccessToken | null>;
+};
+
+export function useAuth(): UseAuthResult {
+  const { config, authState } = useStrataContext();
+  const { auth } = config;
+
+  const supportedAuths = useMemo<readonly SupportedAuthEntry[]>(
+    () => auth?.supportedAuths() ?? [],
+    [auth],
+  );
+
+  const logout = useCallback(async () => {
+    if (!auth) throw new Error('useAuth: no auth configured');
+    await auth.logout();
+  }, [auth]);
+
+  const getAccessToken = useCallback(
+    () => auth?.getAccessToken() ?? Promise.resolve(null),
+    [auth],
+  );
+
+  return {
+    status: authState.status,
+    name: authState.name,
+    supportedAuths,
+    logout,
+    getAccessToken,
+  };
 }

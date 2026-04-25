@@ -1,6 +1,5 @@
 import {
   CloudFileExplorer,
-  type CloudFileExplorerClassNames,
   type CloudFileExplorerIcons,
   type CloudFileExplorerLabels,
   type CloudFileExplorerProps,
@@ -18,48 +17,6 @@ import {
   RefreshIcon,
   SearchIcon,
 } from './icons';
-
-const BASE_CLASS_NAMES: CloudFileExplorerClassNames = {
-  overlay: 'strata-gdrive-overlay',
-  content: 'strata-gdrive-content',
-  header: 'strata-gdrive-header',
-  headerTitle: 'strata-gdrive-header-title',
-  title: 'strata-gdrive-title',
-  description: 'strata-gdrive-description',
-  searchWrap: 'strata-gdrive-search-wrap',
-  search: 'strata-gdrive-search',
-  closeButton: 'strata-gdrive-close',
-  body: 'strata-gdrive-body',
-  sidebar: 'strata-gdrive-sidebar',
-  sidebarItem: 'strata-gdrive-sidebar-item',
-  sidebarItemIcon: 'strata-gdrive-sidebar-icon',
-  main: 'strata-gdrive-main',
-  toolbar: 'strata-gdrive-toolbar',
-  backButton: 'strata-gdrive-back',
-  breadcrumb: 'strata-gdrive-breadcrumb',
-  breadcrumbItem: 'strata-gdrive-breadcrumb-item',
-  breadcrumbSeparator: 'strata-gdrive-breadcrumb-sep',
-  refreshButton: 'strata-gdrive-refresh',
-  retryPanel: 'strata-gdrive-retry-panel',
-  retryButton: 'strata-gdrive-retry-button',
-  columnHeader: 'strata-gdrive-col-header',
-  list: 'strata-gdrive-list',
-  row: 'strata-gdrive-row',
-  rowName: 'strata-gdrive-row-name',
-  rowDate: 'strata-gdrive-row-date',
-  rowSize: 'strata-gdrive-row-size',
-  rowIcon: 'strata-gdrive-row-icon',
-  rowOpen: 'strata-gdrive-row-open',
-  empty: 'strata-gdrive-empty',
-  loading: 'strata-gdrive-loading',
-  footer: 'strata-gdrive-footer',
-  newFolderButton: 'strata-gdrive-new-folder',
-  newFolderPopoverContent: 'strata-gdrive-new-folder-popover',
-  newFolderInput: 'strata-gdrive-new-folder-input',
-  newFolderCreate: 'strata-gdrive-new-folder-create',
-  cancelButton: 'strata-gdrive-cancel',
-  selectButton: 'strata-gdrive-select',
-};
 
 const ICONS: CloudFileExplorerIcons = {
   folder: (file: CloudFile) => <GoogleDriveFileIcon file={file} />,
@@ -86,7 +43,7 @@ const LABELS: CloudFileExplorerLabels = {
 
 export type GoogleDriveExplorerProps = Omit<
   CloudFileExplorerProps,
-  'classNames' | 'icons' | 'labels'
+  'className' | 'icons' | 'labels'
 > & {
   /** Force a theme; defaults to `prefers-color-scheme`. */
   readonly theme?: 'light' | 'dark';
@@ -95,27 +52,23 @@ export type GoogleDriveExplorerProps = Omit<
 };
 
 /**
- * Google-Drive-themed wrapper around `<CloudFileExplorer>`. Preconfigures
- * classNames, icons, and labels and ships Drive's palette (light + dark) via
- * a side-effect CSS import. Consumers supply `service`, `open`, `onOpenChange`,
- * `onSelect`.
+ * Google-Drive-themed wrapper around `<CloudFileExplorer>`. Passes a single
+ * root `className` and ships Drive's palette (light + dark) via a side-effect
+ * CSS import. Brand CSS targets elements via `[data-slot]` selectors.
  */
 export function GoogleDriveExplorer({
   theme,
   labels,
   ...rest
 }: GoogleDriveExplorerProps) {
-  const classNames: CloudFileExplorerClassNames = theme
-    ? {
-        ...BASE_CLASS_NAMES,
-        content: `${BASE_CLASS_NAMES.content} strata-gdrive-theme-${theme}`,
-      }
-    : BASE_CLASS_NAMES;
+  const className = theme
+    ? `strata-gdrive strata-gdrive-theme-${theme}`
+    : 'strata-gdrive';
 
   return (
     <CloudFileExplorer
       {...rest}
-      classNames={classNames}
+      className={className}
       icons={ICONS}
       labels={{ ...LABELS, ...labels }}
     />

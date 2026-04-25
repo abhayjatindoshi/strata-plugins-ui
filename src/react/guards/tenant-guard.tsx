@@ -1,34 +1,21 @@
 import { type ReactNode } from 'react';
-import { Navigate, Outlet, useParams } from 'react-router';
-import { TenantProvider } from '../tenant-provider';
-import { useTenant } from '../hooks/use-tenant';
+import { Navigate, Outlet } from 'react-router';
+import { useTenant } from '../tenant-provider';
 
 export type TenantGuardProps = {
-  readonly paramId: string;
   readonly redirect: string;
   readonly loading?: ReactNode;
 };
 
-export function TenantGuard({ paramId, redirect, loading = null }: TenantGuardProps) {
-  const params = useParams();
-  const tenantId = params[paramId];
+/**
+ * Gates a route on the active tenant from `<TenantProvider>`. Redirects
+ * when no tenant is loaded. The app mounts `<TenantProvider>` above this
+ * guard and wires the `tenantId` (e.g. from URL params).
+ */
+export function TenantGuard({ redirect, loading = null }: TenantGuardProps) {
+  const { active, loading: tenantLoading, error } = useTenant();
 
-  // Param missing entirely (route misconfigured or trailing slash) — redirect
-  // immediately rather than mounting TenantProvider with `undefined` and
-  // ending up in an indefinite loading state.
-  if (tenantId === undefined) return <Navigate to={redirect} replace />;
-
-  return (
-    <TenantProvider tenantId={tenantId}>
-      <TenantGate redirect={redirect} loading={loading} />
-    </TenantProvider>
-  );
-}
-
-function TenantGate({ redirect, loading }: { redirect: string; loading: ReactNode }) {
-  const { tenant, loading: tenantLoading, error } = useTenant();
-
-  if (tenantLoading || (!tenant && !error)) return <>{loading}</>;
-  if (!tenant) return <Navigate to={redirect} replace />;
+  if (tenantLoading || (!active && !error)) return <>{loading}</>;
+  if (!active) return <Navigate to={redirect} replace />;
   return <Outlet />;
 }

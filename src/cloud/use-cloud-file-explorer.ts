@@ -131,8 +131,8 @@ export function useCloudFileExplorer({
       listingAbortRef.current = controller;
 
       setState((s) => ({ ...s, loading: true, error: null }));
-      const parentId = parentFolder?.isFolder ? parentFolder.id : undefined;
-      service.getListing(space, parentId, search, controller.signal)
+      const parentId = parentFolder?.isFolder ? parentFolder.id : null;
+      service.getListing(space, parentId, search ?? '', controller.signal)
         .then((listing) => {
           if (controller.signal.aborted) return;
           const filtered = (validator
@@ -258,7 +258,7 @@ export function useCloudFileExplorer({
       if (!state.currentSpace || !trimmed) return;
       setState((s) => ({ ...s, loading: true, error: null }));
       try {
-        await service.createFolder(state.currentSpace, trimmed, state.currentFolder?.id);
+        await service.createFolder(state.currentSpace, trimmed, state.currentFolder?.id ?? null);
         loadFiles(state.currentSpace, state.currentFolder, state.search);
       } catch (err) {
         setState((s) => ({ ...s, loading: false, error: toError(err) }));

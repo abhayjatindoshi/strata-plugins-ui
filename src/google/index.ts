@@ -3,12 +3,21 @@ export type { GoogleDriveExplorerProps } from './google-drive-explorer';
 export { GoogleDriveFileIcon } from './google-drive-file-icon';
 export { GoogleLoginButton } from './google-login-button';
 export type { GoogleLoginButtonProps } from './google-login-button';
+export { GoogleDriveProvider } from './google-drive-provider';
 export {
-  useGoogleCreateForm,
-  useGoogleOpenForm,
-} from './hooks/use-google-drive';
+  pickSpaceStep,
+  pickFolderStep,
+  createFolderStep,
+} from './steps/google-steps';
 export type {
-  GoogleCreateFormState,
-  GoogleOpenFormState,
-} from './hooks/use-google-drive';
+  PickSpaceStepOptions,
+  PickSpaceStepClassNames,
+  PickSpaceStepLabels,
+  PickFolderStepOptions,
+  PickFolderStepClassNames,
+  PickFolderStepLabels,
+  CreateFolderStepOptions,
+  CreateFolderStepClassNames,
+  CreateFolderStepLabels,
+} from './steps/google-steps';
 export * from './icons';

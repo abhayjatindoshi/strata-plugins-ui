@@ -1,4 +1,14 @@
-.strata-gdrive-overlay {
+/* ═══════════════════════════════════════════════════════════
+   Google Drive Explorer — data-slot CSS
+   Every element in CloudFileExplorer carries a `data-slot`
+   attribute. Brand CSS targets `.strata-gdrive [data-slot="…"]`.
+   The overlay is a sibling, targeted via `+ .strata-gdrive`.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ---------- overlay ---------- */
+
+/* Radix renders overlay just before content in the portal */
+[data-slot="overlay"]:has(+ .strata-gdrive) {
   position: fixed;
   inset: 0;
   background: rgba(32, 33, 36, 0.6);
@@ -6,7 +16,9 @@
   animation: strata-gdrive-fade-in 120ms ease-out;
 }
 
-.strata-gdrive-content {
+/* ---------- content (root) ---------- */
+
+.strata-gdrive {
   --gdrive-surface: #ffffff;
   --gdrive-surface-2: #f8fafd;
   --gdrive-hover: #f1f3f4;
@@ -39,7 +51,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .strata-gdrive-content:not(.strata-gdrive-theme-light) {
+  .strata-gdrive:not(.strata-gdrive-theme-light) {
     --gdrive-surface: #1b1b1b;
     --gdrive-surface-2: #1b1b1b;
     --gdrive-hover: #2f3235;
@@ -54,7 +66,7 @@
   }
 }
 
-.strata-gdrive-content.strata-gdrive-theme-dark {
+.strata-gdrive.strata-gdrive-theme-dark {
   --gdrive-surface: #1b1b1b;
   --gdrive-surface-2: #1b1b1b;
   --gdrive-hover: #2f3235;
@@ -70,7 +82,7 @@
 
 /* ---------- header ---------- */
 
-.strata-gdrive-header {
+.strata-gdrive [data-slot="header"] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -79,24 +91,24 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive-header-title {
+.strata-gdrive [data-slot="header-title"] {
   display: flex;
   flex-direction: column;
   min-width: 120px;
 }
 
-.strata-gdrive-title {
+.strata-gdrive [data-slot="title"] {
   font-size: 18px;
   font-weight: 500;
   color: var(--gdrive-text);
   margin: 0;
 }
 
-.strata-gdrive-description {
+.strata-gdrive [data-slot="description"] {
   display: none;
 }
 
-.strata-gdrive-search-wrap {
+.strata-gdrive [data-slot="search-wrap"] {
   flex: 1;
   display: flex;
   align-items: center;
@@ -109,7 +121,7 @@
   font-size: 20px;
 }
 
-.strata-gdrive-search {
+.strata-gdrive [data-slot="search"] {
   flex: 1;
   border: 0;
   background: transparent;
@@ -119,11 +131,11 @@
   font-size: 14px;
 }
 
-.strata-gdrive-search::placeholder {
+.strata-gdrive [data-slot="search"]::placeholder {
   color: var(--gdrive-text-dim);
 }
 
-.strata-gdrive-close {
+.strata-gdrive [data-slot="close"] {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
@@ -138,20 +150,20 @@
   font-size: 20px;
 }
 
-.strata-gdrive-close:hover {
+.strata-gdrive [data-slot="close"]:hover {
   background: var(--gdrive-hover);
 }
 
 /* ---------- body ---------- */
 
-.strata-gdrive-body {
+.strata-gdrive [data-slot="body"] {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-.strata-gdrive-sidebar {
+.strata-gdrive [data-slot="sidebar"] {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
@@ -162,7 +174,7 @@
   border-bottom: 1px solid var(--gdrive-divider);
 }
 
-.strata-gdrive-sidebar-item {
+.strata-gdrive [data-slot="sidebar-item"] {
   display: inline-flex;
   align-items: center;
   height: 36px;
@@ -179,24 +191,24 @@
   white-space: nowrap;
 }
 
-.strata-gdrive-sidebar-item:hover:not(:disabled) {
+.strata-gdrive [data-slot="sidebar-item"]:hover:not(:disabled) {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-sidebar-item[data-active] {
+.strata-gdrive [data-slot="sidebar-item"][data-active] {
   background: var(--gdrive-selected);
   color: var(--gdrive-selected-text);
   border-color: transparent;
 }
 
-.strata-gdrive-sidebar-item:disabled {
+.strata-gdrive [data-slot="sidebar-item"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- main column ---------- */
 
-.strata-gdrive-main {
+.strata-gdrive [data-slot="main"] {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -204,14 +216,14 @@
   min-height: 0;
 }
 
-.strata-gdrive-toolbar {
+.strata-gdrive [data-slot="toolbar"] {
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 8px 16px;
 }
 
-.strata-gdrive-back {
+.strata-gdrive [data-slot="back"] {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
@@ -226,11 +238,11 @@
   font-size: 20px;
 }
 
-.strata-gdrive-back:hover {
+.strata-gdrive [data-slot="back"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-breadcrumb {
+.strata-gdrive [data-slot="breadcrumb"] {
   flex: 1;
   display: flex;
   align-items: center;
@@ -242,7 +254,7 @@
   overflow: hidden;
 }
 
-.strata-gdrive-breadcrumb-item {
+.strata-gdrive [data-slot="breadcrumb-item"] {
   border: 0;
   background: transparent;
   color: inherit;
@@ -256,17 +268,17 @@
   max-width: 100%;
 }
 
-.strata-gdrive-breadcrumb-item:hover {
+.strata-gdrive [data-slot="breadcrumb-item"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-breadcrumb-sep {
+.strata-gdrive [data-slot="breadcrumb-sep"] {
   color: var(--gdrive-text-dim);
   font-size: 14px;
   padding: 0 2px;
 }
 
-.strata-gdrive-refresh {
+.strata-gdrive [data-slot="refresh"] {
   flex-shrink: 0;
   margin-left: auto;
   width: 36px;
@@ -282,19 +294,48 @@
   font-size: 20px;
 }
 
-.strata-gdrive-refresh:hover {
+.strata-gdrive [data-slot="refresh"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-refresh[data-loading] {
+.strata-gdrive [data-slot="refresh"][data-loading] {
   animation: strata-gdrive-spin 1s linear infinite;
+}
+
+/* ---------- retry ---------- */
+
+.strata-gdrive [data-slot="retry-panel"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--gdrive-hover);
+  border-radius: 8px;
+  margin: 8px 24px;
+}
+
+.strata-gdrive [data-slot="retry"] {
+  border: 1px solid var(--gdrive-divider);
+  background: transparent;
+  color: var(--gdrive-accent);
+  font: inherit;
+  font-weight: 500;
+  padding: 0 16px;
+  height: 36px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.strata-gdrive [data-slot="retry"]:hover {
+  background: var(--gdrive-hover);
 }
 
 /* ---------- list / rows ---------- */
 
-.strata-gdrive-col-header {
+.strata-gdrive [data-slot="col-header"] {
   display: grid;
-  grid-template-columns: 1fr 200px 140px;
+  grid-template-columns: 1fr 200px 140px 32px;
   gap: 16px;
   padding: 8px 24px;
   border-bottom: 1px solid var(--gdrive-divider);
@@ -303,16 +344,16 @@
   font-weight: 500;
 }
 
-.strata-gdrive-list {
+.strata-gdrive [data-slot="list"] {
   flex: 1;
   position: relative;
   overflow-y: auto;
   padding: 4px 0 12px;
 }
 
-.strata-gdrive-row {
+.strata-gdrive [data-slot="row"] {
   display: grid;
-  grid-template-columns: 1fr 200px 140px;
+  grid-template-columns: 1fr 200px 140px 32px;
   gap: 16px;
   align-items: center;
   width: 100%;
@@ -327,21 +368,21 @@
   cursor: pointer;
 }
 
-.strata-gdrive-row:hover:not(:disabled) {
+.strata-gdrive [data-slot="row"]:hover:not([data-disabled]) {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-row[data-selected] {
+.strata-gdrive [data-slot="row"][data-selected] {
   background: var(--gdrive-selected);
   color: var(--gdrive-selected-text);
 }
 
-.strata-gdrive-row:disabled {
+.strata-gdrive [data-slot="row"][data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-gdrive-row-name {
+.strata-gdrive [data-slot="row-name"] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -349,13 +390,13 @@
   overflow: hidden;
 }
 
-.strata-gdrive-row-name > span:last-child {
+.strata-gdrive [data-slot="row-name"] > span:last-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.strata-gdrive-row-icon {
+.strata-gdrive [data-slot="row-icon"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -365,8 +406,8 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive-row-date,
-.strata-gdrive-row-size {
+.strata-gdrive [data-slot="row-date"],
+.strata-gdrive [data-slot="row-size"] {
   color: var(--gdrive-text-muted);
   font-size: 13px;
   white-space: nowrap;
@@ -374,18 +415,37 @@
   text-overflow: ellipsis;
 }
 
-.strata-gdrive-row[data-selected] .strata-gdrive-row-date,
-.strata-gdrive-row[data-selected] .strata-gdrive-row-size {
+.strata-gdrive [data-slot="row"][data-selected] [data-slot="row-date"],
+.strata-gdrive [data-slot="row"][data-selected] [data-slot="row-size"] {
   color: var(--gdrive-selected-text);
 }
 
-.strata-gdrive-empty {
+.strata-gdrive [data-slot="row-open"] {
+  border: 0;
+  background: transparent;
+  color: var(--gdrive-text-dim);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.strata-gdrive [data-slot="row-open"]:hover {
+  background: var(--gdrive-hover);
+}
+
+.strata-gdrive [data-slot="empty"] {
   padding: 48px 24px;
   text-align: center;
   color: var(--gdrive-text-dim);
 }
 
-.strata-gdrive-loading {
+.strata-gdrive [data-slot="loading"] {
   position: absolute;
   inset: 0;
   display: flex;
@@ -398,7 +458,7 @@
   z-index: 1;
 }
 
-.strata-gdrive-loading > span {
+.strata-gdrive [data-slot="loading"] > span {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -409,7 +469,7 @@
 
 /* ---------- footer ---------- */
 
-.strata-gdrive-footer {
+.strata-gdrive [data-slot="footer"] {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -419,7 +479,11 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive-new-folder {
+.strata-gdrive [data-slot="spacer"] {
+  flex: 1;
+}
+
+.strata-gdrive [data-slot="new-folder"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -435,24 +499,19 @@
   font-size: 14px;
 }
 
-.strata-gdrive-new-folder:hover:not(:disabled) {
+.strata-gdrive [data-slot="new-folder"]:hover:not(:disabled) {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-new-folder:disabled {
+.strata-gdrive [data-slot="new-folder"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-gdrive-new-folder-popover {
-  --gdrive-surface: #ffffff;
-  --gdrive-text: #1f1f1f;
-  --gdrive-divider: #e0e3e7;
-  --gdrive-accent: #0b57d0;
-
-  background: var(--gdrive-surface);
-  color: var(--gdrive-text);
-  border: 1px solid var(--gdrive-divider);
+.strata-gdrive [data-slot="new-folder-popover"] {
+  background: var(--gdrive-surface, #ffffff);
+  color: var(--gdrive-text, #1f1f1f);
+  border: 1px solid var(--gdrive-divider, #e0e3e7);
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -462,7 +521,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .strata-gdrive-new-folder-popover {
+  .strata-gdrive [data-slot="new-folder-popover"] {
     --gdrive-surface: #2d2e30;
     --gdrive-text: #e3e3e3;
     --gdrive-divider: #3c4043;
@@ -470,7 +529,7 @@
   }
 }
 
-.strata-gdrive-new-folder-input {
+.strata-gdrive [data-slot="new-folder-input"] {
   border: 1px solid var(--gdrive-divider);
   border-radius: 4px;
   padding: 8px 12px;
@@ -481,11 +540,11 @@
   outline: none;
 }
 
-.strata-gdrive-new-folder-input:focus {
+.strata-gdrive [data-slot="new-folder-input"]:focus {
   border-color: var(--gdrive-accent);
 }
 
-.strata-gdrive-new-folder-create {
+.strata-gdrive [data-slot="new-folder-create"] {
   border: 0;
   background: var(--gdrive-accent);
   color: white;
@@ -496,13 +555,13 @@
   cursor: pointer;
 }
 
-.strata-gdrive-new-folder-create:disabled {
+.strata-gdrive [data-slot="new-folder-create"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-gdrive-cancel,
-.strata-gdrive-select {
+.strata-gdrive [data-slot="cancel"],
+.strata-gdrive [data-slot="select"] {
   padding: 0 24px;
   height: 40px;
   border: 0;
@@ -513,21 +572,21 @@
   cursor: pointer;
 }
 
-.strata-gdrive-cancel {
+.strata-gdrive [data-slot="cancel"] {
   background: transparent;
   color: var(--gdrive-accent);
 }
 
-.strata-gdrive-cancel:hover {
+.strata-gdrive [data-slot="cancel"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive-select {
+.strata-gdrive [data-slot="select"] {
   background: var(--gdrive-accent);
   color: var(--gdrive-surface);
 }
 
-.strata-gdrive-select:disabled {
+.strata-gdrive [data-slot="select"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

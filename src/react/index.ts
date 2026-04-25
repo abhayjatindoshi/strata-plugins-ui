@@ -1,13 +1,18 @@
+// Config builder
+export { createStrataConfig } from './create-strata-config';
+export type { StrataConfigInput, StrataConfig } from './create-strata-config';
+
+// Cloud factory
+export { CloudFactory } from './cloud-factory';
+export type { CloudProviderAdapter } from './cloud-factory';
+
 // Providers
 export { StrataProvider } from './strata-provider';
 export type { StrataProviderProps } from './strata-provider';
 export { TenantProvider } from './tenant-provider';
 export type { TenantProviderProps } from './tenant-provider';
 
-// Context
-export type { StrataContextValue, TenantContextValue } from './context';
-
-// Guards (layout-route)
+// Guards
 export { AuthGuard } from './guards/auth-guard';
 export type { AuthGuardProps } from './guards/auth-guard';
 export { TenantGuard } from './guards/tenant-guard';
@@ -22,14 +27,8 @@ export type {
   LoginButtonVariant,
 } from './components/login-button';
 
-// Core hooks
-export { useStrata } from './hooks/use-strata';
-export { useAuth } from './hooks/use-auth';
-export { useProviders } from './hooks/use-providers';
-export { useLogin } from './hooks/use-login';
-export { useFeature } from './hooks/use-feature';
-export { useTenant, useTenantList } from './hooks/use-tenant';
-export { useSyncStatus, useDirtyState } from './hooks/use-sync-status';
-export { useEncryption } from './hooks/use-encryption';
-export { useRepo } from './hooks/use-repo';
-export { useObservable } from './hooks/use-observable';
+// Hooks
+export { useAuth, useStrata } from './strata-provider';
+export type { UseAuthResult, SupportedAuthEntry } from './strata-provider';
+export { useTenant } from './tenant-provider';
+export type { UseTenantResult } from './tenant-provider';

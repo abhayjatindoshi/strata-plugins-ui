@@ -1,7 +1,24 @@
-import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
 import type { Tenant } from 'strata-data-sync';
-import { TenantContext } from './context';
-import { useStrata } from './hooks/use-strata';
+import { useStrataContext } from './strata-provider';
+
+type TenantContextValue = {
+  readonly tenant: Tenant | undefined;
+  readonly loading: boolean;
+  readonly error: Error | null;
+  readonly all: readonly Tenant[];
+  readonly refreshList: () => void;
+};
+
+const noop = () => {};
+
+const TenantContext = createContext<TenantContextValue>({
+  tenant: undefined,
+  loading: false,
+  error: null,
+  all: [],
+  refreshList: noop,
+});
 
 export type TenantProviderProps = {
   readonly tenantId: string | undefined;
@@ -9,21 +26,23 @@ export type TenantProviderProps = {
 };
 
 /**
- * Opens/closes the active tenant on `strata` as `tenantId` changes. Tenant
- * transitions are serialized via a chained-promise queue so rapid switches
- * cannot interleave (the previous open/close always settles before the next
- * one begins).
+ * Opens/closes the active tenant as `tenantId` changes. Transitions are
+ * serialized so rapid switches cannot interleave.
  */
 export function TenantProvider({ tenantId, children }: TenantProviderProps) {
-  const { strata } = useStrata();
+  const { strata } = useStrataContext();
   const [tenant, setTenant] = useState<Tenant | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [all, setAll] = useState<readonly Tenant[]>([]);
 
-  // Per-instance serialization queue. Every transition appends to `queueRef`,
-  // so they always run in submission order even when re-renders fire fast.
   const queueRef = useRef<Promise<void>>(Promise.resolve());
   const currentTenantId = useRef<string | undefined>(undefined);
+
+  // Reset tracking when strata instance changes (sign-out → sign-in).
+  useEffect(() => {
+    currentTenantId.current = undefined;
+  }, [strata]);
 
   useEffect(() => {
     if (!strata) return;
@@ -32,7 +51,6 @@ export function TenantProvider({ tenantId, children }: TenantProviderProps) {
 
     const transition = async () => {
       if (cancelled) return;
-      // No-op if we're already on this tenant (or both undefined).
       if ((tenantId ?? null) === (currentTenantId.current ?? null)) return;
 
       setLoading(true);
@@ -45,7 +63,6 @@ export function TenantProvider({ tenantId, children }: TenantProviderProps) {
         if (tenantId) {
           await strata.tenants.open(tenantId);
           if (cancelled) {
-            // A newer transition superseded us — close before bailing.
             await strata.tenants.close().catch(() => {});
             return;
           }
@@ -65,6 +82,14 @@ export function TenantProvider({ tenantId, children }: TenantProviderProps) {
 
     return () => {
       cancelled = true;
+      // Close the tenant when unmounting (navigating away).
+      if (currentTenantId.current) {
+        const id = currentTenantId.current;
+        currentTenantId.current = undefined;
+        queueRef.current = queueRef.current.then(
+          () => strata.tenants.close().catch(() => {}),
+        );
+      }
     };
   }, [strata, tenantId]);
 
@@ -74,9 +99,34 @@ export function TenantProvider({ tenantId, children }: TenantProviderProps) {
     return () => sub.unsubscribe();
   }, [strata]);
 
+  // Tenant list — shared across all useTenant() consumers.
+  const refreshList = useCallback(() => {
+    if (!strata) return;
+    void strata.tenants.list().then(setAll).catch(() => {});
+  }, [strata]);
+
+  useEffect(() => {
+    refreshList();
+  }, [refreshList]);
+
+  const value = { tenant, loading, error, all, refreshList };
+
   return (
-    <TenantContext.Provider value={{ tenant, loading, error }}>
+    <TenantContext.Provider value={value}>
       {children}
     </TenantContext.Provider>
   );
+}
+
+export type UseTenantResult = {
+  readonly active: Tenant | undefined;
+  readonly loading: boolean;
+  readonly error: Error | null;
+  readonly all: readonly Tenant[];
+  readonly refreshList: () => void;
+};
+
+export function useTenant(): UseTenantResult {
+  const { tenant: active, loading, error, all, refreshList } = useContext(TenantContext);
+  return { active, loading, error, all, refreshList };
 }

@@ -36,19 +36,17 @@ export { CloudProviderService } from './tenants/cloud-provider-service';
 export type { PlacedOp } from './tenants/cloud-provider-service';
 export { useOpRunner } from './tenants/use-op-runner';
 export type { UseOpRunnerOptions, UseOpRunnerResult } from './tenants/use-op-runner';
-export { TenantsPage } from './tenants/tenants-page';
+export { TenantOps } from './tenants/tenant-ops';
+export type { TenantOpsProps, TenantOpsClassNames } from './tenants/tenant-ops';
+export { TenantList } from './tenants/tenant-list';
 export type {
-  TenantsPageProps,
-  TenantsPageClassNames,
-  TenantsPageLabels,
-} from './tenants/tenants-page';
+  TenantListProps,
+  TenantListClassNames,
+  TenantListLabels,
+} from './tenants/tenant-list';
 
-export { LoginPage } from './login/login-page';
-export type {
-  LoginPageProps,
-  LoginPageClassNames,
-  LoginPageLabels,
-} from './login/login-page';
+export { LoginButtons } from './login/login-page';
+export type { LoginButtonsProps } from './login/login-page';
 
 export { tenantNameStep } from './steps/tenant-name-step';
 export type {

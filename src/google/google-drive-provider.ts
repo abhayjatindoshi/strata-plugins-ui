@@ -13,7 +13,8 @@ import type {
   ProviderOp,
   ProviderTheme,
 } from '../tenants/provider';
-import { pickSpaceStep, createFolderStep } from './steps/google-steps';
+import { pickSpaceStep } from './steps/pick-space-step';
+import { createFolderStep } from './steps/create-folder-step';
 
 const GOOGLE_THEME: ProviderTheme = { color: '#1A73E8', accent: '#34A853' };
 
@@ -40,7 +41,7 @@ export class GoogleDriveProvider implements CloudProvider, CloudFileService, Clo
   constructor(options: GoogleDriveProviderOptions) {
     this.service = new GoogleDriveService(options.getAccessToken);
     this.theme = options.theme ?? GOOGLE_THEME;
-    this.ops = [makeCreateOp(this.service), makeOpenOp(), makeShareOp()];
+    this.ops = [makeCreateOp(this.service), makeShareOp()];
   }
 
   // StorageAdapter delegation
@@ -80,23 +81,6 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
         meta: { providerName: 'google', space: space.id, folderId: folder.id },
         encryption: password ? { credential: password } : undefined,
       });
-    },
-  };
-}
-
-function makeOpenOp(): ProviderOp {
-  return {
-    name: 'open',
-    label: 'Open',
-    placement: 'tenant-action',
-    async run(ctx: OpContext) {
-      if (!ctx.tenant) return;
-      if (!ctx.tenant.encrypted) {
-        await ctx.tenants.open(ctx.tenant.id);
-        return;
-      }
-      const password = await ctx.wizard.runStep(ctx.commonSteps.encryptionPassword({ intent: 'open' }));
-      await ctx.tenants.open(ctx.tenant.id, { credential: password });
     },
   };
 }

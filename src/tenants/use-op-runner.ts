@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useRef } from 'react';
-import type { EncryptionService, Strata, Tenant } from 'strata-data-sync';
+import { useCallback, useRef } from 'react';
+import type { EncryptionService, Tenant } from 'strata-data-sync';
 import type { ClientAuthService } from 'strata-adapters';
 import {
   useWizardHost,
@@ -14,9 +14,9 @@ import type {
   ProviderOp,
   TenantOpsApi,
 } from './provider';
+import { useTenant } from '../react/tenant-provider';
 
 export type UseOpRunnerOptions = {
-  readonly strata: Strata;
   readonly authService: ClientAuthService;
   readonly commonSteps: CommonStepFactories;
   readonly encryption?: EncryptionService;
@@ -35,13 +35,14 @@ export type UseOpRunnerResult = {
 
 /**
  * Builds an `OpContext` per invocation, mounts a `WizardController`, and
- * dispatches `op.run(ctx)`. Used internally by `<TenantsPage>` and exposed
- * for apps building their own tenants page.
+ * dispatches `op.run(ctx)`. Tenant operations route through `TenantProvider`
+ * context.
  *
  * Per PLUGGABLES_V2 §13 + §19.
  */
 export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
+  const { ops: tenantOps } = useTenant();
 
   const wizard = useWizardHost({
     providerTheme: themeRef.current,
@@ -49,15 +50,12 @@ export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
     labels: opts.wizardLabels,
   });
 
-  const tenants = useMemo<TenantOpsApi>(
-    () => ({
-      list: () => opts.strata.tenants.list(),
-      create: (o) => opts.strata.tenants.create(o),
-      open: (id, o) => opts.strata.tenants.open(id, o),
-      remove: (id, o) => opts.strata.tenants.remove(id, o),
-    }),
-    [opts.strata],
-  );
+  const tenants: TenantOpsApi = {
+    list: async () => [],
+    create: (o) => tenantOps.create(o),
+    open: (id, o) => tenantOps.open(id, o),
+    remove: (id, o) => tenantOps.remove(id, o),
+  };
 
   const runOp = useCallback(
     async (provider: CloudProvider, op: ProviderOp, tenant?: Tenant) => {

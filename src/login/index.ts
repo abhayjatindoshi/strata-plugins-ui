@@ -1,6 +1,2 @@
-export { LoginPage } from './login-page';
-export type {
-  LoginPageProps,
-  LoginPageClassNames,
-  LoginPageLabels,
-} from './login-page';
+export { LoginButtons } from './login-page';
+export type { LoginButtonsProps } from './login-page';

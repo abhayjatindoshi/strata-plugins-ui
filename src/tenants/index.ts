@@ -10,9 +10,11 @@ export { CloudProviderService } from './cloud-provider-service';
 export type { PlacedOp } from './cloud-provider-service';
 export { useOpRunner } from './use-op-runner';
 export type { UseOpRunnerOptions, UseOpRunnerResult } from './use-op-runner';
-export { TenantsPage } from './tenants-page';
+export { TenantOps } from './tenant-ops';
+export type { TenantOpsProps, TenantOpsClassNames } from './tenant-ops';
+export { TenantList } from './tenant-list';
 export type {
-  TenantsPageProps,
-  TenantsPageClassNames,
-  TenantsPageLabels,
-} from './tenants-page';
+  TenantListProps,
+  TenantListClassNames,
+  TenantListLabels,
+} from './tenant-list';

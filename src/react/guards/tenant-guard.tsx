@@ -19,7 +19,7 @@ export type TenantGuardProps = {
  * (typically wired to `navigate`).
  */
 export function TenantGuard({ tenantId, onUnauthenticated, loading = null, children }: TenantGuardProps) {
-  const { active, ops } = useTenant();
+  const { active, ready, ops } = useTenant();
   const { config } = useStrataContext();
   const [state, setState] = useState<'idle' | 'opening' | 'needs-credential' | 'ready' | 'error'>('idle');
   const [PasswordStep, setPasswordStep] = useState<ReactNode>(null);
@@ -35,6 +35,7 @@ export function TenantGuard({ tenantId, onUnauthenticated, loading = null, child
       return;
     }
 
+    if (!ready) return;
     if (state === 'needs-credential' || state === 'opening') return;
 
     let cancelled = false;
@@ -45,7 +46,7 @@ export function TenantGuard({ tenantId, onUnauthenticated, loading = null, child
       if (!cancelled) setState('needs-credential');
     });
     return () => { cancelled = true; };
-  }, [tenantId, active, ops, onUnauthenticated, state]);
+  }, [tenantId, active, ready, ops, onUnauthenticated, state]);
 
   useEffect(() => {
     if (state !== 'needs-credential' || !tenantId) return;

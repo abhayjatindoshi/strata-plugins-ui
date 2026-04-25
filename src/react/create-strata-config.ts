@@ -38,6 +38,8 @@ export type StrataConfigInput = {
   readonly encryption?: EncryptionService | false;
   readonly commonSteps?: CommonStepFactories;
   readonly migrations?: ReadonlyArray<BlobMigration>;
+  /** sessionStorage key for caching encryption credentials across page refreshes. */
+  readonly credentialCacheKey?: string;
 };
 
 // ─── Resolved config ───────────────────────────────────────
@@ -54,6 +56,7 @@ export type StrataConfig = {
   readonly auth?: ClientAuthService;
   readonly encryption?: EncryptionService;
   readonly commonSteps: CommonStepFactories | null;
+  readonly credentialCacheKey?: string;
 };
 
 // ─── Device ID helper ──────────────────────────────────────
@@ -108,5 +111,6 @@ export function createStrataConfig(input: StrataConfigInput): StrataConfig {
     auth,
     encryption,
     commonSteps,
+    credentialCacheKey: input.credentialCacheKey,
   };
 }

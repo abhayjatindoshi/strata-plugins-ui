@@ -13,10 +13,8 @@ import type {
   ProviderOp,
   ProviderTheme,
 } from '../tenants/provider';
-import { pickSpaceStep } from './steps/pick-space-step';
 import { createFolderStep } from './steps/create-folder-step';
-
-const GOOGLE_THEME: ProviderTheme = { color: '#1A73E8', accent: '#34A853' };
+import { googleDriveTheme } from './google-drive-theme';
 
 export type GoogleDriveProviderOptions = {
   readonly getAccessToken: () => Promise<AccessToken | null>;
@@ -40,7 +38,7 @@ export class GoogleDriveProvider implements CloudProvider, CloudFileService, Clo
 
   constructor(options: GoogleDriveProviderOptions) {
     this.service = new GoogleDriveService(options.getAccessToken);
-    this.theme = options.theme ?? GOOGLE_THEME;
+    this.theme = options.theme ?? googleDriveTheme;
     this.ops = [makeCreateOp(this.service), makeShareOp()];
   }
 
@@ -68,17 +66,16 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
     label: 'Create new',
     placement: 'page-action',
     async run(ctx: OpContext) {
-      ctx.wizard.setEstimatedTotal(3);
-      const space = await ctx.wizard.runStep(pickSpaceStep({ service }));
-      const folder = await ctx.wizard.runStep(createFolderStep({ service, space, parent: null }));
-      const name = await ctx.wizard.runStep(ctx.commonSteps.tenantName());
+      ctx.wizard.setEstimatedTotal(2);
+      const name = await ctx.wizard.runStep(ctx.commonSteps.tenantName({ theme: ctx.providerTheme }));
+      const folder = await ctx.wizard.runStep(createFolderStep({ service, space: { id: 'appDataFolder', displayName: 'App data' }, parent: null }));
       const requiresPassword = (ctx.encryption?.targets.length ?? 0) > 0;
       const password = requiresPassword
-        ? await ctx.wizard.runStep(ctx.commonSteps.encryptionPassword({ intent: 'create' }))
+        ? await ctx.wizard.runStep(ctx.commonSteps.encryptionPassword({ intent: 'create', theme: ctx.providerTheme }))
         : null;
       await ctx.tenants.create({
         name,
-        meta: { providerName: 'google', space: space.id, folderId: folder.id },
+        meta: { providerName: 'google', space: 'appDataFolder', folderId: folder.id },
         encryption: password ? { credential: password } : undefined,
       });
     },

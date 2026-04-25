@@ -1,7 +1,6 @@
 export { tenantNameStep } from './tenant-name-step';
 export type {
   TenantNameStepOptions,
-  TenantNameStepClassNames,
   TenantNameStepLabels,
 } from './tenant-name-step';
 

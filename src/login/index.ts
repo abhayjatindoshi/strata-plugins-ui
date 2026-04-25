@@ -1,2 +1,2 @@
-export { LoginButtons } from './login-page';
-export type { LoginButtonsProps } from './login-page';
+export { LoginButtons } from './login-buttons';
+export type { LoginButtonsProps } from './login-buttons';

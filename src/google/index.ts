@@ -4,12 +4,8 @@ export { GoogleDriveFileIcon } from './google-drive-file-icon';
 export { GoogleLoginButton } from './google-login-button';
 export type { GoogleLoginButtonProps } from './google-login-button';
 export { GoogleDriveProvider } from './google-drive-provider';
-export { pickSpaceStep } from './steps/pick-space-step';
-export type {
-  PickSpaceStepOptions,
-  PickSpaceStepClassNames,
-  PickSpaceStepLabels,
-} from './steps/pick-space-step';
+export { googleDriveTheme } from './google-drive-theme';
+export type { GoogleDriveTheme } from './google-drive-theme';
 export { pickFolderStep } from './steps/pick-folder-step';
 export type {
   PickFolderStepOptions,

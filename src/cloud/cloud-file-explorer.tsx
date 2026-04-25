@@ -7,10 +7,11 @@ import type {
   CloudFileService,
   CloudSpace,
 } from 'strata-adapters/cloud';
+import type { ProviderTheme } from '../tenants/provider';
 import { useCloudFileExplorer, type CloudFileExplorerApi } from './use-cloud-file-explorer';
 import { defaultFormatDate, defaultFormatSize } from './format';
 
-/** Custom icons per slot. Everything is optional — brand decides. */
+/** @deprecated Use `ProviderIcons` from `provider.ts` via `theme.icons`. */
 export type CloudFileExplorerIcons = {
   readonly home?: ReactNode;
   readonly folder?: ReactNode | ((file: CloudFile) => ReactNode);
@@ -26,7 +27,7 @@ export type CloudFileExplorerIcons = {
   readonly open?: ReactNode;
 };
 
-/** User-facing labels. All optional with English defaults. */
+/** @deprecated Use `ProviderLabels` from `provider.ts` via `theme.labels`. */
 export type CloudFileExplorerLabels = {
   readonly title?: string;
   readonly description?: string;
@@ -88,6 +89,10 @@ export type CloudFileExplorerProps = {
   readonly onSelect: (space: CloudSpace, file: CloudFile) => void;
   /** When true, renders a search input in the header. Default: true. */
   readonly searchable?: boolean;
+  /** Color mode — sets `data-theme` on root for CSS targeting. */
+  readonly mode?: 'light' | 'dark';
+  /** Provider theme — supplies className, icons, and labels in one object. */
+  readonly theme?: ProviderTheme;
   /** Root className — brand wrappers pass one class, then style via `[data-slot]` selectors. */
   readonly className?: string;
   readonly icons?: CloudFileExplorerIcons;
@@ -112,13 +117,17 @@ export function CloudFileExplorer({
   validator,
   onSelect,
   searchable = true,
+  mode,
+  theme,
   className,
-  icons = {},
-  labels = {},
+  icons: iconsProp = {},
+  labels: labelsProp = {},
   formatters = {},
 }: CloudFileExplorerProps) {
+  const resolvedClassName = className ?? theme?.className;
+  const icons = { ...theme?.icons, ...iconsProp };
+  const l = { ...DEFAULT_LABELS, ...theme?.labels, ...labelsProp };
   const api = useCloudFileExplorer({ service, validator, open });
-  const l = { ...DEFAULT_LABELS, ...labels };
   const fmt = {
     formatDate: formatters.formatDate ?? defaultFormatDate,
     formatSize: formatters.formatSize ?? defaultFormatSize,
@@ -135,7 +144,7 @@ export function CloudFileExplorer({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay data-slot="overlay" />
-        <Dialog.Content data-slot="content" className={className}>
+        <Dialog.Content data-slot="content" className={resolvedClassName} data-theme={mode}>
           <div data-slot="header">
             <div data-slot="header-title">
               <Dialog.Title data-slot="title">{l.title}</Dialog.Title>

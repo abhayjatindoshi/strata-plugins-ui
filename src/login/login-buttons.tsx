@@ -1,12 +1,14 @@
 import type { ClientAuthService, SupportedAuth } from 'strata-adapters';
 import { useStrataContext } from '../react/strata-provider';
-import { LoginButton, type LoginButtonTheme } from '../react/components/login-button';
+import { LoginButton, type LoginButtonTheme, type LoginButtonVariant } from '../react/components/login-button';
 
 export type LoginButtonsProps = {
   /** Optional — falls back to `<StrataProvider>` context. */
   readonly authService?: ClientAuthService;
   /** Color mode — passed to each branded login button. */
   readonly mode?: LoginButtonTheme;
+  /** Visual variant — passed to each branded login button. */
+  readonly variant?: LoginButtonVariant;
   readonly className?: string;
   readonly buttonClassName?: string;
 };
@@ -28,7 +30,7 @@ export function LoginButtons(props: LoginButtonsProps) {
   return (
     <div className={props.className}>
       {supported.map((auth) => (
-        <ProviderSignInButton key={auth.name} auth={auth} mode={props.mode} className={props.buttonClassName} />
+        <ProviderSignInButton key={auth.name} auth={auth} mode={props.mode} variant={props.variant} className={props.buttonClassName} />
       ))}
     </div>
   );
@@ -37,10 +39,12 @@ export function LoginButtons(props: LoginButtonsProps) {
 function ProviderSignInButton({
   auth,
   mode,
+  variant,
   className,
 }: {
   readonly auth: SupportedAuth;
   readonly mode?: LoginButtonTheme;
+  readonly variant?: LoginButtonVariant;
   readonly className?: string;
 }) {
   const onClick = () => {
@@ -49,7 +53,7 @@ function ProviderSignInButton({
   if (auth.name === 'google') {
     return (
       <div className={className}>
-        <LoginButton provider="google" theme={mode} onClick={onClick} />
+        <LoginButton provider="google" theme={mode} variant={variant} onClick={onClick} />
       </div>
     );
   }

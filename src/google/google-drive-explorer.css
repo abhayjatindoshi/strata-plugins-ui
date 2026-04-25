@@ -50,23 +50,9 @@
   animation: strata-gdrive-scale-in 140ms ease-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  .strata-gdrive:not(.strata-gdrive-theme-light) {
-    --gdrive-surface: #1b1b1b;
-    --gdrive-surface-2: #1b1b1b;
-    --gdrive-hover: #2f3235;
-    --gdrive-selected: #004a77;
-    --gdrive-selected-text: #c2e7ff;
-    --gdrive-text: #e3e3e3;
-    --gdrive-text-muted: #c7c7c7;
-    --gdrive-text-dim: #9aa0a6;
-    --gdrive-divider: #3c4043;
-    --gdrive-accent: #8ab4f8;
-    --gdrive-search-bg: #37393b;
-  }
-}
+/* ---------- dark mode (triggered by data-theme="dark" on the component root) ---------- */
 
-.strata-gdrive.strata-gdrive-theme-dark {
+.strata-gdrive[data-theme="dark"] {
   --gdrive-surface: #1b1b1b;
   --gdrive-surface-2: #1b1b1b;
   --gdrive-hover: #2f3235;
@@ -606,4 +592,109 @@
 @keyframes strata-gdrive-spin {
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Step forms — data-slot CSS for wizard steps
+   Steps rendered with `className="strata-gdrive"` pick up
+   these rules automatically.
+   ═══════════════════════════════════════════════════════════ */
+
+.strata-gdrive[data-slot="step"] {
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  color: var(--gdrive-text);
+  background: var(--gdrive-surface);
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  height: auto;
+  min-height: 0;
+}
+
+.strata-gdrive [data-slot="step-header"] {
+  display: flex;
+  align-items: center;
+}
+
+.strata-gdrive [data-slot="step-title"] {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--gdrive-text);
+  margin: 0;
+}
+
+.strata-gdrive [data-slot="step-body"] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.strata-gdrive [data-slot="step-input"] {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--gdrive-divider);
+  border-radius: 4px;
+  background: var(--gdrive-surface);
+  color: var(--gdrive-text);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.strata-gdrive [data-slot="step-input"]:focus {
+  border-color: var(--gdrive-accent);
+  box-shadow: 0 0 0 2px rgba(11, 87, 208, 0.15);
+}
+
+.strata-gdrive [data-slot="step-input"]::placeholder {
+  color: var(--gdrive-text-dim);
+}
+
+.strata-gdrive [data-slot="step-footer"] {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.strata-gdrive [data-slot="step-cancel"],
+.strata-gdrive [data-slot="step-submit"] {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 24px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background 120ms;
+}
+
+.strata-gdrive [data-slot="step-cancel"] {
+  background: transparent;
+  color: var(--gdrive-accent);
+}
+
+.strata-gdrive [data-slot="step-cancel"]:hover {
+  background: rgba(11, 87, 208, 0.08);
+}
+
+.strata-gdrive [data-slot="step-submit"] {
+  background: var(--gdrive-accent);
+  color: #fff;
+}
+
+.strata-gdrive [data-slot="step-submit"]:hover {
+  background: #0842a0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.strata-gdrive [data-slot="step-submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

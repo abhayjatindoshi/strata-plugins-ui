@@ -1,13 +1,5 @@
 import type { Step } from '../wizard/types';
-
-export type TenantNameStepClassNames = {
-  readonly root?: string;
-  readonly label?: string;
-  readonly input?: string;
-  readonly footer?: string;
-  readonly submit?: string;
-  readonly cancel?: string;
-};
+import type { ProviderTheme } from '../tenants/provider';
 
 export type TenantNameStepLabels = {
   readonly title?: string;
@@ -18,7 +10,8 @@ export type TenantNameStepLabels = {
 
 export type TenantNameStepOptions = {
   readonly initial?: string;
-  readonly classNames?: TenantNameStepClassNames;
+  readonly mode?: 'light' | 'dark';
+  readonly theme?: ProviderTheme;
   readonly labels?: TenantNameStepLabels;
 };
 
@@ -31,17 +24,26 @@ const DEFAULT_LABELS: Required<TenantNameStepLabels> = {
 
 /**
  * Bundled common step that prompts for a tenant display name.
- * App-themed; host renders it inside its `WizardController` chrome.
+ * Uses `data-slot` attributes for styling. When a `ProviderTheme`
+ * is passed, the root gets the provider's className so brand CSS
+ * applies automatically.
  */
 export function tenantNameStep(opts: TenantNameStepOptions = {}): Step<string> {
-  const labels = { ...DEFAULT_LABELS, ...opts.labels };
-  const cn = opts.classNames ?? {};
+  const labels = {
+    ...DEFAULT_LABELS,
+    cancel: opts.theme?.labels?.cancel ?? DEFAULT_LABELS.cancel,
+    submit: opts.theme?.labels?.select ?? DEFAULT_LABELS.submit,
+    ...opts.labels,
+  };
   return {
     id: 'tenant-name',
     theme: 'app',
     render: ({ onComplete, onCancel }) => (
       <form
-        className={cn.root}
+        data-slot="step"
+        data-step="tenant-name"
+        data-theme={opts.mode}
+        className={opts.theme?.className}
         onSubmit={(e) => {
           e.preventDefault();
           const data = new FormData(e.currentTarget);
@@ -49,22 +51,24 @@ export function tenantNameStep(opts: TenantNameStepOptions = {}): Step<string> {
           if (name) onComplete(name);
         }}
       >
-        <label className={cn.label}>
-          <span>{labels.title}</span>
+        <div data-slot="step-header">
+          <h2 data-slot="step-title">{labels.title}</h2>
+        </div>
+        <div data-slot="step-body">
           <input
             name="name"
-            className={cn.input}
+            data-slot="step-input"
             defaultValue={opts.initial ?? ''}
             placeholder={labels.placeholder}
             autoFocus
             required
           />
-        </label>
-        <div className={cn.footer}>
-          <button type="button" className={cn.cancel} onClick={onCancel}>
+        </div>
+        <div data-slot="step-footer">
+          <button type="button" data-slot="step-cancel" onClick={onCancel}>
             {labels.cancel}
           </button>
-          <button type="submit" className={cn.submit}>
+          <button type="submit" data-slot="step-submit">
             {labels.submit}
           </button>
         </div>

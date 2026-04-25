@@ -45,13 +45,12 @@ export type {
   TenantListLabels,
 } from './tenants/tenant-list';
 
-export { LoginButtons } from './login/login-page';
-export type { LoginButtonsProps } from './login/login-page';
+export { LoginButtons } from './login/login-buttons';
+export type { LoginButtonsProps } from './login/login-buttons';
 
 export { tenantNameStep } from './steps/tenant-name-step';
 export type {
   TenantNameStepOptions,
-  TenantNameStepClassNames,
   TenantNameStepLabels,
 } from './steps/tenant-name-step';
 

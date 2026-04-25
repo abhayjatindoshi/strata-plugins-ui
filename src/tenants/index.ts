@@ -4,6 +4,9 @@ export type {
   OpContext,
   OpPlacement,
   ProviderOp,
+  ProviderTheme,
+  ProviderIcons,
+  ProviderLabels,
   TenantOpsApi,
 } from './provider';
 export { CloudProviderService } from './cloud-provider-service';

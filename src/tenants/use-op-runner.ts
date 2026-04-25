@@ -20,6 +20,7 @@ export type UseOpRunnerOptions = {
   readonly authService: ClientAuthService;
   readonly commonSteps: CommonStepFactories;
   readonly encryption?: EncryptionService;
+  readonly mode?: 'light' | 'dark';
   readonly wizardClassNames?: WizardClassNames;
   readonly wizardLabels?: WizardLabels;
   readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
@@ -71,6 +72,7 @@ export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
         wizard: wizard.controller,
         commonSteps: opts.commonSteps,
         providerTheme: provider.theme,
+        mode: opts.mode,
         tenant,
       };
       try {

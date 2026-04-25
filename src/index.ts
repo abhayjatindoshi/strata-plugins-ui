@@ -48,23 +48,14 @@ export type {
 export { LoginButtons } from './login/login-buttons';
 export type { LoginButtonsProps } from './login/login-buttons';
 
-export { tenantNameStep } from './steps/tenant-name-step';
+export { encryptionSetupStep } from './steps/encryption-setup-step';
 export type {
-  TenantNameStepOptions,
-  TenantNameStepLabels,
-} from './steps/tenant-name-step';
+  EncryptionSetupStepOptions,
+  EncryptionSetupStepLabels,
+} from './steps/encryption-setup-step';
 
-export { tenantCustomizeStep } from './steps/tenant-customize-step';
+export { encryptionUnlockStep } from './steps/encryption-unlock-step';
 export type {
-  TenantCustomization,
-  TenantCustomizeStepOptions,
-  TenantCustomizeStepClassNames,
-  TenantCustomizeStepLabels,
-} from './steps/tenant-customize-step';
-
-export { encryptionPasswordStep } from './steps/encryption-password-step';
-export type {
-  EncryptionPasswordStepOptions,
-  EncryptionPasswordStepClassNames,
-  EncryptionPasswordStepLabels,
-} from './steps/encryption-password-step';
+  EncryptionUnlockStepOptions,
+  EncryptionUnlockStepLabels,
+} from './steps/encryption-unlock-step';

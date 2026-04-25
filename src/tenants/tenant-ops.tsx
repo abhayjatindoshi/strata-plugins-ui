@@ -12,6 +12,7 @@ export type TenantOpsClassNames = {
 
 export type TenantOpsProps = {
   readonly classNames?: TenantOpsClassNames;
+  readonly mode?: 'light' | 'dark';
   readonly wizardLabels?: WizardLabels;
   readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
 };
@@ -30,6 +31,7 @@ export function TenantOps(props: TenantOpsProps) {
     authService: config.auth!,
     commonSteps: config.commonSteps!,
     encryption: config.encryption ?? undefined,
+    mode: props.mode,
     wizardClassNames: cn.wizard,
     wizardLabels: props.wizardLabels,
     onError: props.onError,

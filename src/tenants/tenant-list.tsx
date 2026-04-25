@@ -29,6 +29,7 @@ export type TenantListProps = {
   readonly classNames?: TenantListClassNames;
   readonly labels?: TenantListLabels;
   readonly onSelect?: (tenant: Tenant) => void;
+  readonly onDelete?: (tenant: Tenant) => void;
   readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
 };
 
@@ -71,6 +72,7 @@ export function TenantList(props: TenantListProps) {
               tenant={t}
               providers={providers}
               onSelect={() => props.onSelect?.(t)}
+              onDelete={props.onDelete ? () => props.onDelete!(t) : undefined}
               onRunOp={(provider, op) =>
                 runner.runOp(provider, op, t)
               }
@@ -89,6 +91,7 @@ function TenantRow({
   tenant,
   providers,
   onSelect,
+  onDelete,
   onRunOp,
   classNames,
   labels,
@@ -96,6 +99,7 @@ function TenantRow({
   readonly tenant: Tenant;
   readonly providers: readonly CloudProvider[];
   readonly onSelect: () => void;
+  readonly onDelete?: () => void;
   readonly onRunOp: (provider: CloudProvider, op: ProviderOp) => Promise<void>;
   readonly classNames: TenantListClassNames;
   readonly labels: { readonly menuButton: string };
@@ -137,6 +141,15 @@ function TenantRow({
             ))}
           </details>
         ) : null}
+        {onDelete && (
+          <button
+            type="button"
+            className={classNames.rowActionButton}
+            onClick={onDelete}
+          >
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );

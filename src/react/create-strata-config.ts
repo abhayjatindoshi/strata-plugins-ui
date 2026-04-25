@@ -11,9 +11,8 @@ import type {
   StorageAdapter,
 } from 'strata-data-sync';
 import {
-  tenantNameStep,
-  tenantCustomizeStep,
-  encryptionPasswordStep,
+  encryptionSetupStep,
+  encryptionUnlockStep,
 } from '../steps/index';
 import type { CommonStepFactories } from '../tenants/provider';
 import type { CloudProviderService } from '../tenants/cloud-provider-service';
@@ -95,9 +94,8 @@ export function createStrataConfig(input: StrataConfigInput): StrataConfig {
 
   const commonSteps: CommonStepFactories | null =
     input.commonSteps ?? {
-      tenantName: tenantNameStep,
-      tenantCustomize: tenantCustomizeStep,
-      encryptionPassword: encryptionPasswordStep,
+      encryptionSetup: encryptionSetupStep,
+      encryptionUnlock: encryptionUnlockStep,
     };
 
   return {

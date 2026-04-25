@@ -13,7 +13,7 @@ import type {
   ProviderOp,
   ProviderTheme,
 } from '../tenants/provider';
-import { createFolderStep } from './steps/create-folder-step';
+import { googleCreateWorkspaceStep } from './steps/google-create-workspace';
 import { googleDriveTheme } from './google-drive-theme';
 
 export type GoogleDriveProviderOptions = {
@@ -67,15 +67,15 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
     placement: 'page-action',
     async run(ctx: OpContext) {
       ctx.wizard.setEstimatedTotal(2);
-      const name = await ctx.wizard.runStep(ctx.commonSteps.tenantName({ theme: ctx.providerTheme }));
-      const folder = await ctx.wizard.runStep(createFolderStep({ service, space: { id: 'appDataFolder', displayName: 'App data' }, parent: null }));
-      const requiresPassword = (ctx.encryption?.targets.length ?? 0) > 0;
-      const password = requiresPassword
-        ? await ctx.wizard.runStep(ctx.commonSteps.encryptionPassword({ intent: 'create', theme: ctx.providerTheme }))
-        : null;
+      const result = await ctx.wizard.runStep(
+        googleCreateWorkspaceStep({ service, mode: ctx.mode, theme: ctx.providerTheme }),
+      );
+      const password = await ctx.wizard.runStep(
+        ctx.commonSteps.encryptionSetup({ theme: ctx.providerTheme, mode: ctx.mode }),
+      );
       await ctx.tenants.create({
-        name,
-        meta: { providerName: 'google', space: 'appDataFolder', folderId: folder.id },
+        name: result.name,
+        meta: { providerName: 'google', space: result.space.id, folderId: result.folderId, shareable: result.shareable },
         encryption: password ? { credential: password } : undefined,
       });
     },

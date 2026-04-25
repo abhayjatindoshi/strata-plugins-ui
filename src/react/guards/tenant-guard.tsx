@@ -1,10 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTenant } from '../tenant-provider';
-import { useStrataContext } from '../strata-provider';
+import { useStrataContext, useAuth } from '../strata-provider';
 
 export type TenantGuardProps = {
   readonly tenantId: string | undefined;
   readonly onUnauthenticated: () => void;
+  readonly mode?: 'light' | 'dark';
   readonly loading?: ReactNode;
   readonly children: ReactNode;
 };
@@ -12,15 +13,16 @@ export type TenantGuardProps = {
 /**
  * Gates rendering on the active tenant. Auto-opens the tenant if it isn't
  * already active. If the tenant is encrypted and no credential was provided
- * (e.g. page refresh), renders the `encryptionPassword` common step inline
+ * (e.g. page refresh), renders the `encryptionUnlock` common step inline
  * to collect it.
  *
  * Router-independent — the app passes `tenantId` and `onUnauthenticated`
  * (typically wired to `navigate`).
  */
-export function TenantGuard({ tenantId, onUnauthenticated, loading = null, children }: TenantGuardProps) {
+export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null, children }: TenantGuardProps) {
   const { active, ready, ops } = useTenant();
   const { config } = useStrataContext();
+  const { name: authName } = useAuth();
   const [state, setState] = useState<'idle' | 'opening' | 'needs-credential' | 'ready' | 'error'>('idle');
   const [PasswordStep, setPasswordStep] = useState<ReactNode>(null);
 
@@ -51,7 +53,10 @@ export function TenantGuard({ tenantId, onUnauthenticated, loading = null, child
   useEffect(() => {
     if (state !== 'needs-credential' || !tenantId) return;
 
-    const step = config.commonSteps?.encryptionPassword({ intent: 'open' });
+    const providerTheme = authName
+      ? config.providers?.all?.find((p) => p.name === authName)?.theme
+      : undefined;
+    const step = config.commonSteps?.encryptionUnlock({ mode, theme: providerTheme });
     if (!step) {
       onUnauthenticated();
       return;

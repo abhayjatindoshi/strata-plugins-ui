@@ -71,6 +71,7 @@ export type OpContext = {
   readonly wizard: WizardController;
   readonly commonSteps: CommonStepFactories;
   readonly providerTheme: ProviderTheme;
+  readonly mode?: 'light' | 'dark';
   readonly tenant?: Tenant;
 };
 
@@ -101,10 +102,6 @@ export interface CloudProvider {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CommonStepFactories = Record<string, (opts?: any) => Step<any>> & {
-  tenantName(opts?: { readonly initial?: string; readonly theme?: ProviderTheme }): Step<string>;
-  tenantCustomize(opts?: {
-    readonly initial?: { readonly color?: string; readonly icon?: string };
-    readonly theme?: ProviderTheme;
-  }): Step<{ readonly color: string; readonly icon: string }>;
-  encryptionPassword(opts: { readonly intent: 'create' | 'open'; readonly theme?: ProviderTheme }): Step<string>;
+  encryptionSetup(opts?: { readonly theme?: ProviderTheme; readonly mode?: 'light' | 'dark' }): Step<string | null>;
+  encryptionUnlock(opts?: { readonly theme?: ProviderTheme; readonly mode?: 'light' | 'dark' }): Step<string>;
 };

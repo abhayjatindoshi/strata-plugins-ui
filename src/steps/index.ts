@@ -1,20 +1,11 @@
-export { tenantNameStep } from './tenant-name-step';
+export { encryptionSetupStep } from './encryption-setup-step';
 export type {
-  TenantNameStepOptions,
-  TenantNameStepLabels,
-} from './tenant-name-step';
+  EncryptionSetupStepOptions,
+  EncryptionSetupStepLabels,
+} from './encryption-setup-step';
 
-export { tenantCustomizeStep } from './tenant-customize-step';
+export { encryptionUnlockStep } from './encryption-unlock-step';
 export type {
-  TenantCustomization,
-  TenantCustomizeStepOptions,
-  TenantCustomizeStepClassNames,
-  TenantCustomizeStepLabels,
-} from './tenant-customize-step';
-
-export { encryptionPasswordStep } from './encryption-password-step';
-export type {
-  EncryptionPasswordStepOptions,
-  EncryptionPasswordStepClassNames,
-  EncryptionPasswordStepLabels,
-} from './encryption-password-step';
+  EncryptionUnlockStepOptions,
+  EncryptionUnlockStepLabels,
+} from './encryption-unlock-step';

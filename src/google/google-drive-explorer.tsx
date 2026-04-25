@@ -3,7 +3,7 @@ import {
   type CloudFileExplorerProps,
 } from '../cloud/cloud-file-explorer';
 import type { ProviderLabels } from '../tenants/provider';
-import './google-drive-explorer.css';
+import './google-drive.css';
 import { googleDriveTheme } from './google-drive-theme';
 
 export type GoogleDriveExplorerProps = Omit<

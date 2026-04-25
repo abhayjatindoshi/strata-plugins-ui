@@ -3,9 +3,10 @@ import type {
   CloudFile,
   CloudFileService,
   CloudSpace,
+  CloudAdapter,
 } from 'strata-adapters';
 import { GoogleDriveService } from 'strata-adapters';
-import type { StorageAdapter, Tenant } from 'strata-data-sync';
+import type { Tenant } from 'strata-data-sync';
 import type {
   CloudProvider,
   OpContext,
@@ -29,7 +30,7 @@ export type GoogleDriveProviderOptions = {
  *
  * Per PLUGGABLES_V2 §11.
  */
-export class GoogleDriveProvider implements CloudProvider, CloudFileService, StorageAdapter {
+export class GoogleDriveProvider implements CloudProvider, CloudFileService, CloudAdapter {
   readonly name = 'google';
   readonly label = 'Google Drive';
   readonly theme: ProviderTheme;

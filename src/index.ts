@@ -32,6 +32,8 @@ export type {
   ProviderOp,
   TenantOpsApi,
 } from './tenants/provider';
+export { CloudProviderService } from './tenants/cloud-provider-service';
+export type { PlacedOp } from './tenants/cloud-provider-service';
 export { useOpRunner } from './tenants/use-op-runner';
 export type { UseOpRunnerOptions, UseOpRunnerResult } from './tenants/use-op-runner';
 export { TenantsPage } from './tenants/tenants-page';

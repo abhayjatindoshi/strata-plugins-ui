@@ -2,10 +2,6 @@
 export { createStrataConfig } from './create-strata-config';
 export type { StrataConfigInput, StrataConfig } from './create-strata-config';
 
-// Cloud factory
-export { CloudFactory } from './cloud-factory';
-export type { CloudProviderAdapter } from './cloud-factory';
-
 // Providers
 export { StrataProvider } from './strata-provider';
 export type { StrataProviderProps } from './strata-provider';

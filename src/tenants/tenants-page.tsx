@@ -8,6 +8,7 @@ import type {
   CommonStepFactories,
   ProviderOp,
 } from './provider';
+import type { CloudProviderService } from './cloud-provider-service';
 import type { WizardClassNames, WizardLabels } from '../wizard/use-wizard-host';
 
 export type TenantsPageClassNames = {
@@ -39,6 +40,7 @@ export type TenantsPageProps = {
   /** Optional — falls back to `<StrataProvider>` context. */
   readonly strata?: Strata;
   readonly authService?: ClientAuthService;
+  readonly providerService?: CloudProviderService;
   readonly providers?: readonly CloudProvider[];
   readonly commonSteps?: CommonStepFactories;
   readonly encryption?: EncryptionService;
@@ -68,7 +70,8 @@ export function TenantsPage(props: TenantsPageProps) {
   const ctx = useStrataContext();
   const strata = props.strata ?? ctx.strata;
   const authService = props.authService ?? ctx.config.auth;
-  const providers = props.providers ?? ctx.config.cloud.providers;
+  const providerService = props.providerService ?? ctx.config.providers;
+  const providers = props.providers ?? providerService?.all ?? [];
   const commonSteps = props.commonSteps ?? ctx.config.commonSteps;
   const encryption = props.encryption ?? ctx.config.encryption ?? undefined;
 

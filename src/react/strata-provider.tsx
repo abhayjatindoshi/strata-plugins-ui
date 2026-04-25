@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Strata } from 'strata-data-sync';
+import type { StorageAdapter } from 'strata-data-sync';
 import type { AccessToken, AuthState } from 'strata-adapters';
 import type { StrataConfig } from './create-strata-config';
 
@@ -38,18 +39,25 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
   }, [auth]);
 
   // ── Strata lifecycle ─────────────────────────────────────
-  // Construct when signed-in (or when auth-less); dispose via
-  // the effect cleanup. The null state between sign-out and
-  // the next render is handled by the cleanup setting strata
-  // to null before the next effect run.
+  // Rebuild when auth state or cloud adapter changes.
   const [strata, setStrata] = useState<Strata | null>(null);
+
+  // Track the cloud adapter reactively via cloud.active$.
+  const [cloudAdapter, setCloudAdapter] = useState<StorageAdapter | null>(
+    () => config.cloud?.active ?? null,
+  );
+
+  useEffect(() => {
+    if (!config.cloud) return;
+    const sub = config.cloud.active$.subscribe((adapter) => {
+      setCloudAdapter(adapter);
+    });
+    return () => sub.unsubscribe();
+  }, [config.cloud]);
 
   useEffect(() => {
     const shouldBuild = !auth || authState.status === 'signed-in';
     if (!shouldBuild) return;
-
-    const authName = authState.status === 'signed-in' ? authState.name : undefined;
-    const cloudAdapter = authName ? config.cloud.resolve(authName) : undefined;
 
     const instance = new Strata({
       appId: config.appId,
@@ -57,7 +65,7 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
       entities: config.entities,
       migrations: config.migrations,
       localAdapter: config.localAdapter,
-      cloudAdapter,
+      cloudAdapter: cloudAdapter ?? undefined,
       encryptionService: config.encryption,
     });
     setStrata(instance);
@@ -66,9 +74,8 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
       setStrata(null);
       void instance.dispose();
     };
-    // `config` is module-scope and stable; `authState.status` drives rebuild.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config, authState.status]);
+  }, [config, authState.status, cloudAdapter]);
 
   // ── Context value ────────────────────────────────────────
   const value = useMemo<StrataContextValue>(

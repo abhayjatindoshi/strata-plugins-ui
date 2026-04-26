@@ -51,10 +51,16 @@ export function TenantProvider({ children }: TenantProviderProps) {
   const { strata, config } = useStrataContext();
   const credentialCacheKey = config.credentialCacheKey;
   const [active, setActive] = useState<Tenant | undefined>(undefined);
-  const [status, setStatus] = useState<TenantStatus>('idle');
+  const [statusState, setStatusState] = useState<TenantStatus>('idle');
   const [error, setError] = useState<Error | null>(null);
   const [all, setAll] = useState<readonly Tenant[]>([]);
   const inflightRef = useRef<{ tenantId: string; aborted: boolean } | null>(null);
+  const statusRef = useRef<TenantStatus>('idle');
+
+  const setStatus = useCallback((s: TenantStatus) => {
+    statusRef.current = s;
+    setStatusState(s);
+  }, []);
 
   // Subscribe to active tenant + reset on strata change
   useEffect(() => {
@@ -80,7 +86,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
     if (!strata) return;
 
     // Already hydrated for this tenant — no-op
-    if (strata.tenants.activeTenant?.id === tenantId && status === 'hydrated') return;
+    if (strata.tenants.activeTenant?.id === tenantId && statusRef.current === 'hydrated') return;
 
     // Already inflight for this tenant — no-op
     if (inflightRef.current?.tenantId === tenantId && !inflightRef.current.aborted) return;
@@ -125,7 +131,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       setStatus('error');
       setError(e);
     });
-  }, [strata, status, credentialCacheKey]);
+  }, [strata, credentialCacheKey]);
 
   const ops: TenantOps = {
     close: async () => {
@@ -158,7 +164,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
   };
 
   return (
-    <TenantContext.Provider value={{ active, status, error, all, ops, requestOpen, refreshList }}>
+    <TenantContext.Provider value={{ active, status: statusState, error, all, ops, requestOpen, refreshList }}>
       {children}
     </TenantContext.Provider>
   );

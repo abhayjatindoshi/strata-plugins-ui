@@ -132,26 +132,26 @@ export function useWizardHost(opts: UseWizardOptions): WizardHostHandle {
   const element = (
     <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className={cn.overlay} />
-        <Dialog.Content className={cn.content} aria-describedby={undefined} aria-label={opts.title ?? 'Wizard'}>
-          <div className={cn.header}>
+        <Dialog.Overlay data-slot="wizard-overlay" className={cn.overlay} />
+        <Dialog.Content data-slot="wizard-content" className={cn.content} aria-describedby={undefined} aria-label={opts.title ?? 'Wizard'}>
+          <div data-slot="wizard-header" className={cn.header}>
             {opts.title ? (
-              <Dialog.Title className={cn.title}>{opts.title}</Dialog.Title>
+              <Dialog.Title data-slot="wizard-title" className={cn.title}>{opts.title}</Dialog.Title>
             ) : (
               <Dialog.Title style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
                 Wizard
               </Dialog.Title>
             )}
             {showCounter ? (
-              <span className={cn.counter}>{labels.counter(stepIndex, total)}</span>
+              <span data-slot="wizard-counter" className={cn.counter}>{labels.counter(stepIndex, total)}</span>
             ) : null}
             <Dialog.Close asChild>
-              <button type="button" className={cn.cancel}>
+              <button type="button" data-slot="wizard-cancel" className={cn.cancel}>
                 {labels.cancel}
               </button>
             </Dialog.Close>
           </div>
-          <div className={cn.body}>
+          <div data-slot="wizard-body" className={cn.body}>
             {isProviderTheme && stepBody ? (
               <ProviderThemeProvider theme={opts.providerTheme}>{stepBody}</ProviderThemeProvider>
             ) : (

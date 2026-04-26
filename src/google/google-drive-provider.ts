@@ -63,7 +63,7 @@ export class GoogleDriveProvider implements CloudProvider, CloudFileService, Clo
 function makeCreateOp(service: GoogleDriveService): ProviderOp {
   return {
     name: 'create',
-    label: 'Create new',
+    label: 'Create',
     placement: 'page-action',
     async run(ctx: OpContext) {
       ctx.wizard.setEstimatedTotal(2);

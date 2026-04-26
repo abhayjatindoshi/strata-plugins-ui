@@ -3,17 +3,12 @@ import { useStrataContext } from '../react/strata-provider';
 import { useOpRunner } from './use-op-runner';
 import type { CloudProvider, ProviderOp } from './provider';
 import type { WizardClassNames, WizardLabels } from '../wizard/use-wizard-host';
-
-export type TenantOpsClassNames = {
-  readonly root?: string;
-  readonly button?: string;
-  readonly wizard?: WizardClassNames;
-};
+import './tenants.css';
 
 export type TenantOpsProps = {
-  readonly classNames?: TenantOpsClassNames;
   readonly labels?: Readonly<Record<string, ReactNode>>;
   readonly mode?: 'light' | 'dark';
+  readonly wizardClassNames?: WizardClassNames;
   readonly wizardLabels?: WizardLabels;
   readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
 };
@@ -23,17 +18,13 @@ export type TenantOpsProps = {
  * Owns the wizard element for multi-step flows.
  */
 export function TenantOps(props: TenantOpsProps) {
-  const cn = props.classNames ?? {};
   const { config } = useStrataContext();
   const providers = config.providers?.all ?? [];
   const ready = !!config.auth && !!config.commonSteps;
 
   const runner = useOpRunner({
-    authService: config.auth!,
-    commonSteps: config.commonSteps!,
-    encryption: config.encryption ?? undefined,
     mode: props.mode,
-    wizardClassNames: cn.wizard,
+    wizardClassNames: props.wizardClassNames,
     wizardLabels: props.wizardLabels,
     onError: props.onError,
   });
@@ -50,12 +41,12 @@ export function TenantOps(props: TenantOpsProps) {
 
   return (
     <>
-      <div className={cn.root}>
+      <div data-slot="tenant-ops" data-theme={props.mode}>
         {pageActions.map(({ provider, op }) => (
           <button
             key={`${provider.name}:${op.name}`}
             type="button"
-            className={cn.button}
+            data-slot="tenant-ops-button"
             onClick={() => { void runner.runOp(provider, op); }}
           >
             {props.labels?.[op.name] ?? <>{op.icon}{op.label}</>}

@@ -5,18 +5,7 @@ import { useTenant } from '../react/tenant-provider';
 import { useOpRunner } from './use-op-runner';
 import type { CloudProvider, ProviderOp } from './provider';
 import type { WizardClassNames, WizardLabels } from '../wizard/use-wizard-host';
-
-export type TenantListClassNames = {
-  readonly root?: string;
-  readonly empty?: string;
-  readonly row?: string;
-  readonly rowName?: string;
-  readonly menu?: string;
-  readonly menuTrigger?: string;
-  readonly actions?: string;
-  readonly action?: string;
-  readonly wizard?: WizardClassNames;
-};
+import './tenants.css';
 
 export type TenantListLabels = {
   readonly empty?: string;
@@ -27,8 +16,9 @@ export type TenantListLabels = {
 };
 
 export type TenantListProps = {
-  readonly classNames?: TenantListClassNames;
+  readonly mode?: 'light' | 'dark';
   readonly labels?: TenantListLabels;
+  readonly wizardClassNames?: WizardClassNames;
   readonly onSelect?: (tenant: Tenant) => void;
   readonly onDelete?: (tenant: Tenant) => void;
   readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
@@ -45,7 +35,6 @@ const DEFAULT_LIST_LABELS: Required<Omit<TenantListLabels, 'wizard' | 'actionLab
  * Owns the wizard element for tenant-scoped multi-step flows.
  */
 export function TenantList(props: TenantListProps) {
-  const cn = props.classNames ?? {};
   const { config } = useStrataContext();
   const tl = config.tenantLabels;
   const labels = {
@@ -58,10 +47,7 @@ export function TenantList(props: TenantListProps) {
   const ready = !!config.auth && !!config.commonSteps;
 
   const runner = useOpRunner({
-    authService: config.auth!,
-    commonSteps: config.commonSteps!,
-    encryption: config.encryption ?? undefined,
-    wizardClassNames: cn.wizard,
+    wizardClassNames: props.wizardClassNames,
     wizardLabels: props.labels?.wizard,
     onError: props.onError,
   });
@@ -69,9 +55,9 @@ export function TenantList(props: TenantListProps) {
   if (!ready) return null;
   return (
     <>
-      <ul className={cn.root}>
+      <ul data-slot="tenant-list" data-theme={props.mode}>
         {tenants.length === 0 ? (
-          <p className={cn.empty}>{labels.empty}</p>
+          <p data-slot="tenant-empty">{labels.empty}</p>
         ) : (
           tenants.map((t) => (
             <TenantRow
@@ -83,7 +69,6 @@ export function TenantList(props: TenantListProps) {
               onRunOp={(provider, op) =>
                 runner.runOp(provider, op, t)
               }
-              classNames={cn}
               labels={labels}
             />
           ))
@@ -100,7 +85,6 @@ function TenantRow({
   onSelect,
   onDelete,
   onRunOp,
-  classNames,
   labels,
 }: {
   readonly tenant: Tenant;
@@ -108,7 +92,6 @@ function TenantRow({
   readonly onSelect: () => void;
   readonly onDelete?: () => void;
   readonly onRunOp: (provider: CloudProvider, op: ProviderOp) => Promise<void>;
-  readonly classNames: TenantListClassNames;
   readonly labels: { readonly delete: ReactNode; readonly menuTrigger: ReactNode; readonly actionLabels?: Readonly<Record<string, ReactNode>> };
 }) {
   const provider = providers.find((p) => tenant.meta.providerName === p.name);
@@ -117,18 +100,18 @@ function TenantRow({
   ) ?? [];
 
   return (
-    <li className={classNames.row}>
-      <button type="button" className={classNames.rowName} onClick={onSelect}>
+    <li data-slot="tenant-row">
+      <button type="button" data-slot="tenant-row-name" onClick={onSelect}>
         {tenant.name}
       </button>
-      <details className={classNames.menu}>
-        <summary className={classNames.menuTrigger}>{labels.menuTrigger}</summary>
-        <ul className={classNames.actions}>
+      <details data-slot="tenant-menu">
+        <summary data-slot="tenant-menu-trigger">{labels.menuTrigger}</summary>
+        <ul data-slot="tenant-actions">
           {allOps.map((op) => (
             <li key={op.name}>
               <button
                 type="button"
-                className={classNames.action}
+                data-slot="tenant-action"
                 onClick={() => { if (provider) void onRunOp(provider, op); }}
               >
                 {labels.actionLabels?.[op.name] ?? <>{op.icon}{op.label}</>}
@@ -139,10 +122,10 @@ function TenantRow({
             <li>
               <button
                 type="button"
-              className={classNames.action}
-              onClick={onDelete}
-            >
-              {labels.delete}
+                data-slot="tenant-action"
+                onClick={onDelete}
+              >
+                {labels.delete}
               </button>
             </li>
           )}

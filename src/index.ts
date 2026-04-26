@@ -37,11 +37,10 @@ export type { PlacedOp } from './tenants/cloud-provider-service';
 export { useOpRunner } from './tenants/use-op-runner';
 export type { UseOpRunnerOptions, UseOpRunnerResult } from './tenants/use-op-runner';
 export { TenantOps } from './tenants/tenant-ops';
-export type { TenantOpsProps, TenantOpsClassNames } from './tenants/tenant-ops';
+export type { TenantOpsProps } from './tenants/tenant-ops';
 export { TenantList } from './tenants/tenant-list';
 export type {
   TenantListProps,
-  TenantListClassNames,
   TenantListLabels,
 } from './tenants/tenant-list';
 

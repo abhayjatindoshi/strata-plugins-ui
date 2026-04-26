@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react';
-import type { EncryptionService, Tenant } from 'strata-data-sync';
-import type { ClientAuthService } from 'strata-adapters';
+import type { Tenant } from 'strata-data-sync';
 import {
   useWizardHost,
   type WizardClassNames,
@@ -9,17 +8,14 @@ import {
 import { WizardCancelled } from '../wizard/types';
 import type {
   CloudProvider,
-  CommonStepFactories,
   OpContext,
   ProviderOp,
   TenantOpsApi,
 } from './provider';
 import { useTenant } from '../react/tenant-provider';
+import { useStrataContext } from '../react/strata-provider';
 
 export type UseOpRunnerOptions = {
-  readonly authService: ClientAuthService;
-  readonly commonSteps: CommonStepFactories;
-  readonly encryption?: EncryptionService;
   readonly mode?: 'light' | 'dark';
   readonly wizardClassNames?: WizardClassNames;
   readonly wizardLabels?: WizardLabels;
@@ -36,13 +32,12 @@ export type UseOpRunnerResult = {
 
 /**
  * Builds an `OpContext` per invocation, mounts a `WizardController`, and
- * dispatches `op.run(ctx)`. Tenant operations route through `TenantProvider`
- * context.
- *
- * Per PLUGGABLES_V2 §13 + §19.
+ * dispatches `op.run(ctx)`. Reads auth, encryption, and commonSteps from
+ * StrataProvider context. Tenant operations route through TenantProvider.
  */
-export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
+export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
+  const { config } = useStrataContext();
   const { ops: tenantOps } = useTenant();
 
   const wizard = useWizardHost({
@@ -66,11 +61,11 @@ export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
       };
       wizard.open();
       const ctx: OpContext = {
-        auth: opts.authService,
+        auth: config.auth!,
         tenants,
-        encryption: opts.encryption,
+        encryption: config.encryption,
         wizard: wizard.controller,
-        commonSteps: opts.commonSteps,
+        commonSteps: config.commonSteps!,
         providerTheme: provider.theme,
         mode: opts.mode,
         tenant,
@@ -86,7 +81,7 @@ export function useOpRunner(opts: UseOpRunnerOptions): UseOpRunnerResult {
         wizard.close();
       }
     },
-    [opts, tenants, wizard],
+    [config, opts, tenants, wizard],
   );
 
   return {

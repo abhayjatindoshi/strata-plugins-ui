@@ -63,15 +63,15 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setStatusState(s);
   }, []);
 
-  // Subscribe to active tenant + reset on strata change
+  // Subscribe to active tenant + reset on strata change.
+  // Note: we do NOT clear the credential cache here — strata can transition
+  // through null during init/refresh. Credentials are cleared by explicit
+  // signals: ops.close(), ops.remove(), or tab close (sessionStorage).
   useEffect(() => {
     setActive(undefined);
     setStatus('idle');
     setError(null);
     inflightRef.current = null;
-    if (!strata && credentialCacheKey) {
-      sessionStorage.removeItem(credentialCacheKey);
-    }
     if (!strata) return;
     const sub = strata.tenants.activeTenant$.subscribe(setActive);
     return () => sub.unsubscribe();

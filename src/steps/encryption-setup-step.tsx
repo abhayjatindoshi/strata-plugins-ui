@@ -1,50 +1,19 @@
 import { useState } from 'react';
 import type { Step } from '../wizard/types';
 import type { ProviderTheme } from '../tenants/provider';
-
-export type EncryptionSetupStepLabels = {
-  readonly title?: string;
-  readonly description?: string;
-  readonly enableLabel?: string;
-  readonly enableHint?: string;
-  readonly passwordLabel?: string;
-  readonly confirmLabel?: string;
-  readonly passwordPlaceholder?: string;
-  readonly confirmPlaceholder?: string;
-  readonly mismatchError?: string;
-  readonly warning?: string;
-  readonly submit?: string;
-  readonly cancel?: string;
-};
+import { useStrataContext } from '../react/strata-provider';
 
 export type EncryptionSetupStepOptions = {
   readonly mode?: 'light' | 'dark';
   readonly theme?: ProviderTheme;
-  readonly labels?: EncryptionSetupStepLabels;
-};
-
-const DEFAULT_LABELS: Required<EncryptionSetupStepLabels> = {
-  title: 'Encryption',
-  description: 'Protect your workspace data with a password.',
-  enableLabel: 'Enable encryption',
-  enableHint: 'Your data will be encrypted locally and in the cloud.',
-  passwordLabel: 'Password',
-  confirmLabel: 'Confirm password',
-  passwordPlaceholder: 'Enter password',
-  confirmPlaceholder: 'Re-enter password',
-  mismatchError: 'Passwords do not match.',
-  warning: 'There is no recovery if you forget this password.',
-  submit: 'Continue',
-  cancel: 'Cancel',
 };
 
 /**
- * Common step for encryption setup during workspace creation.
+ * Common step for encryption setup during tenant creation.
  * Returns the password string if encryption is enabled, or `null`
  * if the user leaves it disabled.
  */
 export function encryptionSetupStep(opts: EncryptionSetupStepOptions = {}): Step<string | null> {
-  const labels = { ...DEFAULT_LABELS, ...opts.labels };
   return {
     id: 'encryption-setup',
     theme: 'app',
@@ -52,7 +21,6 @@ export function encryptionSetupStep(opts: EncryptionSetupStepOptions = {}): Step
       <EncryptionSetupBody
         mode={opts.mode}
         theme={opts.theme}
-        labels={labels}
         onComplete={onComplete}
         onCancel={onCancel}
       />
@@ -63,16 +31,16 @@ export function encryptionSetupStep(opts: EncryptionSetupStepOptions = {}): Step
 function EncryptionSetupBody({
   mode,
   theme,
-  labels,
   onComplete,
   onCancel,
 }: {
   readonly mode?: 'light' | 'dark';
   readonly theme?: ProviderTheme;
-  readonly labels: Required<EncryptionSetupStepLabels>;
   readonly onComplete: (password: string | null) => void;
   readonly onCancel: () => void;
 }) {
+  const { config } = useStrataContext();
+  const tl = config.tenantLabels;
   const [enabled, setEnabled] = useState(false);
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -105,8 +73,8 @@ function EncryptionSetupBody({
     >
       <div data-slot="step-header">
         <div data-slot="step-header-text">
-          <h2 data-slot="step-title">{labels.title}</h2>
-          <p data-slot="step-description">{labels.description}</p>
+          <h2 data-slot="step-title">Encryption</h2>
+          <p data-slot="step-description">Protect your {tl.lower} data with a password.</p>
         </div>
       </div>
 
@@ -126,15 +94,15 @@ function EncryptionSetupBody({
                 }
               }}
             />
-            <span>{labels.enableLabel}</span>
+            <span>Enable encryption</span>
           </label>
-          <p data-slot="step-hint">{labels.enableHint}</p>
+          <p data-slot="step-hint">Your data will be encrypted locally and in the cloud.</p>
         </div>
 
         {enabled && (
           <>
             <div data-slot="step-field">
-              <label data-slot="step-label">{labels.passwordLabel}</label>
+              <label data-slot="step-label">Password</label>
               <input
                 data-slot="step-input"
                 type="password"
@@ -143,7 +111,7 @@ function EncryptionSetupBody({
                   setPassword(e.target.value);
                   setShowMismatch(false);
                 }}
-                placeholder={labels.passwordPlaceholder}
+                placeholder="Enter password"
                 autoComplete="new-password"
                 autoFocus
                 required
@@ -151,7 +119,7 @@ function EncryptionSetupBody({
             </div>
 
             <div data-slot="step-field">
-              <label data-slot="step-label">{labels.confirmLabel}</label>
+              <label data-slot="step-label">Confirm password</label>
               <input
                 data-slot="step-input"
                 type="password"
@@ -160,27 +128,27 @@ function EncryptionSetupBody({
                   setConfirm(e.target.value);
                   setShowMismatch(false);
                 }}
-                placeholder={labels.confirmPlaceholder}
+                placeholder="Re-enter password"
                 autoComplete="new-password"
                 required
               />
             </div>
 
             {showMismatch && (
-              <p data-slot="step-error">{labels.mismatchError}</p>
+              <p data-slot="step-error">Passwords do not match.</p>
             )}
 
-            <p data-slot="step-warning">{labels.warning}</p>
+            <p data-slot="step-warning">There is no recovery if you forget this password.</p>
           </>
         )}
       </div>
 
       <div data-slot="step-footer">
         <button type="button" data-slot="step-cancel" onClick={onCancel}>
-          {labels.cancel}
+          Cancel
         </button>
         <button type="submit" data-slot="step-submit" disabled={!canSubmit}>
-          {labels.submit}
+          Continue
         </button>
       </div>
     </form>

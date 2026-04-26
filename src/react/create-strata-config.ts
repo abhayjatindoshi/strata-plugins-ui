@@ -17,6 +17,22 @@ import {
 import type { CommonStepFactories } from '../tenants/provider';
 import type { CloudProviderService } from '../tenants/cloud-provider-service';
 
+// ─── Tenant labels ─────────────────────────────────────────
+
+export type TenantLabels = {
+  readonly lower: string;
+  readonly sentence: string;
+  readonly upper: string;
+};
+
+function buildTenantLabels(label: string): TenantLabels {
+  return {
+    lower: label.toLowerCase(),
+    sentence: label.charAt(0).toUpperCase() + label.slice(1).toLowerCase(),
+    upper: label.toUpperCase(),
+  };
+}
+
 // ─── Input type ────────────────────────────────────────
 
 export type StrataConfigInput = {
@@ -29,6 +45,8 @@ export type StrataConfigInput = {
   readonly providers?: CloudProviderService;
   /** Auth service. */
   readonly auth?: ClientAuthService;
+  /** Display label for a tenant (e.g. 'household', 'workspace'). Defaults to 'workspace'. */
+  readonly tenantLabel?: string;
 
   // ── overrides (all optional, sensible defaults applied) ──
   readonly deviceId?: string;
@@ -56,6 +74,7 @@ export type StrataConfig = {
   readonly encryption?: EncryptionService;
   readonly commonSteps: CommonStepFactories | null;
   readonly credentialCacheKey?: string;
+  readonly tenantLabels: TenantLabels;
 };
 
 // ─── Device ID helper ──────────────────────────────────────
@@ -92,6 +111,8 @@ export function createStrataConfig(input: StrataConfigInput): StrataConfig {
           strategy: new AesGcmEncryptionStrategy(),
         });
 
+  const tenantLabels = buildTenantLabels(input.tenantLabel ?? 'workspace');
+
   const commonSteps: CommonStepFactories | null =
     input.commonSteps ?? {
       encryptionSetup: encryptionSetupStep,
@@ -110,5 +131,6 @@ export function createStrataConfig(input: StrataConfigInput): StrataConfig {
     encryption,
     commonSteps,
     credentialCacheKey: input.credentialCacheKey,
+    tenantLabels,
   };
 }

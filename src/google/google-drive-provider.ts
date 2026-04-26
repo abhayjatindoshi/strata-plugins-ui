@@ -39,7 +39,7 @@ export class GoogleDriveProvider implements CloudProvider, CloudFileService, Clo
   constructor(options: GoogleDriveProviderOptions) {
     this.service = new GoogleDriveService(options.getAccessToken);
     this.theme = options.theme ?? googleDriveTheme;
-    this.ops = [makeCreateOp(this.service), makeShareOp()];
+    this.ops = [makeCreateOp(this.service)];
   }
 
   // StorageAdapter delegation
@@ -68,7 +68,11 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
     async run(ctx: OpContext) {
       ctx.wizard.setEstimatedTotal(2);
       const result = await ctx.wizard.runStep(
-        googleCreateWorkspaceStep({ service, mode: ctx.mode, theme: ctx.providerTheme }),
+        googleCreateWorkspaceStep({
+          service,
+          mode: ctx.mode,
+          theme: ctx.providerTheme,
+        }),
       );
       const password = await ctx.wizard.runStep(
         ctx.commonSteps.encryptionSetup({ theme: ctx.providerTheme, mode: ctx.mode }),
@@ -79,14 +83,5 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
         encryption: password ? { credential: password } : undefined,
       });
     },
-  };
-}
-
-function makeShareOp(): ProviderOp {
-  return {
-    name: 'share',
-    label: 'Share',
-    placement: 'tenant-menu',
-    async run(_ctx: OpContext) { /* placeholder */ },
   };
 }

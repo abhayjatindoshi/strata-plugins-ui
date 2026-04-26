@@ -1,37 +1,18 @@
 import { useState } from 'react';
 import type { Step } from '../wizard/types';
 import type { ProviderTheme } from '../tenants/provider';
-
-export type EncryptionUnlockStepLabels = {
-  readonly title?: string;
-  readonly description?: string;
-  readonly passwordLabel?: string;
-  readonly passwordPlaceholder?: string;
-  readonly submit?: string;
-  readonly cancel?: string;
-};
+import { useStrataContext } from '../react/strata-provider';
 
 export type EncryptionUnlockStepOptions = {
   readonly mode?: 'light' | 'dark';
   readonly theme?: ProviderTheme;
-  readonly labels?: EncryptionUnlockStepLabels;
-};
-
-const DEFAULT_LABELS: Required<EncryptionUnlockStepLabels> = {
-  title: 'Unlock Workspace',
-  description: 'Enter the password used when this workspace was created.',
-  passwordLabel: 'Password',
-  passwordPlaceholder: 'Enter password',
-  submit: 'Unlock',
-  cancel: 'Cancel',
 };
 
 /**
  * Common step that prompts for an encryption password to unlock
- * an existing encrypted workspace. Returns the password string.
+ * an existing encrypted tenant. Returns the password string.
  */
 export function encryptionUnlockStep(opts: EncryptionUnlockStepOptions = {}): Step<string> {
-  const labels = { ...DEFAULT_LABELS, ...opts.labels };
   return {
     id: 'encryption-unlock',
     theme: 'app',
@@ -39,7 +20,6 @@ export function encryptionUnlockStep(opts: EncryptionUnlockStepOptions = {}): St
       <EncryptionUnlockBody
         mode={opts.mode}
         theme={opts.theme}
-        labels={labels}
         onComplete={onComplete}
         onCancel={onCancel}
       />
@@ -50,16 +30,16 @@ export function encryptionUnlockStep(opts: EncryptionUnlockStepOptions = {}): St
 function EncryptionUnlockBody({
   mode,
   theme,
-  labels,
   onComplete,
   onCancel,
 }: {
   readonly mode?: 'light' | 'dark';
   readonly theme?: ProviderTheme;
-  readonly labels: Required<EncryptionUnlockStepLabels>;
   readonly onComplete: (password: string) => void;
   readonly onCancel: () => void;
 }) {
+  const { config } = useStrataContext();
+  const tl = config.tenantLabels;
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -80,14 +60,14 @@ function EncryptionUnlockBody({
     >
       <div data-slot="step-header">
         <div data-slot="step-header-text">
-          <h2 data-slot="step-title">{labels.title}</h2>
-          <p data-slot="step-description">{labels.description}</p>
+          <h2 data-slot="step-title">Unlock {tl.sentence}</h2>
+          <p data-slot="step-description">Enter the password used when this {tl.lower} was created.</p>
         </div>
       </div>
 
       <div data-slot="step-body">
         <div data-slot="step-field">
-          <label data-slot="step-label">{labels.passwordLabel}</label>
+          <label data-slot="step-label">Password</label>
           <input
             data-slot="step-input"
             type="password"
@@ -96,7 +76,7 @@ function EncryptionUnlockBody({
               setPassword(e.target.value);
               setError('');
             }}
-            placeholder={labels.passwordPlaceholder}
+            placeholder="Enter password"
             autoComplete="current-password"
             autoFocus
             required
@@ -108,10 +88,10 @@ function EncryptionUnlockBody({
 
       <div data-slot="step-footer">
         <button type="button" data-slot="step-cancel" onClick={onCancel}>
-          {labels.cancel}
+          Cancel
         </button>
         <button type="submit" data-slot="step-submit" disabled={!password}>
-          {labels.submit}
+          Unlock
         </button>
       </div>
     </form>

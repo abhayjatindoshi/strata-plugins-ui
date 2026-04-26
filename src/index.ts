@@ -49,13 +49,7 @@ export { LoginButtons } from './login/login-buttons';
 export type { LoginButtonsProps } from './login/login-buttons';
 
 export { encryptionSetupStep } from './steps/encryption-setup-step';
-export type {
-  EncryptionSetupStepOptions,
-  EncryptionSetupStepLabels,
-} from './steps/encryption-setup-step';
+export type { EncryptionSetupStepOptions } from './steps/encryption-setup-step';
 
 export { encryptionUnlockStep } from './steps/encryption-unlock-step';
-export type {
-  EncryptionUnlockStepOptions,
-  EncryptionUnlockStepLabels,
-} from './steps/encryption-unlock-step';
+export type { EncryptionUnlockStepOptions } from './steps/encryption-unlock-step';

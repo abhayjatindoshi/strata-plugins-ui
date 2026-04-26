@@ -3,6 +3,7 @@ import type { CloudFile, CloudFileService, CloudSpace } from 'strata-adapters/cl
 import type { Step } from '../../wizard/types';
 import { CloudFileExplorer } from '../../cloud/cloud-file-explorer';
 import type { ProviderTheme } from '../../tenants/provider';
+import { useStrataContext } from '../../react/strata-provider';
 
 export type CreateWorkspaceResult = {
   readonly name: string;
@@ -20,7 +21,7 @@ export type GoogleCreateWorkspaceOptions = {
 const APP_DATA_SPACE: CloudSpace = { id: 'appDataFolder', displayName: 'App data' };
 
 /**
- * Google-specific create workspace step. Single form with:
+ * Google-specific create step. Single form with:
  * - Name input (auto-fills from folder name when picked)
  * - Shareable checkbox (toggles folder picker)
  * - Folder picker (opens CloudFileExplorer for My Drive + Shared With Me)
@@ -54,6 +55,8 @@ function GoogleCreateWorkspaceBody({
   readonly onComplete: (result: CreateWorkspaceResult) => void;
   readonly onCancel: () => void;
 }) {
+  const { config } = useStrataContext();
+  const tl = config.tenantLabels;
   const [name, setName] = useState('');
   const [shareable, setShareable] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<CloudFile | null>(null);
@@ -120,8 +123,8 @@ function GoogleCreateWorkspaceBody({
       >
         <div data-slot="step-header">
           <div data-slot="step-header-text">
-            <h2 data-slot="step-title">New Workspace</h2>
-            <p data-slot="step-description">Create a new workspace in Google Drive.</p>
+            <h2 data-slot="step-title">New {tl.sentence}</h2>
+            <p data-slot="step-description">Create a new {tl.lower} in Google Drive.</p>
           </div>
           <button type="button" data-slot="step-close" onClick={onCancel} aria-label="Close">
             ✕
@@ -169,14 +172,14 @@ function GoogleCreateWorkspaceBody({
           <hr data-slot="step-divider" />
 
           <div data-slot="step-field">
-            <label data-slot="step-label" htmlFor="ws-name">Name</label>
+            <label data-slot="step-label" htmlFor="ws-name">{tl.sentence} name</label>
             <input
               id="ws-name"
               data-slot="step-input"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="My workspace"
+              placeholder={`My ${tl.lower}`}
               autoFocus
               required
             />

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useStrataContext } from '../react/strata-provider';
 import { useOpRunner } from './use-op-runner';
 import type { CloudProvider, ProviderOp } from './provider';
@@ -12,6 +12,7 @@ export type TenantOpsClassNames = {
 
 export type TenantOpsProps = {
   readonly classNames?: TenantOpsClassNames;
+  readonly labels?: Readonly<Record<string, ReactNode>>;
   readonly mode?: 'light' | 'dark';
   readonly wizardLabels?: WizardLabels;
   readonly onError?: (error: Error, op: ProviderOp, provider: CloudProvider) => void;
@@ -57,8 +58,7 @@ export function TenantOps(props: TenantOpsProps) {
             className={cn.button}
             onClick={() => { void runner.runOp(provider, op); }}
           >
-            {op.icon}
-            {op.label}
+            {props.labels?.[op.name] ?? <>{op.icon}{op.label}</>}
           </button>
         ))}
       </div>

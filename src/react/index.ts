@@ -1,6 +1,6 @@
 // Config builder
 export { createStrataConfig } from './create-strata-config';
-export type { StrataConfigInput, StrataConfig } from './create-strata-config';
+export type { StrataConfigInput, StrataConfig, TenantLabels } from './create-strata-config';
 
 // Providers
 export { StrataProvider } from './strata-provider';

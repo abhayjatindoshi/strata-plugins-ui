@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
 import type { Tenant, CreateTenantOptions } from 'strata-data-sync';
 import { useStrataContext } from './strata-provider';
+import { xorEncode, xorDecode } from '../utils/xor';
 
 export type TenantStatus = 'idle' | 'loading' | 'hydrated' | 'error';
 
@@ -68,6 +69,9 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setStatus('idle');
     setError(null);
     inflightRef.current = null;
+    if (!strata && credentialCacheKey) {
+      sessionStorage.removeItem(credentialCacheKey);
+    }
     if (!strata) return;
     const sub = strata.tenants.activeTenant$.subscribe(setActive);
     return () => sub.unsubscribe();
@@ -107,9 +111,9 @@ export function TenantProvider({ children }: TenantProviderProps) {
       try {
         const raw = sessionStorage.getItem(credentialCacheKey);
         if (raw) {
-          const cached = JSON.parse(raw) as { tenantId?: string; credential?: string };
-          if (cached.tenantId === tenantId && typeof cached.credential === 'string') {
-            credential = cached.credential;
+          const decoded = JSON.parse(xorDecode(raw, config.deviceId)) as { tenantId?: string; credential?: string };
+          if (decoded.tenantId === tenantId && typeof decoded.credential === 'string') {
+            credential = decoded.credential;
           }
         }
       } catch { /* best-effort */ }
@@ -121,7 +125,10 @@ export function TenantProvider({ children }: TenantProviderProps) {
       setError(null);
       if (credentialCacheKey && credential) {
         try {
-          sessionStorage.setItem(credentialCacheKey, JSON.stringify({ tenantId, credential }));
+          sessionStorage.setItem(
+            credentialCacheKey,
+            xorEncode(JSON.stringify({ tenantId, credential }), config.deviceId),
+          );
         } catch { /* best-effort */ }
       }
     }).catch((err: unknown) => {
@@ -138,6 +145,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       if (!strata) return;
       if (inflightRef.current) inflightRef.current.aborted = true;
       await strata.tenants.close();
+      if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
       setStatus('idle');
       setError(null);
     },

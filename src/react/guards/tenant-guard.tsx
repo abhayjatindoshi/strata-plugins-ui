@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useTenant } from '../tenant-provider';
 import { useStrataContext, useAuth } from '../strata-provider';
 
@@ -23,17 +23,15 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
   const { config } = useStrataContext();
   const { name: authName } = useAuth();
   const [unlockStep, setUnlockStep] = useState<ReactNode>(null);
-  const requestOpenRef = useRef(requestOpen);
-  requestOpenRef.current = requestOpen;
 
-  // Request open only when tenantId changes
+  // Request open when tenantId changes or requestOpen identity changes (strata rebuilt)
   useEffect(() => {
     if (!tenantId) {
       onUnauthenticated();
       return;
     }
-    requestOpenRef.current(tenantId);
-  }, [tenantId, onUnauthenticated]);
+    requestOpen(tenantId);
+  }, [tenantId, requestOpen, onUnauthenticated]);
 
   // Handle error state
   useEffect(() => {
@@ -58,7 +56,7 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
       step.render({
         onComplete: (password: string) => {
           setUnlockStep(null);
-          requestOpenRef.current(tenantId, { credential: password });
+          requestOpen(tenantId, { credential: password });
         },
         onCancel: () => {
           onUnauthenticated();

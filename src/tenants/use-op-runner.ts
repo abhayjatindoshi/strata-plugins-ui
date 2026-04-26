@@ -38,7 +38,7 @@ export type UseOpRunnerResult = {
 export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
   const { config } = useStrataContext();
-  const { ops: tenantOps } = useTenant();
+  const { ops: tenantOps, requestOpen } = useTenant();
 
   const wizard = useWizardHost({
     providerTheme: themeRef.current,
@@ -49,7 +49,7 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const tenants: TenantOpsApi = {
     list: async () => [],
     create: (o) => tenantOps.create(o),
-    open: (id, o) => tenantOps.open(id, o),
+    open: (id, o) => { requestOpen(id, o); return Promise.resolve(); },
     remove: (id, o) => tenantOps.remove(id, o),
   };
 

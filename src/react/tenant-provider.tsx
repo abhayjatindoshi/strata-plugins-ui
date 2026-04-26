@@ -120,6 +120,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       }
     }).catch((err: unknown) => {
       if (flight.aborted) return;
+      inflightRef.current = null;
       const e = err instanceof Error ? err : new Error(String(err));
       setStatus('error');
       setError(e);

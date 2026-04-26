@@ -6,7 +6,7 @@ export type { StrataConfigInput, StrataConfig, TenantLabels } from './create-str
 export { StrataProvider } from './strata-provider';
 export type { StrataProviderProps } from './strata-provider';
 export { TenantProvider } from './tenant-provider';
-export type { TenantProviderProps, TenantOps } from './tenant-provider';
+export type { TenantProviderProps, TenantOps, TenantStatus } from './tenant-provider';
 
 // Guards
 export { AuthGuard } from './guards/auth-guard';

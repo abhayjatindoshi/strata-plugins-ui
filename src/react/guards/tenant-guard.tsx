@@ -11,47 +11,37 @@ export type TenantGuardProps = {
 };
 
 /**
- * Gates rendering on the active tenant. Auto-opens the tenant if it isn't
- * already active. If the tenant is encrypted and no credential was provided
- * (e.g. page refresh), renders the `encryptionUnlock` common step inline
- * to collect it.
- *
- * Router-independent — the app passes `tenantId` and `onUnauthenticated`
- * (typically wired to `navigate`).
+ * Pure gate. Requests the tenant via `requestOpen()` and renders
+ * based on the provider's `status`:
+ * - `loading` → shows loading
+ * - `error` (credential needed) → shows unlock step
+ * - `error` (other) → redirects via `onUnauthenticated`
+ * - `hydrated` + matching tenant → renders children
  */
 export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null, children }: TenantGuardProps) {
-  const { active, ready, ops } = useTenant();
+  const { active, status, error, requestOpen } = useTenant();
   const { config } = useStrataContext();
   const { name: authName } = useAuth();
-  const [state, setState] = useState<'idle' | 'opening' | 'needs-credential' | 'ready' | 'error'>('idle');
-  const [PasswordStep, setPasswordStep] = useState<ReactNode>(null);
+  const [unlockStep, setUnlockStep] = useState<ReactNode>(null);
 
+  // Request open when tenantId changes
   useEffect(() => {
     if (!tenantId) {
       onUnauthenticated();
       return;
     }
+    requestOpen(tenantId);
+  }, [tenantId, requestOpen, onUnauthenticated]);
 
-    if (active?.id === tenantId) {
-      setState('ready');
+  // Handle error state
+  useEffect(() => {
+    if (status !== 'error' || !error || !tenantId) return;
+
+    const needsCredential = error.message === 'Credential required for encrypted tenant';
+    if (!needsCredential) {
+      onUnauthenticated();
       return;
     }
-
-    if (!ready) return;
-    if (state === 'needs-credential' || state === 'opening') return;
-
-    let cancelled = false;
-    setState('opening');
-    ops.open(tenantId).then(() => {
-      if (!cancelled) setState('ready');
-    }).catch(() => {
-      if (!cancelled) setState('needs-credential');
-    });
-    return () => { cancelled = true; };
-  }, [tenantId, active, ready, ops, onUnauthenticated, state]);
-
-  useEffect(() => {
-    if (state !== 'needs-credential' || !tenantId) return;
 
     const providerTheme = authName
       ? config.providers?.all?.find((p) => p.name === authName)?.theme
@@ -62,25 +52,25 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
       return;
     }
 
-    setPasswordStep(
+    setUnlockStep(
       step.render({
         onComplete: (password: string) => {
-          setPasswordStep(null);
-          setState('opening');
-          ops.open(tenantId, { credential: password }).then(() => {
-            setState('ready');
-          }).catch(() => {
-            onUnauthenticated();
-          });
+          setUnlockStep(null);
+          requestOpen(tenantId, { credential: password });
         },
         onCancel: () => {
           onUnauthenticated();
         },
       }),
     );
-  }, [state, tenantId, config.commonSteps, ops, onUnauthenticated]);
+  }, [status, error, tenantId, requestOpen, config, authName, mode, onUnauthenticated]);
 
-  if (state === 'needs-credential' && PasswordStep) return <>{PasswordStep}</>;
-  if (state === 'ready' && active?.id === tenantId) return <>{children}</>;
+  // Clear unlock step when leaving error state
+  useEffect(() => {
+    if (status !== 'error') setUnlockStep(null);
+  }, [status]);
+
+  if (unlockStep) return <>{unlockStep}</>;
+  if (active?.id === tenantId && status === 'hydrated') return <>{children}</>;
   return <>{loading}</>;
 }

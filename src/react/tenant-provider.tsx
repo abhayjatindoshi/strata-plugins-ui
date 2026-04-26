@@ -158,15 +158,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
     remove: async (id, removeOpts) => {
       if (!strata) throw new Error('Strata not initialized');
       await strata.tenants.remove(id, removeOpts);
-      if (credentialCacheKey) {
-        try {
-          const raw = sessionStorage.getItem(credentialCacheKey);
-          if (raw) {
-            const cached = JSON.parse(raw) as { tenantId?: string };
-            if (cached.tenantId === id) sessionStorage.removeItem(credentialCacheKey);
-          }
-        } catch { /* best-effort */ }
-      }
+      if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
       refreshList();
     },
   };

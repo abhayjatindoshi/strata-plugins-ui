@@ -24,7 +24,7 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
   const { name: authName } = useAuth();
   const [unlockStep, setUnlockStep] = useState<ReactNode>(null);
 
-  // Request open when tenantId changes or requestOpen identity changes (strata rebuilt)
+  // Request open on mount / tenantId change
   useEffect(() => {
     if (!tenantId) {
       onUnauthenticated();

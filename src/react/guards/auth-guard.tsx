@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useAuth } from '../strata-provider';
 
 export type AuthGuardProps = {
@@ -14,10 +14,12 @@ export type AuthGuardProps = {
 export function AuthGuard({ onUnauthenticated, loading = null, children }: AuthGuardProps) {
   const { status } = useAuth();
 
-  if (status === 'loading') return <>{loading}</>;
-  if (status === 'signed-out') {
-    onUnauthenticated();
-    return <>{loading}</>;
-  }
+  useEffect(() => {
+    if (status === 'signed-out') {
+      onUnauthenticated();
+    }
+  }, [status, onUnauthenticated]);
+
+  if (status === 'loading' || status === 'signed-out') return <>{loading}</>;
   return <>{children}</>;
 }

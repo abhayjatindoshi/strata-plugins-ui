@@ -101,7 +101,7 @@ export interface CloudProvider {
  * Cross-cutting step factories. Per PLUGGABLES_V2 §14.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CommonStepFactories = Record<string, (opts?: any) => Step<any>> & {
+export type CommonStepFactories = Record<string, (opts?: any) => Step<unknown>> & {
   encryptionSetup(opts?: { readonly theme?: ProviderTheme; readonly mode?: 'light' | 'dark' }): Step<string | null>;
   encryptionUnlock(opts?: { readonly theme?: ProviderTheme; readonly mode?: 'light' | 'dark' }): Step<string>;
 };

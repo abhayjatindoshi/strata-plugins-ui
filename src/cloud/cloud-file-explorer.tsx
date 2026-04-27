@@ -409,6 +409,7 @@ function NewFolderPopover({
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
+  const [open, setOpen] = useState(false);
 
   const submit = async () => {
     if (!name.trim()) return;
@@ -417,6 +418,7 @@ function NewFolderPopover({
     try {
       await onCreate(name);
       setName('');
+      setOpen(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to create folder');
     } finally {
@@ -425,7 +427,7 @@ function NewFolderPopover({
   };
 
   return (
-    <Popover.Root>
+    <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
         <button
           type="button"

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import type { Tenant } from 'strata-data-sync';
 import {
   useWizardHost,
@@ -38,20 +38,26 @@ export type UseOpRunnerResult = {
 export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
   const { config } = useStrataContext();
-  const { ops: tenantOps, requestOpen } = useTenant();
+  const { ops: tenantOps, all: tenantList, requestOpen } = useTenant();
+  const optsRef = useRef(opts);
+  optsRef.current = opts;
 
   const wizard = useWizardHost({
     providerTheme: themeRef.current,
     classNames: opts.wizardClassNames,
     labels: opts.wizardLabels,
   });
+  const wizardRef = useRef(wizard);
+  wizardRef.current = wizard;
 
-  const tenants: TenantOpsApi = {
-    list: async () => [],
+  const tenants: TenantOpsApi = useMemo(() => ({
+    list: async () => tenantList,
     create: (o) => tenantOps.create(o),
     open: (id, o) => { requestOpen(id, o); return Promise.resolve(); },
     remove: (id, o) => tenantOps.remove(id, o),
-  };
+  }), [tenantOps, tenantList, requestOpen]);
+  const tenantsRef = useRef(tenants);
+  tenantsRef.current = tenants;
 
   const runOp = useCallback(
     async (provider: CloudProvider, op: ProviderOp, tenant?: Tenant) => {
@@ -59,15 +65,15 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
         color: provider.theme.color,
         accent: provider.theme.accent,
       };
-      wizard.open();
+      wizardRef.current.open();
       const ctx: OpContext = {
         auth: config.auth!,
-        tenants,
+        tenants: tenantsRef.current,
         encryption: config.encryption,
-        wizard: wizard.controller,
+        wizard: wizardRef.current.controller,
         commonSteps: config.commonSteps!,
         providerTheme: provider.theme,
-        mode: opts.mode,
+        mode: optsRef.current.mode,
         tenant,
       };
       try {
@@ -75,13 +81,13 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
       } catch (err) {
         if (err instanceof WizardCancelled) return;
         const e = err instanceof Error ? err : new Error(String(err));
-        opts.onError?.(e, op, provider);
+        optsRef.current.onError?.(e, op, provider);
         throw e;
       } finally {
-        wizard.close();
+        wizardRef.current.close();
       }
     },
-    [config, opts, tenants, wizard],
+    [config],
   );
 
   return {

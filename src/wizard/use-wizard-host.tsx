@@ -3,6 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import type { ProviderTheme } from '../tenants/provider';
 import type { Step, WizardController } from './types';
 import { WizardCancelled } from './types';
+import { StepErrorBoundary } from './step-error-boundary';
 import { ProviderThemeProvider } from './provider-theme-provider';
 
 export type WizardClassNames = {
@@ -126,7 +127,11 @@ export function useWizardHost(opts: UseWizardOptions): WizardHostHandle {
   const stepIndex = history.length;
   const total = Math.max(estimatedTotal, stepIndex);
   const showCounter = total > 1;
-  const stepBody = active ? active.step.render({ onComplete, onCancel: cancelActive }) : null;
+  const stepBody = active ? (
+    <StepErrorBoundary>
+      {active.step.render({ onComplete, onCancel: cancelActive })}
+    </StepErrorBoundary>
+  ) : null;
   const isProviderTheme = active?.step.theme === 'provider';
 
   const element = (

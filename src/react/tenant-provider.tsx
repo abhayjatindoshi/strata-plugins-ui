@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
 import type { Tenant, CreateTenantOptions } from 'strata-data-sync';
 import { useStrataContext } from './strata-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
@@ -140,7 +140,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
     });
   }, [strata, credentialCacheKey]);
 
-  const ops: TenantOps = {
+  const ops: TenantOps = useMemo(() => ({
     close: async () => {
       if (!strata) return;
       if (inflightRef.current) inflightRef.current.aborted = true;
@@ -161,7 +161,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
       refreshList();
     },
-  };
+  }), [strata, credentialCacheKey, refreshList]);
 
   return (
     <TenantContext.Provider value={{ active, status: statusState, error, all, ops, requestOpen, refreshList }}>

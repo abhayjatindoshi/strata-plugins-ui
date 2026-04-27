@@ -63,6 +63,7 @@ function GoogleCreateWorkspaceBody({
   const [selectedSpace, setSelectedSpace] = useState<CloudSpace | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const canSubmit = name.trim().length > 0 && (!shareable || selectedFolder !== null);
 
@@ -78,6 +79,7 @@ function GoogleCreateWorkspaceBody({
   const handleSubmit = async () => {
     if (!canSubmit || busy) return;
     setBusy(true);
+    setSubmitError(null);
     try {
       if (shareable && selectedFolder && selectedSpace) {
         onComplete({
@@ -96,6 +98,8 @@ function GoogleCreateWorkspaceBody({
           shareable: false,
         });
       }
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to create workspace');
     } finally {
       setBusy(false);
     }
@@ -194,6 +198,7 @@ function GoogleCreateWorkspaceBody({
             Continue
           </button>
         </div>
+        {submitError && <p data-slot="step-error">{submitError}</p>}
       </form>
 
       <CloudFileExplorer

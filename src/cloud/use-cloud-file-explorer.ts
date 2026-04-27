@@ -169,6 +169,7 @@ export function useCloudFileExplorer({
     }, debounceMs);
     return () => {
       window.clearTimeout(handle);
+      listingAbortRef.current?.abort();
     };
   }, [open, state.currentSpace, state.currentFolder, state.search, loadFiles]);
 

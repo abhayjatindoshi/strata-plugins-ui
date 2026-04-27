@@ -77,6 +77,13 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, authState.status, cloudAdapter]);
 
+  // ── Dispose CloudProviderService on unmount ──────────────
+  useEffect(() => {
+    return () => {
+      config.providers?.dispose();
+    };
+  }, [config.providers]);
+
   // ── Context value ────────────────────────────────────────
   const value = useMemo<StrataContextValue>(
     () => ({ config, strata, authState }),

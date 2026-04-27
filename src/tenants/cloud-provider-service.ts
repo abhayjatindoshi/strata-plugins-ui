@@ -60,14 +60,14 @@ export class CloudProviderService {
     );
   }
 
-  tenantActions(tenant: Tenant): readonly PlacedOp[] {
-    const provider = this.byName.get(tenant.meta.providerName as string);
+  tenantActions(_tenant: Tenant): readonly PlacedOp[] {
+    const provider = this.activeProvider;
     if (!provider) return [];
     return provider.ops.filter((o) => o.placement === 'tenant-action').map((o) => ({ provider, op: o }));
   }
 
-  tenantMenu(tenant: Tenant): readonly PlacedOp[] {
-    const provider = this.byName.get(tenant.meta.providerName as string);
+  tenantMenu(_tenant: Tenant): readonly PlacedOp[] {
+    const provider = this.activeProvider;
     if (!provider) return [];
     return provider.ops.filter((o) => o.placement === 'tenant-menu').map((o) => ({ provider, op: o }));
   }

@@ -37,7 +37,8 @@ function buildTenantLabels(label: string): TenantLabels {
 
 export type StrataConfigInput = {
   readonly appId: string;
-  readonly entities: ReadonlyArray<EntityDefinition<unknown>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly entities: ReadonlyArray<EntityDefinition<any>>;
   /** Cloud service — resolves the active storage adapter from auth state. */
   readonly cloud?: CloudService;
   /** Cloud provider service — UI ops for the tenants page. */
@@ -63,7 +64,8 @@ export type StrataConfigInput = {
 export type StrataConfig = {
   readonly appId: string;
   readonly deviceId: string;
-  readonly entities: ReadonlyArray<EntityDefinition<unknown>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly entities: ReadonlyArray<EntityDefinition<any>>;
   readonly migrations?: ReadonlyArray<BlobMigration>;
   readonly localAdapter: StorageAdapter;
   readonly cloud?: CloudService;

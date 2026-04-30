@@ -74,6 +74,7 @@ export function useWizardHost(opts: UseWizardOptions): WizardHostHandle {
   const [estimatedTotal, setEstimatedTotal] = useState(0);
 
   const activeRef = useRef<ActiveStep | null>(null);
+  // eslint-disable-next-line react-hooks/refs
   activeRef.current = active;
 
   const cancelActive = useCallback(() => {
@@ -94,11 +95,11 @@ export function useWizardHost(opts: UseWizardOptions): WizardHostHandle {
       runStep<T>(step: Step<T>): Promise<T> {
         return new Promise<T>((resolve, reject) => {
           setActive({
-            step: step as Step<unknown>,
+            step: step,
             resolve: resolve as (v: unknown) => void,
             reject,
           });
-          setHistory((h) => [...h, step as Step<unknown>]);
+          setHistory((h) => [...h, step]);
         });
       },
       setEstimatedTotal(n: number) {
@@ -129,6 +130,7 @@ export function useWizardHost(opts: UseWizardOptions): WizardHostHandle {
   const showCounter = total > 1;
   const stepBody = active ? (
     <StepErrorBoundary>
+      {/* eslint-disable-next-line react-hooks/refs */}
       {active.step.render({ onComplete, onCancel: cancelActive })}
     </StepErrorBoundary>
   ) : null;
@@ -171,7 +173,7 @@ export function useWizardHost(opts: UseWizardOptions): WizardHostHandle {
   return {
     controller,
     element,
-    open: () => setIsOpen(true),
+    open: () => { setIsOpen(true); },
     close: cancelActive,
     isOpen,
   };

@@ -44,7 +44,7 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
     }
 
     const providerTheme = authName
-      ? config.providers?.all?.find((p) => p.name === authName)?.theme
+      ? config.providers?.all.find((p) => p.name === authName)?.theme
       : undefined;
     const step = config.commonSteps?.encryptionUnlock({ mode, theme: providerTheme });
     if (!step) {
@@ -52,6 +52,7 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUnlockStep(
       step.render({
         onComplete: (password: string) => {
@@ -63,10 +64,11 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
         },
       }),
     );
-  }, [status, error, tenantId, config, authName, mode, onUnauthenticated]);
+  }, [status, error, tenantId, config, authName, mode, onUnauthenticated, requestOpen]);
 
   // Clear unlock step when leaving error state
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (status !== 'error') setUnlockStep(null);
   }, [status]);
 

@@ -68,14 +68,15 @@ export function TenantProvider({ children }: TenantProviderProps) {
   // through null during init/refresh. Credentials are cleared by explicit
   // signals: ops.close(), ops.remove(), or tab close (sessionStorage).
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActive(undefined);
     setStatus('idle');
     setError(null);
     inflightRef.current = null;
     if (!strata) return;
     const sub = strata.tenants.activeTenant$.subscribe(setActive);
-    return () => sub.unsubscribe();
-  }, [strata]);
+    return () => { sub.unsubscribe(); };
+  }, [strata, setStatus]);
 
   const refreshList = useCallback(() => {
     if (!strata) return;
@@ -138,7 +139,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       setStatus('error');
       setError(e);
     });
-  }, [strata, credentialCacheKey]);
+  }, [strata, credentialCacheKey, config.deviceId, setStatus]);
 
   const ops: TenantOps = useMemo(() => ({
     close: async () => {
@@ -161,7 +162,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
       refreshList();
     },
-  }), [strata, credentialCacheKey, refreshList]);
+  }), [strata, credentialCacheKey, refreshList, setStatus]);
 
   return (
     <TenantContext.Provider value={{ active, status: statusState, error, all, ops, requestOpen, refreshList }}>

@@ -38,6 +38,7 @@ export type LoginButtonProps = LoginButtonBaseProps & {
  */
 export function LoginButton({ provider, ...rest }: LoginButtonProps) {
   switch (provider) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     case 'google':
       return <GoogleLoginButton {...rest} />;
     default: {

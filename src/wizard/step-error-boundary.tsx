@@ -21,6 +21,7 @@ export class StepErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
+    // eslint-disable-next-line no-console
     console.error('Wizard step render error:', error, info);
   }
 

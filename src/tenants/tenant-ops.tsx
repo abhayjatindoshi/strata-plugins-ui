@@ -19,7 +19,6 @@ export type TenantOpsProps = {
  */
 export function TenantOps(props: TenantOpsProps) {
   const { config } = useStrataContext();
-  const providers = config.providers?.all ?? [];
   const ready = !!config.auth && !!config.commonSteps;
 
   const runner = useOpRunner({
@@ -31,10 +30,10 @@ export function TenantOps(props: TenantOpsProps) {
 
   const pageActions = useMemo(
     () =>
-      providers.flatMap((p) =>
+      (config.providers?.all ?? []).flatMap((p) =>
         p.ops.filter((o) => o.placement === 'page-action').map((o) => ({ provider: p, op: o })),
       ),
-    [providers],
+    [config.providers?.all],
   );
 
   if (!ready) return null;

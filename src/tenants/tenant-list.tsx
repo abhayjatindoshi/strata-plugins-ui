@@ -65,7 +65,7 @@ export function TenantList(props: TenantListProps) {
               tenant={t}
               providers={providers}
               onSelect={() => props.onSelect?.(t)}
-              onDelete={props.onDelete ? () => props.onDelete!(t) : undefined}
+              onDelete={props.onDelete ? () => { props.onDelete?.(t); } : undefined}
               onRunOp={(provider, op) =>
                 runner.runOp(provider, op, t)
               }

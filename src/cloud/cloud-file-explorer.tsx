@@ -7,51 +7,11 @@ import type {
   CloudFileService,
   CloudSpace,
 } from 'strata-adapters/cloud';
-import type { ProviderTheme } from '../tenants/provider';
+import type { ProviderTheme, ProviderIcons, ProviderLabels } from '../tenants/provider';
 import { useCloudFileExplorer, type CloudFileExplorerApi } from './use-cloud-file-explorer';
 import { defaultFormatDate, defaultFormatSize } from './format';
 
-/** @deprecated Use `ProviderIcons` from `provider.ts` via `theme.icons`. */
-export type CloudFileExplorerIcons = {
-  readonly home?: ReactNode;
-  readonly folder?: ReactNode | ((file: CloudFile) => ReactNode);
-  readonly file?: ReactNode | ((file: CloudFile) => ReactNode);
-  readonly space?: ReactNode | ((space: CloudSpace) => ReactNode);
-  readonly separator?: ReactNode;
-  readonly refresh?: ReactNode;
-  readonly newFolder?: ReactNode;
-  readonly close?: ReactNode;
-  readonly search?: ReactNode;
-  readonly loading?: ReactNode;
-  readonly back?: ReactNode;
-  readonly open?: ReactNode;
-};
-
-/** @deprecated Use `ProviderLabels` from `provider.ts` via `theme.labels`. */
-export type CloudFileExplorerLabels = {
-  readonly title?: string;
-  readonly description?: string;
-  readonly home?: string;
-  readonly search?: string;
-  readonly empty?: string;
-  readonly loading?: string;
-  readonly newFolder?: string;
-  readonly newFolderPlaceholder?: string;
-  readonly create?: string;
-  readonly cancel?: string;
-  readonly select?: string;
-  readonly close?: string;
-  readonly back?: string;
-  readonly refresh?: string;
-  readonly retry?: string;
-  readonly open?: string;
-  readonly errorTitle?: string;
-  readonly columnName?: string;
-  readonly columnDate?: string;
-  readonly columnSize?: string;
-};
-
-const DEFAULT_LABELS: Required<CloudFileExplorerLabels> = {
+const DEFAULT_LABELS: Required<ProviderLabels> = {
   title: 'Select folder',
   description: 'Choose a folder from your cloud storage.',
   home: 'Home',
@@ -95,8 +55,6 @@ export type CloudFileExplorerProps = {
   readonly theme?: ProviderTheme;
   /** Root className — brand wrappers pass one class, then style via `[data-slot]` selectors. */
   readonly className?: string;
-  readonly icons?: CloudFileExplorerIcons;
-  readonly labels?: CloudFileExplorerLabels;
   readonly formatters?: CloudFileExplorerFormatters;
 };
 
@@ -120,13 +78,11 @@ export function CloudFileExplorer({
   mode,
   theme,
   className,
-  icons: iconsProp = {},
-  labels: labelsProp = {},
   formatters = {},
 }: CloudFileExplorerProps) {
   const resolvedClassName = className ?? theme?.className;
-  const icons = { ...theme?.icons, ...iconsProp };
-  const l = { ...DEFAULT_LABELS, ...theme?.labels, ...labelsProp };
+  const icons: ProviderIcons = theme?.icons ?? {};
+  const l: Required<ProviderLabels> = { ...DEFAULT_LABELS, ...(theme?.labels ?? {}) };
   const api = useCloudFileExplorer({ service, validator, open });
   const fmt = {
     formatDate: formatters.formatDate ?? defaultFormatDate,
@@ -160,7 +116,7 @@ export function CloudFileExplorer({
                   placeholder={l.search}
                   data-slot="search"
                   value={api.state.search ?? ''}
-                  onChange={(e) => api.setSearch(e.target.value || undefined)}
+                  onChange={(e) => { api.setSearch(e.target.value || undefined); }}
                 />
               </div>
             )}
@@ -190,7 +146,7 @@ export function CloudFileExplorer({
                     disabled={disabled}
                     data-active={isActive ? '' : undefined}
                     data-disabled={disabled ? '' : undefined}
-                    onClick={() => api.switchSpace(space)}
+                    onClick={() => { api.switchSpace(space); }}
                   >
                     {icons.space && (
                       <span data-slot="sidebar-icon">
@@ -230,7 +186,7 @@ export function CloudFileExplorer({
                     <button
                       type="button"
                       data-slot="breadcrumb-item"
-                      onClick={() => api.navigateUpTo(undefined)}
+                      onClick={() => { api.navigateUpTo(undefined); }}
                     >
                       <span>{l.home}</span>
                     </button>
@@ -242,7 +198,7 @@ export function CloudFileExplorer({
                         <button
                           type="button"
                           data-slot="breadcrumb-item"
-                          onClick={() => api.navigateUpTo(folder)}
+                          onClick={() => { api.navigateUpTo(folder); }}
                         >
                           <span>{folder.name}</span>
                         </button>
@@ -364,7 +320,7 @@ export function CloudFileExplorer({
             <button
               type="button"
               data-slot="cancel"
-              onClick={() => onOpenChange(false)}
+              onClick={() => { onOpenChange(false); }}
             >
               {l.cancel}
             </button>
@@ -402,8 +358,8 @@ function NewFolderPopover({
   onCreate,
 }: {
   readonly disabled: boolean;
-  readonly icons: CloudFileExplorerIcons;
-  readonly labels: Required<CloudFileExplorerLabels>;
+  readonly icons: ProviderIcons;
+  readonly labels: Required<ProviderLabels>;
   readonly onCreate: (name: string) => Promise<void>;
 }) {
   const [name, setName] = useState('');
@@ -449,7 +405,7 @@ function NewFolderPopover({
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => { setName(e.target.value); }}
               placeholder={labels.newFolderPlaceholder}
               data-slot="new-folder-input"
               autoFocus

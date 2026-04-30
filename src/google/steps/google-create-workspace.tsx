@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import type { CloudFile, CloudFileService, CloudSpace } from 'strata-adapters/cloud';
 import type { Step } from '../../wizard/types';
 import { CloudFileExplorer } from '../../cloud/cloud-file-explorer';
@@ -158,7 +158,7 @@ function GoogleCreateWorkspaceBody({
           {shareable && (
             <div data-slot="step-field">
               <label data-slot="step-label">Folder (Drive)</label>
-              <div data-slot="step-folder-picker" onClick={() => setExplorerOpen(true)} role="button" tabIndex={0}>
+              <div data-slot="step-folder-picker" onClick={() => { setExplorerOpen(true); }} role="button" tabIndex={0}>
                 <input
                   data-slot="step-input"
                   type="text"
@@ -182,7 +182,7 @@ function GoogleCreateWorkspaceBody({
               data-slot="step-input"
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => { setName(e.target.value); }}
               placeholder={`My ${tl.lower}`}
               autoFocus
               required

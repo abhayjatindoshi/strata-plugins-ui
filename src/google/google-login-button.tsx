@@ -7,21 +7,16 @@ export type GoogleLoginButtonProps = LoginButtonBaseProps;
 
 /** Resolve `theme="auto"` against `prefers-color-scheme`. SSR-safe: defaults to `light`. */
 function useResolvedTheme(theme: 'light' | 'dark' | 'auto'): 'light' | 'dark' {
-  const [resolved, setResolved] = useState<'light' | 'dark'>(
-    theme === 'auto' ? 'light' : theme,
-  );
+  const [resolved, setResolved] = useState<'light' | 'dark'>('light');
   useEffect(() => {
-    if (theme !== 'auto' || typeof window === 'undefined' || !window.matchMedia) {
-      setResolved(theme === 'auto' ? 'light' : theme);
-      return;
-    }
+    if (theme !== 'auto') return;
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const update = () => setResolved(mq.matches ? 'dark' : 'light');
+    const update = () => { setResolved(mq.matches ? 'dark' : 'light'); };
     update();
     mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
+    return () => { mq.removeEventListener('change', update); };
   }, [theme]);
-  return resolved;
+  return theme === 'auto' ? resolved : theme;
 }
 
 export function GoogleLoginButton({

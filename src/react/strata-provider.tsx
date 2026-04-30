@@ -31,11 +31,12 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
 
   useEffect(() => {
     if (!auth) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthState({ status: 'signed-out' });
       return;
     }
     const sub = auth.state$.subscribe(setAuthState);
-    return () => sub.unsubscribe();
+    return () => { sub.unsubscribe(); };
   }, [auth]);
 
   // ── Strata lifecycle ─────────────────────────────────────
@@ -52,7 +53,7 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
     const sub = config.cloud.active$.subscribe((adapter) => {
       setCloudAdapter(adapter);
     });
-    return () => sub.unsubscribe();
+    return () => { sub.unsubscribe(); };
   }, [config.cloud]);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
       cloudAdapter: cloudAdapter ?? undefined,
       encryptionService: config.encryption,
     });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStrata(instance);
 
     return () => {

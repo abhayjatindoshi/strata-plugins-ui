@@ -4,8 +4,6 @@ export {
 } from './cloud/cloud-file-explorer';
 export type {
   CloudFileExplorerProps,
-  CloudFileExplorerIcons,
-  CloudFileExplorerLabels,
   CloudFileExplorerFormatters,
   CloudFileExplorerApi,
 } from './cloud/cloud-file-explorer';

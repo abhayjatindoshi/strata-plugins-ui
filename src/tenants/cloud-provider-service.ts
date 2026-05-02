@@ -1,6 +1,6 @@
 import { BehaviorSubject, distinctUntilChanged, type Observable, type Subscription } from 'rxjs';
-import type { Tenant } from 'strata-data-sync';
-import type { CloudService } from 'strata-adapters';
+import type { Tenant } from '@strata/core';
+import type { CloudService } from '@strata/plugins';
 import type { CloudProvider, ProviderOp } from './provider';
 
 export type PlacedOp = {

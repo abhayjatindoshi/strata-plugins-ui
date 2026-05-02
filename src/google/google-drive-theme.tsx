@@ -1,4 +1,4 @@
-import type { CloudFile } from 'strata-adapters/cloud';
+import type { CloudFile } from '@strata/plugins/cloud';
 import type { ProviderTheme } from '../tenants/provider';
 import { GoogleDriveFileIcon } from './google-drive-file-icon';
 import {

@@ -2,14 +2,14 @@ import {
   LocalStorageAdapter,
   Pbkdf2EncryptionService,
   AesGcmEncryptionStrategy,
-} from 'strata-adapters';
-import type { ClientAuthService, CloudService } from 'strata-adapters';
+} from '@strata/plugins';
+import type { ClientAuthService, CloudService } from '@strata/plugins';
 import type {
   BlobMigration,
   EncryptionService,
   EntityDefinition,
   StorageAdapter,
-} from 'strata-data-sync';
+} from '@strata/core';
 import {
   encryptionSetupStep,
   encryptionUnlockStep,

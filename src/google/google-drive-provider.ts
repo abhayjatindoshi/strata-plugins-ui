@@ -4,9 +4,9 @@ import type {
   CloudFileService,
   CloudSpace,
   CloudAdapter,
-} from 'strata-adapters';
-import { GoogleDriveService } from 'strata-adapters';
-import type { Tenant } from 'strata-data-sync';
+} from '@strata/plugins';
+import { GoogleDriveService } from '@strata/plugins';
+import type { Tenant } from '@strata/core';
 import type {
   CloudProvider,
   OpContext,

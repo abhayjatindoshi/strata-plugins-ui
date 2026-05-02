@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react';
-import type { Tenant } from 'strata-data-sync';
+import type { Tenant } from '@strata/core';
 import {
   useWizardHost,
   type WizardClassNames,

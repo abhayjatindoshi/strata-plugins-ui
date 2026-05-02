@@ -4,7 +4,7 @@ import type {
   CloudFileExplorerValidator,
   CloudFileService,
   CloudSpace,
-} from 'strata-adapters/cloud';
+} from '@strata/plugins/cloud';
 
 export type UseCloudFileExplorerOptions = {
   readonly service: CloudFileService;

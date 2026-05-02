@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Strata } from 'strata-data-sync';
-import type { StorageAdapter } from 'strata-data-sync';
-import type { AccessToken, AuthState } from 'strata-adapters';
+import { Strata } from '@strata/core';
+import type { StorageAdapter } from '@strata/core';
+import type { AccessToken, AuthState } from '@strata/plugins';
 import type { StrataConfig } from './create-strata-config';
 
 type StrataContextValue = {

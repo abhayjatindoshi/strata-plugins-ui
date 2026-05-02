@@ -1,4 +1,4 @@
-import type { ClientAuthService, SupportedAuth } from 'strata-adapters';
+import type { ClientAuthService, SupportedAuth } from '@strata/plugins';
 import { useStrataContext } from '../react/strata-provider';
 import { LoginButton, type LoginButtonTheme, type LoginButtonVariant } from '../react/components/login-button';
 

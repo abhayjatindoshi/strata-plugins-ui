@@ -29,11 +29,7 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: {
-        index: resolve(__dirname, 'src/index.ts'),
-        'google/index': resolve(__dirname, 'src/google/index.ts'),
-        'react/index': resolve(__dirname, 'src/react/index.ts'),
-      },
+      entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
     },
     sourcemap: true,
@@ -45,14 +41,12 @@ export default defineConfig({
         'react/jsx-runtime',
         'react-router',
         /^@radix-ui\//,
-        /^strata-adapters($|\/)/,
-        /^strata-data-sync($|\/)/,
-        /^strata-plugins-ui($|\/)/,
+        /^@strata\/plugins($|\/)/,
+        /^@strata\/core($|\/)/,
+        /^@strata\/plugins-ui($|\/)/,
       ],
       output: {
-        preserveModules: true,
-        preserveModulesRoot: 'src',
-        entryFileNames: '[name].js',
+        entryFileNames: 'index.js',
       },
     },
   },

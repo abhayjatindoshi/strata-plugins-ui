@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
-import type { Tenant, CreateTenantOptions } from 'strata-data-sync';
+import type { Tenant, CreateTenantOptions } from '@strata/core';
 import { useStrataContext } from './strata-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
 

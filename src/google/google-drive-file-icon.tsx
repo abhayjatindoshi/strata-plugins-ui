@@ -1,5 +1,5 @@
 import type { SVGProps } from 'react';
-import type { CloudFile } from 'strata-adapters/cloud';
+import type { CloudFile } from '@strata/plugins/cloud';
 import FolderIcon from './icons/folder.svg?react';
 import GenericFileIcon from './icons/generic-file.svg?react';
 import GoogleDocIcon from './icons/google-doc.svg?react';

@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import type { Tenant } from 'strata-data-sync';
+import type { Tenant } from '@strata/core';
 import { useStrataContext } from '../react/strata-provider';
 import { useTenant } from '../react/tenant-provider';
 import { useOpRunner } from './use-op-runner';

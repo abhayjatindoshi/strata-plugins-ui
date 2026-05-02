@@ -14,6 +14,7 @@ import type {
 } from './provider';
 import { useTenant } from '../react/tenant-provider';
 import { useStrataContext } from '../react/strata-provider';
+import { log } from '@/log';
 
 export type UseOpRunnerOptions = {
   readonly mode?: 'light' | 'dark';
@@ -82,10 +83,15 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
         tenant,
       };
       try {
+        log.ops('running %s:%s', provider.name, op.name);
         await op.run(ctx);
       } catch (err) {
-        if (err instanceof WizardCancelled) return;
+        if (err instanceof WizardCancelled) {
+          log.ops('cancelled %s:%s', provider.name, op.name);
+          return;
+        }
         const e = err instanceof Error ? err : new Error(String(err));
+        log.ops.error('failed %s:%s: %s', provider.name, op.name, e.message);
         optsRef.current.onError?.(e, op, provider);
         throw e;
       } finally {

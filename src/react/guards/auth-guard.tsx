@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { useAuth } from '../strata-provider';
+import { log } from '@/log';
 
 export type AuthGuardProps = {
   readonly onUnauthenticated: () => void;
@@ -16,6 +17,7 @@ export function AuthGuard({ onUnauthenticated, loading = null, children }: AuthG
 
   useEffect(() => {
     if (status === 'signed-out') {
+      log.guard('auth signed-out → redirect');
       onUnauthenticated();
     }
   }, [status, onUnauthenticated]);

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTenant } from '../tenant-provider';
 import { useStrataContext, useAuth } from '../strata-provider';
+import { log } from '@/log';
 
 export type TenantGuardProps = {
   readonly tenantId: string | undefined;
@@ -39,9 +40,11 @@ export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null,
 
     const needsCredential = error.message === 'Credential required for encrypted tenant';
     if (!needsCredential) {
+      log.guard('tenant error → redirect: %s', error.message);
       onUnauthenticated();
       return;
     }
+    log.guard('tenant needs credential → unlock step');
 
     const providerTheme = authName
       ? config.providers?.all.find((p) => p.name === authName)?.theme

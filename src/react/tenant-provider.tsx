@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState, useEffect, u
 import type { Tenant, CreateTenantOptions } from '@strata/core';
 import { useStrataContext } from './strata-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
+import { log } from '@/log';
 
 export type TenantStatus = 'idle' | 'loading' | 'hydrated' | 'error';
 
@@ -103,6 +104,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
 
     const flight = { tenantId, aborted: false };
     inflightRef.current = flight;
+    log.tenant('requestOpen %s', tenantId);
     setStatus('loading');
     setError(null);
 
@@ -122,6 +124,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
 
     strata.tenants.open(tenantId, credential ? { credential } : undefined).then(() => {
       if (flight.aborted) return;
+      log.tenant('hydrated %s', tenantId);
       setStatus('hydrated');
       setError(null);
       if (credentialCacheKey && credential) {
@@ -136,6 +139,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       if (flight.aborted) return;
       inflightRef.current = null;
       const e = err instanceof Error ? err : new Error(String(err));
+      log.tenant.error('open failed for %s: %s', tenantId, e.message);
       setStatus('error');
       setError(e);
     });

@@ -3,6 +3,7 @@ import { Strata } from '@strata/core';
 import type { StorageAdapter } from '@strata/core';
 import type { AccessToken, AuthState } from '@strata/plugins';
 import type { StrataConfig } from './create-strata-config';
+import { log } from '@/log';
 
 type StrataContextValue = {
   readonly config: StrataConfig;
@@ -69,11 +70,13 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
       cloudAdapter: cloudAdapter ?? undefined,
       encryptionService: config.encryption,
     });
+    log.strata('created instance (cloud=%s)', !!cloudAdapter);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setStrata(instance);
 
     return () => {
       setStrata(null);
+      log.strata('disposing instance');
       void instance.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

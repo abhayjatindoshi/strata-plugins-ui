@@ -6,7 +6,7 @@ import type {
   CloudFileExplorerValidator,
   CloudFileService,
   CloudSpace,
-} from '@strata/plugins/cloud';
+} from '@strata/plugins';
 import type { ProviderTheme, ProviderIcons, ProviderLabels } from '../tenants/provider';
 import { useCloudFileExplorer, type CloudFileExplorerApi } from './use-cloud-file-explorer';
 import { defaultFormatDate, defaultFormatSize } from './format';

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { EncryptionService, Tenant } from '@strata/core';
 import type { ClientAuthService } from '@strata/plugins';
 import type { Step, WizardController } from '../wizard/types';
-import type { CloudFile, CloudSpace } from '@strata/plugins/cloud';
+import type { CloudFile, CloudSpace } from '@strata/plugins';
 
 export type ProviderIcons = {
   readonly home?: ReactNode;

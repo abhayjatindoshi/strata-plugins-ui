@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { CloudFile, CloudFileService, CloudSpace } from '@strata/plugins/cloud';
+import type { CloudFile, CloudFileService, CloudSpace } from '@strata/plugins';
 import type { Step } from '../../wizard/types';
 import { CloudFileExplorer } from '../../cloud/cloud-file-explorer';
 import type { ProviderTheme } from '../../tenants/provider';

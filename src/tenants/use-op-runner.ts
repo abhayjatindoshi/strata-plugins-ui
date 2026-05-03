@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
 import type { Tenant } from '@strata/core';
+import { StrataError } from '@strata/plugins';
 import {
   useWizardHost,
   type WizardClassNames,
@@ -39,7 +40,7 @@ export type UseOpRunnerResult = {
 export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
   const { config } = useStrataContext();
-  const { ops: tenantOps, all: tenantList, requestOpen } = useTenant();
+  const { ops: tenantOps, requestOpen } = useTenant();
   const optsRef = useRef(opts);
   // eslint-disable-next-line react-hooks/refs
   optsRef.current = opts;
@@ -55,11 +56,12 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   wizardRef.current = wizard;
 
   const tenants: TenantOpsApi = useMemo(() => ({
-    list: () => Promise.resolve(tenantList),
+    probe: (ref) => tenantOps.probe(ref),
     create: (o) => tenantOps.create(o),
+    join: (o) => tenantOps.join(o),
     open: (id, o) => { requestOpen(id, o); return Promise.resolve(); },
     remove: (id, o) => tenantOps.remove(id, o),
-  }), [tenantOps, tenantList, requestOpen]);
+  }), [tenantOps, requestOpen]);
   const tenantsRef = useRef(tenants);
   // eslint-disable-next-line react-hooks/refs
   tenantsRef.current = tenants;
@@ -90,7 +92,7 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
           log.ops('cancelled %s:%s', provider.name, op.name);
           return;
         }
-        const e = err instanceof Error ? err : new Error(String(err));
+        const e = err instanceof Error ? err : new StrataError(String(err), { kind: 'unknown' });
         log.ops.error('failed %s:%s: %s', provider.name, op.name, e.message);
         optsRef.current.onError?.(e, op, provider);
         throw e;

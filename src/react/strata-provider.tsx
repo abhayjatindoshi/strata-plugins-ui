@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { Strata } from '@strata/core';
 import type { StorageAdapter } from '@strata/core';
 import type { AccessToken, AuthState } from '@strata/plugins';
+import { StrataPluginConfigError } from '@strata/plugins';
 import type { StrataConfig } from './create-strata-config';
 import { log } from '@/log';
 
@@ -104,7 +105,7 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
 
 export function useStrataContext(): StrataContextValue {
   const ctx = useContext(StrataContext);
-  if (!ctx) throw new Error('useStrataContext: missing <StrataProvider>');
+  if (!ctx) throw new StrataPluginConfigError('useStrataContext: missing <StrataProvider>');
   return ctx;
 }
 
@@ -137,7 +138,7 @@ export function useAuth(): UseAuthResult {
   );
 
   const logout = useCallback(async () => {
-    if (!auth) throw new Error('useAuth: no auth configured');
+    if (!auth) throw new StrataPluginConfigError('useAuth: no auth configured');
     await auth.logout();
   }, [auth]);
 

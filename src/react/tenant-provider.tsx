@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
-import type { Tenant, CreateTenantOptions } from '@strata/core';
+import type { Tenant, CreateTenantOptions, JoinTenantOptions, ProbeResult } from '@strata/core';
+import { StrataError, StrataPluginConfigError } from '@strata/plugins';
 import { useStrataContext } from './strata-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
 import { log } from '@/log';
@@ -8,7 +9,9 @@ export type TenantStatus = 'idle' | 'loading' | 'hydrated' | 'error';
 
 export type TenantOps = {
   close(): Promise<void>;
+  probe(ref: { meta: Record<string, unknown> }): Promise<ProbeResult>;
   create(opts: CreateTenantOptions): Promise<Tenant>;
+  join(opts: JoinTenantOptions): Promise<Tenant>;
   remove(tenantId: string, opts?: { purge?: boolean }): Promise<void>;
 };
 
@@ -19,13 +22,14 @@ type TenantContextValue = {
   readonly all: readonly Tenant[];
   readonly ops: TenantOps;
   readonly requestOpen: (tenantId: string, opts?: { credential?: string }) => void;
-  readonly refreshList: () => void;
 };
 
 const noOps: TenantOps = {
-  close: () => Promise.reject(new Error('TenantProvider not mounted')),
-  create: () => Promise.reject(new Error('TenantProvider not mounted')),
-  remove: () => Promise.reject(new Error('TenantProvider not mounted')),
+  close: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
+  probe: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
+  create: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
+  join: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
+  remove: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
 };
 
 const TenantContext = createContext<TenantContextValue>({
@@ -35,7 +39,6 @@ const TenantContext = createContext<TenantContextValue>({
   all: [],
   ops: noOps,
   requestOpen: () => {},
-  refreshList: () => {},
 });
 
 export type TenantProviderProps = {
@@ -75,18 +78,10 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setError(null);
     inflightRef.current = null;
     if (!strata) return;
-    const sub = strata.tenants.activeTenant$.subscribe(setActive);
-    return () => { sub.unsubscribe(); };
+    const activeSub = strata.tenants.activeTenant$.subscribe(setActive);
+    const listSub = strata.tenants.tenants$.subscribe(setAll);
+    return () => { activeSub.unsubscribe(); listSub.unsubscribe(); };
   }, [strata, setStatus]);
-
-  const refreshList = useCallback(() => {
-    if (!strata) return;
-    void strata.tenants.list().then(setAll).catch(() => {});
-  }, [strata]);
-
-  useEffect(() => {
-    refreshList();
-  }, [refreshList]);
 
   const requestOpen = useCallback((tenantId: string, opts?: { credential?: string }) => {
     if (!strata) return;
@@ -138,7 +133,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
     }).catch((err: unknown) => {
       if (flight.aborted) return;
       inflightRef.current = null;
-      const e = err instanceof Error ? err : new Error(String(err));
+      const e = err instanceof Error ? err : new StrataError(String(err), { kind: 'unknown' });
       log.tenant.error('open failed for %s: %s', tenantId, e.message);
       setStatus('error');
       setError(e);
@@ -154,22 +149,27 @@ export function TenantProvider({ children }: TenantProviderProps) {
       setStatus('idle');
       setError(null);
     },
+    probe: async (ref) => {
+      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
+      return strata.tenants.probe(ref);
+    },
     create: async (createOpts) => {
-      if (!strata) throw new Error('Strata not initialized');
-      const t = await strata.tenants.create(createOpts);
-      refreshList();
-      return t;
+      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
+      return strata.tenants.create(createOpts);
+    },
+    join: async (joinOpts) => {
+      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
+      return strata.tenants.join(joinOpts);
     },
     remove: async (id, removeOpts) => {
-      if (!strata) throw new Error('Strata not initialized');
+      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
       await strata.tenants.remove(id, removeOpts);
       if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
-      refreshList();
     },
-  }), [strata, credentialCacheKey, refreshList, setStatus]);
+  }), [strata, credentialCacheKey, setStatus]);
 
   return (
-    <TenantContext.Provider value={{ active, status: statusState, error, all, ops, requestOpen, refreshList }}>
+    <TenantContext.Provider value={{ active, status: statusState, error, all, ops, requestOpen }}>
       {children}
     </TenantContext.Provider>
   );
@@ -182,7 +182,6 @@ export type UseTenantResult = {
   readonly all: readonly Tenant[];
   readonly ops: TenantOps;
   readonly requestOpen: (tenantId: string, opts?: { credential?: string }) => void;
-  readonly refreshList: () => void;
 };
 
 export function useTenant(): UseTenantResult {

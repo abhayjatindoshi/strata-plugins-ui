@@ -1,4 +1,5 @@
 import type { ClientAuthService, SupportedAuth } from '@strata/plugins';
+import { StrataPluginConfigError } from '@strata/plugins';
 import { useStrataContext } from '../react/strata-provider';
 import { LoginButton, type LoginButtonTheme, type LoginButtonVariant } from '../react/components/login-button';
 
@@ -21,7 +22,7 @@ export function LoginButtons(props: LoginButtonsProps) {
   const { config } = useStrataContext();
   const authService = props.authService ?? config.auth;
   if (!authService) {
-    throw new Error('LoginButtons: no ClientAuthService — pass authService prop or render under <StrataProvider>');
+    throw new StrataPluginConfigError('LoginButtons: no ClientAuthService — pass authService prop or render under <StrataProvider>');
   }
   const supported = authService.supportedAuths();
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { EncryptionService, Tenant } from '@strata/core';
+import type { EncryptionService, Tenant, ProbeResult } from '@strata/core';
 import type { ClientAuthService } from '@strata/plugins';
 import type { Step, WizardController } from '../wizard/types';
 import type { CloudFile, CloudSpace } from '@strata/plugins';
@@ -53,12 +53,15 @@ export type ProviderTheme = {
 export type OpPlacement = 'page-action' | 'tenant-menu' | 'tenant-action';
 
 export type TenantOpsApi = {
-  list(): Promise<readonly Tenant[]>;
+  probe(ref: { meta: Record<string, unknown> }): Promise<ProbeResult>;
   create(opts: {
     readonly name: string;
     readonly meta: Record<string, unknown>;
-    readonly id?: string;
     readonly encryption?: { readonly credential: string };
+  }): Promise<Tenant>;
+  join(opts: {
+    readonly name: string;
+    readonly meta: Record<string, unknown>;
   }): Promise<Tenant>;
   open(tenantId: string, opts?: { credential?: string }): Promise<void>;
   remove(tenantId: string, opts?: { purge?: boolean }): Promise<void>;

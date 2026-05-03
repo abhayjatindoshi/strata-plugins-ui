@@ -66,7 +66,6 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
     label: 'Create',
     placement: 'page-action',
     async run(ctx: OpContext) {
-      ctx.wizard.setEstimatedTotal(2);
       const result = await ctx.wizard.runStep(
         googleCreateWorkspaceStep({
           service,
@@ -74,14 +73,24 @@ function makeCreateOp(service: GoogleDriveService): ProviderOp {
           theme: ctx.providerTheme,
         }),
       );
-      const password = await ctx.wizard.runStep(
-        ctx.commonSteps.encryptionSetup({ theme: ctx.providerTheme, mode: ctx.mode }),
-      );
-      await ctx.tenants.create({
-        name: result.name,
-        meta: { providerName: 'google', space: result.space.id, folderId: result.folderId, shareable: result.shareable },
-        encryption: password ? { credential: password } : undefined,
-      });
+
+      const meta = { providerName: 'google', space: result.space.id, folderId: result.folderId, shareable: result.shareable };
+      const probe = await ctx.tenants.probe({ meta });
+
+      if (probe.exists) {
+        // Workspace already exists — join it
+        await ctx.tenants.join({ name: result.name, meta });
+      } else {
+        // New workspace — ask for encryption, then create
+        const password = await ctx.wizard.runStep(
+          ctx.commonSteps.encryptionSetup({ theme: ctx.providerTheme, mode: ctx.mode }),
+        );
+        await ctx.tenants.create({
+          name: result.name,
+          meta,
+          encryption: password ? { credential: password } : undefined,
+        });
+      }
     },
   };
 }

@@ -5,6 +5,7 @@ import type {
   CloudFileService,
   CloudSpace,
 } from '@strata/plugins';
+import { StrataError } from '@strata/plugins';
 
 export type UseCloudFileExplorerOptions = {
   readonly service: CloudFileService;
@@ -59,7 +60,7 @@ function isAbort(err: unknown): boolean {
 }
 
 function toError(err: unknown): Error {
-  return err instanceof Error ? err : new Error(String(err));
+  return err instanceof Error ? err : new StrataError(String(err), { kind: 'unknown' });
 }
 
 /**

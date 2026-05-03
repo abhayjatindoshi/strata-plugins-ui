@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { StrataPluginConfigError } from '@strata/plugins';
 import { GoogleLoginButton } from '../../google/google-login-button';
 
 export type LoginButtonTheme = 'light' | 'dark' | 'auto';
@@ -43,7 +44,7 @@ export function LoginButton({ provider, ...rest }: LoginButtonProps) {
       return <GoogleLoginButton {...rest} />;
     default: {
       const exhaustive: never = provider;
-      throw new Error(`<LoginButton> has no branded component for provider: ${String(exhaustive)}`);
+      throw new StrataPluginConfigError(`<LoginButton> has no branded component for provider: ${String(exhaustive)}`);
     }
   }
 }

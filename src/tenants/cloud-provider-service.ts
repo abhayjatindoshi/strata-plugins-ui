@@ -1,6 +1,7 @@
 import { BehaviorSubject, distinctUntilChanged, type Observable, type Subscription } from 'rxjs';
 import type { Tenant } from '@strata/core';
 import type { CloudService } from '@strata/plugins';
+import { StrataPluginConfigError } from '@strata/plugins';
 import type { CloudProvider, ProviderOp } from './provider';
 
 export type PlacedOp = {
@@ -29,7 +30,7 @@ export class CloudProviderService {
   ) {
     const byName = new Map<string, CloudProvider>();
     for (const p of providers) {
-      if (byName.has(p.name)) throw new Error(`CloudProviderService: duplicate provider name "${p.name}"`);
+      if (byName.has(p.name)) throw new StrataPluginConfigError(`CloudProviderService: duplicate provider name "${p.name}"`);
       byName.set(p.name, p);
     }
     this.byName = byName;

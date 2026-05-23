@@ -3,6 +3,7 @@ import type { Tenant, CreateTenantOptions, JoinTenantOptions, ProbeResult } from
 import { StrataError, StrataPluginConfigError } from '@strata/plugins';
 import { useStrataContext } from './strata-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
+import type { PlacedOp } from '../tenants/cloud-provider-service';
 import { log } from '@/log';
 
 export type TenantStatus = 'idle' | 'loading' | 'hydrated' | 'error';
@@ -21,6 +22,7 @@ type TenantContextValue = {
   readonly error: Error | null;
   readonly all: readonly Tenant[];
   readonly ops: TenantOps;
+  readonly pageActions: readonly PlacedOp[];
   readonly requestOpen: (tenantId: string, opts?: { credential?: string }) => void;
 };
 
@@ -38,6 +40,7 @@ const TenantContext = createContext<TenantContextValue>({
   error: null,
   all: [],
   ops: noOps,
+  pageActions: [],
   requestOpen: () => {},
 });
 
@@ -59,6 +62,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
   const [statusState, setStatusState] = useState<TenantStatus>('idle');
   const [error, setError] = useState<Error | null>(null);
   const [all, setAll] = useState<readonly Tenant[]>([]);
+  const [pageActions, setPageActions] = useState<readonly PlacedOp[]>([]);
   const inflightRef = useRef<{ tenantId: string; aborted: boolean } | null>(null);
   const statusRef = useRef<TenantStatus>('idle');
 
@@ -82,6 +86,20 @@ export function TenantProvider({ children }: TenantProviderProps) {
     const listSub = strata.tenants.tenants$.subscribe(setAll);
     return () => { activeSub.unsubscribe(); listSub.unsubscribe(); };
   }, [strata, setStatus]);
+
+  // Subscribe to cloud adapter changes to derive page actions
+  useEffect(() => {
+    if (!config.cloud) return;
+    const sub = config.cloud.active$.subscribe((adapter) => {
+      const provider = adapter ? config.providers?.get(adapter.name) : undefined;
+      if (provider) {
+        setPageActions(provider.ops.filter((o) => o.placement === 'page-action').map((o) => ({ provider, op: o })));
+      } else {
+        setPageActions([]);
+      }
+    });
+    return () => { sub.unsubscribe(); };
+  }, [config.cloud, config.providers]);
 
   const requestOpen = useCallback((tenantId: string, opts?: { credential?: string }) => {
     if (!strata) return;
@@ -169,7 +187,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
   }), [strata, credentialCacheKey, setStatus]);
 
   return (
-    <TenantContext.Provider value={{ active, status: statusState, error, all, ops, requestOpen }}>
+    <TenantContext.Provider value={{ active, status: statusState, error, all, ops, pageActions, requestOpen }}>
       {children}
     </TenantContext.Provider>
   );
@@ -181,6 +199,7 @@ export type UseTenantResult = {
   readonly error: Error | null;
   readonly all: readonly Tenant[];
   readonly ops: TenantOps;
+  readonly pageActions: readonly PlacedOp[];
   readonly requestOpen: (tenantId: string, opts?: { credential?: string }) => void;
 };
 

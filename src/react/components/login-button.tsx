@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { StrataPluginConfigError } from '@strata/plugins';
 import { GoogleLoginButton } from '../../google/google-login-button';
+import { MicrosoftLoginButton } from '../../microsoft/microsoft-login-button';
 
 export type LoginButtonTheme = 'light' | 'dark' | 'auto';
 export type LoginButtonVariant = 'pill' | 'icon';
@@ -21,7 +22,7 @@ export type LoginButtonBaseProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>,
 
 export type LoginButtonProps = LoginButtonBaseProps & {
   /** Provider to log in with. Must be a provider this package ships a branded button for. */
-  readonly provider: 'google';
+  readonly provider: 'google' | 'microsoft';
 };
 
 /**
@@ -39,9 +40,10 @@ export type LoginButtonProps = LoginButtonBaseProps & {
  */
 export function LoginButton({ provider, ...rest }: LoginButtonProps) {
   switch (provider) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     case 'google':
       return <GoogleLoginButton {...rest} />;
+    case 'microsoft':
+      return <MicrosoftLoginButton {...rest} />
     default: {
       const exhaustive: never = provider;
       throw new StrataPluginConfigError(`<LoginButton> has no branded component for provider: ${String(exhaustive)}`);

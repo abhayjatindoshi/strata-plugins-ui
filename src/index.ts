@@ -61,6 +61,17 @@ export { googleCreateWorkspaceStep } from './google/steps/google-create-workspac
 export type { CreateWorkspaceResult, GoogleCreateWorkspaceOptions } from './google/steps/google-create-workspace';
 export * from './google/icons';
 
+// microsoft / onedrive
+export { MicrosoftLoginButton } from './microsoft/microsoft-login-button';
+export type { MicrosoftLoginButtonProps } from './microsoft/microsoft-login-button';
+export { OneDriveProvider } from './microsoft/onedrive-provider';
+export type { OneDriveProviderOptions } from './microsoft/onedrive-provider';
+export { oneDriveTheme } from './microsoft/onedrive-theme';
+export type { OneDriveTheme } from './microsoft/onedrive-theme';
+export { onedriveCreateWorkspaceStep } from './microsoft/steps/onedrive-create-workspace';
+export type { OneDriveCreateWorkspaceResult, OneDriveCreateWorkspaceOptions } from './microsoft/steps/onedrive-create-workspace';
+export * from './microsoft/icons';
+
 // react
 export { createStrataConfig } from './react/create-strata-config';
 export type { StrataConfigInput, StrataConfig, TenantLabels } from './react/create-strata-config';

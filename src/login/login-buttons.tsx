@@ -58,6 +58,13 @@ function ProviderSignInButton({
       </div>
     );
   }
+  if (auth.name === 'microsoft') {
+    return (
+      <div className={className}>
+        <LoginButton provider="microsoft" theme={mode} variant={variant} onClick={onClick} />
+      </div>
+    );
+  }
   return (
     <div className={className}>
       <button type="button" onClick={onClick}>

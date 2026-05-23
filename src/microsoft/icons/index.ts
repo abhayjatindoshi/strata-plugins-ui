@@ -1,0 +1,13 @@
+export { default as MicrosoftLogoIcon } from './microsoft-logo.svg?react';
+export { default as FluentCloseIcon } from './close.svg?react';
+export { default as FluentSearchIcon } from './search.svg?react';
+export { default as FluentRefreshIcon } from './refresh.svg?react';
+export { default as FluentBackIcon } from './back.svg?react';
+export { default as FluentNewFolderIcon } from './new-folder.svg?react';
+export { default as FluentFolderIcon } from './folder.svg?react';
+export { default as FluentFileIcon } from './generic-file.svg?react';
+export { default as FluentExcelIcon } from './excel.svg?react';
+export { default as FluentWordIcon } from './word.svg?react';
+export { default as FluentPowerPointIcon } from './powerpoint.svg?react';
+export { default as FluentPdfIcon } from './pdf.svg?react';
+export { default as FluentSpinnerIcon } from './spinner.svg?react';

@@ -56,9 +56,9 @@ export class CloudProviderService {
   }
 
   pageActions(): readonly PlacedOp[] {
-    return this.all.flatMap((p) =>
-      p.ops.filter((o) => o.placement === 'page-action').map((o) => ({ provider: p, op: o })),
-    );
+    const provider = this.activeProvider;
+    if (!provider) return [];
+    return provider.ops.filter((o) => o.placement === 'page-action').map((o) => ({ provider, op: o }));
   }
 
   tenantActions(_tenant: Tenant): readonly PlacedOp[] {

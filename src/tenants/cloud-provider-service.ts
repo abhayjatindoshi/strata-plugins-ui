@@ -1,7 +1,7 @@
 import { BehaviorSubject, distinctUntilChanged, type Observable, type Subscription } from 'rxjs';
-import type { Tenant } from '@strata/core';
-import type { CloudService } from '@strata/plugins';
-import { StrataPluginConfigError } from '@strata/plugins';
+import type { Tenant } from '@fyre-db/core';
+import type { CloudService } from '@fyre-db/plugins';
+import { StrataPluginConfigError } from '@fyre-db/plugins';
 import type { CloudProvider, ProviderOp } from './provider';
 
 export type PlacedOp = {

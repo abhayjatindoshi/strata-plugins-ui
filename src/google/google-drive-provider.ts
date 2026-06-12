@@ -4,9 +4,9 @@ import type {
   CloudFileService,
   CloudSpace,
   CloudAdapter,
-} from '@strata/plugins';
-import { GoogleDriveService } from '@strata/plugins';
-import type { Tenant } from '@strata/core';
+} from '@fyre-db/plugins';
+import { GoogleDriveService } from '@fyre-db/plugins';
+import type { Tenant } from '@fyre-db/core';
 import type {
   CloudProvider,
   OpContext,

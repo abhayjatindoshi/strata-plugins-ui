@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Strata } from '@strata/core';
-import type { StorageAdapter } from '@strata/core';
-import type { AccessToken, AuthState } from '@strata/plugins';
-import { StrataPluginConfigError } from '@strata/plugins';
+import { Strata } from '@fyre-db/core';
+import type { StorageAdapter } from '@fyre-db/core';
+import type { AccessToken, AuthState } from '@fyre-db/plugins';
+import { StrataPluginConfigError } from '@fyre-db/plugins';
 import type { StrataConfig } from './create-strata-config';
 import { log } from '@/log';
 

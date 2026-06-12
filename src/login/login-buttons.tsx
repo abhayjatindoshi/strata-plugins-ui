@@ -1,5 +1,5 @@
-import type { ClientAuthService, SupportedAuth } from '@strata/plugins';
-import { StrataPluginConfigError } from '@strata/plugins';
+import type { ClientAuthService, SupportedAuth } from '@fyre-db/plugins';
+import { StrataPluginConfigError } from '@fyre-db/plugins';
 import { useStrataContext } from '../react/strata-provider';
 import { LoginButton, type LoginButtonTheme, type LoginButtonVariant } from '../react/components/login-button';
 

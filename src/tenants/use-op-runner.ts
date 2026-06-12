@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
-import type { Tenant } from '@strata/core';
-import { StrataError } from '@strata/plugins';
+import type { Tenant } from '@fyre-db/core';
+import { StrataError } from '@fyre-db/plugins';
 import {
   useWizardHost,
   type WizardClassNames,

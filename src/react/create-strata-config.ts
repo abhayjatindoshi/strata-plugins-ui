@@ -2,14 +2,14 @@ import {
   LocalStorageAdapter,
   Pbkdf2EncryptionService,
   AesGcmEncryptionStrategy,
-} from '@strata/plugins';
-import type { ClientAuthService, CloudService } from '@strata/plugins';
+} from '@fyre-db/plugins';
+import type { ClientAuthService, CloudService } from '@fyre-db/plugins';
 import type {
   BlobMigration,
   EncryptionService,
   EntityDefinition,
   StorageAdapter,
-} from '@strata/core';
+} from '@fyre-db/core';
 import {
   encryptionSetupStep,
   encryptionUnlockStep,

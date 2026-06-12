@@ -4,9 +4,9 @@ import type {
   CloudFileService,
   CloudSpace,
   CloudAdapter,
-} from '@strata/plugins';
-import { OneDriveService } from '@strata/plugins';
-import type { Tenant } from '@strata/core';
+} from '@fyre-db/plugins';
+import { OneDriveService } from '@fyre-db/plugins';
+import type { Tenant } from '@fyre-db/core';
 import './onedrive.css';
 import type {
   CloudProvider,

@@ -1,4 +1,4 @@
-import type { CloudFile } from '@strata/plugins';
+import type { CloudFile } from '@fyre-db/plugins';
 import type { ProviderTheme } from '../tenants/provider';
 import { GoogleDriveFileIcon } from './google-drive-file-icon';
 import {

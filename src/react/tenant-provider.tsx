@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
-import type { Tenant, CreateTenantOptions, JoinTenantOptions, ProbeResult } from '@strata/core';
-import { StrataError, StrataPluginConfigError } from '@strata/plugins';
+import type { Tenant, CreateTenantOptions, JoinTenantOptions, ProbeResult } from '@fyre-db/core';
+import { StrataError, StrataPluginConfigError } from '@fyre-db/plugins';
 import { useStrataContext } from './strata-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
 import type { PlacedOp } from '../tenants/cloud-provider-service';

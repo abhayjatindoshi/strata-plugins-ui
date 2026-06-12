@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { StrataPluginConfigError } from '@strata/plugins';
+import { StrataPluginConfigError } from '@fyre-db/plugins';
 import { GoogleLoginButton } from '../../google/google-login-button';
 import { MicrosoftLoginButton } from '../../microsoft/microsoft-login-button';
 

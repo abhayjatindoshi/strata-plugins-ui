@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
-import type { EncryptionService, Tenant, ProbeResult } from '@strata/core';
-import type { ClientAuthService } from '@strata/plugins';
+import type { EncryptionService, Tenant, ProbeResult } from '@fyre-db/core';
+import type { ClientAuthService } from '@fyre-db/plugins';
 import type { Step, WizardController } from '../wizard/types';
-import type { CloudFile, CloudSpace } from '@strata/plugins';
+import type { CloudFile, CloudSpace } from '@fyre-db/plugins';
 
 export type ProviderIcons = {
   readonly home?: ReactNode;

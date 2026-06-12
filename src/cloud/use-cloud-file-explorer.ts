@@ -4,8 +4,8 @@ import type {
   CloudFileExplorerValidator,
   CloudFileService,
   CloudSpace,
-} from '@strata/plugins';
-import { StrataError } from '@strata/plugins';
+} from '@fyre-db/plugins';
+import { StrataError } from '@fyre-db/plugins';
 
 export type UseCloudFileExplorerOptions = {
   readonly service: CloudFileService;

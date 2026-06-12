@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Step } from '../wizard/types';
 import type { ProviderTheme } from '../tenants/provider';
-import { useStrataContext } from '../react/strata-provider';
+import { useFyreDbContext } from '../react/fyredb-provider';
 
 export type EncryptionSetupStepOptions = {
   readonly mode?: 'light' | 'dark';
@@ -39,7 +39,7 @@ function EncryptionSetupBody({
   readonly onComplete: (password: string | null) => void;
   readonly onCancel: () => void;
 }) {
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const tl = config.tenantLabels;
   const [enabled, setEnabled] = useState(false);
   const [password, setPassword] = useState('');

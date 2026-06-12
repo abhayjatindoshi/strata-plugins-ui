@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
-import { useAuth } from '../strata-provider';
+import { useAuth } from '../fyredb-provider';
 import { log } from '@/log';
 
 export type AuthGuardProps = {

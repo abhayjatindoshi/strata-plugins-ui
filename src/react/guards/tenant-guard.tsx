@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTenant } from '../tenant-provider';
-import { useStrataContext, useAuth } from '../strata-provider';
+import { useFyreDbContext, useAuth } from '../fyredb-provider';
 import { log } from '@/log';
 
 export type TenantGuardProps = {
@@ -21,7 +21,7 @@ export type TenantGuardProps = {
  */
 export function TenantGuard({ tenantId, onUnauthenticated, mode, loading = null, children }: TenantGuardProps) {
   const { active, status, error, requestOpen } = useTenant();
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const { name: authName } = useAuth();
   const [unlockStep, setUnlockStep] = useState<ReactNode>(null);
 

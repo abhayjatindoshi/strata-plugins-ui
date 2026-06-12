@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { StrataPluginConfigError } from '@fyre-db/plugins';
+import { FyreDbPluginConfigError } from '@fyre-db/plugins';
 import { GoogleLoginButton } from '../../google/google-login-button';
 import { MicrosoftLoginButton } from '../../microsoft/microsoft-login-button';
 
@@ -46,7 +46,7 @@ export function LoginButton({ provider, ...rest }: LoginButtonProps) {
       return <MicrosoftLoginButton {...rest} />
     default: {
       const exhaustive: never = provider;
-      throw new StrataPluginConfigError(`<LoginButton> has no branded component for provider: ${String(exhaustive)}`);
+      throw new FyreDbPluginConfigError(`<LoginButton> has no branded component for provider: ${String(exhaustive)}`);
     }
   }
 }

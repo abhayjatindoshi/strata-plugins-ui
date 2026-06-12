@@ -3,7 +3,7 @@ import type { CloudFile, CloudFileService, CloudSpace } from '@fyre-db/plugins';
 import type { Step } from '../../wizard/types';
 import { CloudFileExplorer } from '../../cloud/cloud-file-explorer';
 import type { ProviderTheme } from '../../tenants/provider';
-import { useStrataContext } from '../../react/strata-provider';
+import { useFyreDbContext } from '../../react/fyredb-provider';
 
 export type OneDriveCreateWorkspaceResult = {
   readonly name: string;
@@ -49,7 +49,7 @@ function OneDriveCreateWorkspaceBody({
   readonly onComplete: (result: OneDriveCreateWorkspaceResult) => void;
   readonly onCancel: () => void;
 }) {
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const tl = config.tenantLabels;
   const [name, setName] = useState('');
   const [shareable, setShareable] = useState(false);

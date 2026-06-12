@@ -5,7 +5,7 @@ import type {
   CloudFileService,
   CloudSpace,
 } from '@fyre-db/plugins';
-import { StrataError } from '@fyre-db/plugins';
+import { FyreDbError } from '@fyre-db/plugins';
 
 export type UseCloudFileExplorerOptions = {
   readonly service: CloudFileService;
@@ -60,7 +60,7 @@ function isAbort(err: unknown): boolean {
 }
 
 function toError(err: unknown): Error {
-  return err instanceof Error ? err : new StrataError(String(err), { kind: 'unknown' });
+  return err instanceof Error ? err : new FyreDbError(String(err), { kind: 'unknown' });
 }
 
 /**

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import type { Tenant } from '@fyre-db/core';
-import { useStrataContext } from '../react/strata-provider';
+import { useFyreDbContext } from '../react/fyredb-provider';
 import { useTenant } from '../react/tenant-provider';
 import { useOpRunner } from './use-op-runner';
 import type { CloudProvider, ProviderOp } from './provider';
@@ -35,7 +35,7 @@ const DEFAULT_LIST_LABELS: Required<Omit<TenantListLabels, 'wizard' | 'actionLab
  * Owns the wizard element for tenant-scoped multi-step flows.
  */
 export function TenantList(props: TenantListProps) {
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const tl = config.tenantLabels;
   const labels = {
     ...DEFAULT_LIST_LABELS,

@@ -1,29 +1,29 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Strata } from '@fyre-db/core';
+import { FyreDb } from '@fyre-db/core';
 import type { StorageAdapter } from '@fyre-db/core';
 import type { AccessToken, AuthState } from '@fyre-db/plugins';
-import { StrataPluginConfigError } from '@fyre-db/plugins';
-import type { StrataConfig } from './create-strata-config';
+import { FyreDbPluginConfigError } from '@fyre-db/plugins';
+import type { FyreDbConfig } from './create-fyredb-config';
 import { log } from '@/log';
 
-type StrataContextValue = {
-  readonly config: StrataConfig;
-  readonly strata: Strata | null;
+type FyreDbContextValue = {
+  readonly config: FyreDbConfig;
+  readonly fyredb: FyreDb | null;
   readonly authState: AuthState;
 };
 
-const StrataContext = createContext<StrataContextValue | null>(null);
+const FyreDbContext = createContext<FyreDbContextValue | null>(null);
 
-export type StrataProviderProps = {
-  readonly config: StrataConfig;
+export type FyreDbProviderProps = {
+  readonly config: FyreDbConfig;
   readonly children: ReactNode;
 };
 
 /**
- * Top-level provider. Owns auth subscription, `Strata` lifecycle, and
+ * Top-level provider. Owns auth subscription, `FyreDb` lifecycle, and
  * exposes config + state to the tree via context.
  */
-export function StrataProvider({ config, children }: StrataProviderProps) {
+export function FyreDbProvider({ config, children }: FyreDbProviderProps) {
   const { auth } = config;
 
   // ── Auth state ───────────────────────────────────────────
@@ -41,9 +41,9 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
     return () => { sub.unsubscribe(); };
   }, [auth]);
 
-  // ── Strata lifecycle ─────────────────────────────────────
+  // ── FyreDb lifecycle ─────────────────────────────────────
   // Rebuild when auth state or cloud adapter changes.
-  const [strata, setStrata] = useState<Strata | null>(null);
+  const [fyredb, setFyreDb] = useState<FyreDb | null>(null);
 
   // Track the cloud adapter reactively via cloud.active$.
   const [cloudAdapter, setCloudAdapter] = useState<StorageAdapter | null>(
@@ -62,7 +62,7 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
     const shouldBuild = !auth || authState.status === 'signed-in';
     if (!shouldBuild) return;
 
-    const instance = new Strata({
+    const instance = new FyreDb({
       appId: config.appId,
       deviceId: config.deviceId,
       entities: config.entities,
@@ -71,13 +71,13 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
       cloudAdapter: cloudAdapter ?? undefined,
       encryptionService: config.encryption,
     });
-    log.strata('created instance (cloud=%s)', !!cloudAdapter);
+    log.fyredb('created instance (cloud=%s)', !!cloudAdapter);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStrata(instance);
+    setFyreDb(instance);
 
     return () => {
-      setStrata(null);
-      log.strata('disposing instance');
+      setFyreDb(null);
+      log.fyredb('disposing instance');
       void instance.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,28 +91,28 @@ export function StrataProvider({ config, children }: StrataProviderProps) {
   }, [config.providers]);
 
   // ── Context value ────────────────────────────────────────
-  const value = useMemo<StrataContextValue>(
-    () => ({ config, strata, authState }),
-    [config, strata, authState],
+  const value = useMemo<FyreDbContextValue>(
+    () => ({ config, fyredb, authState }),
+    [config, fyredb, authState],
   );
 
   return (
-    <StrataContext.Provider value={value}>{children}</StrataContext.Provider>
+    <FyreDbContext.Provider value={value}>{children}</FyreDbContext.Provider>
   );
 }
 
-// ─── Internal hook (used by guards, pages within strata-plugins-ui) ────
+// ─── Internal hook (used by guards, pages within @fyre-db/plugins-ui) ────
 
-export function useStrataContext(): StrataContextValue {
-  const ctx = useContext(StrataContext);
-  if (!ctx) throw new StrataPluginConfigError('useStrataContext: missing <StrataProvider>');
+export function useFyreDbContext(): FyreDbContextValue {
+  const ctx = useContext(FyreDbContext);
+  if (!ctx) throw new FyreDbPluginConfigError('useFyreDbContext: missing <FyreDbProvider>');
   return ctx;
 }
 
 // ─── Public hooks ──────────────────────────────────────────
 
-export function useStrata(): Strata | null {
-  return useStrataContext().strata;
+export function useFyreDb(): FyreDb | null {
+  return useFyreDbContext().fyredb;
 }
 
 export type SupportedAuthEntry = {
@@ -129,7 +129,7 @@ export type UseAuthResult = {
 };
 
 export function useAuth(): UseAuthResult {
-  const { config, authState } = useStrataContext();
+  const { config, authState } = useFyreDbContext();
   const { auth } = config;
 
   const supportedAuths = useMemo<readonly SupportedAuthEntry[]>(
@@ -138,7 +138,7 @@ export function useAuth(): UseAuthResult {
   );
 
   const logout = useCallback(async () => {
-    if (!auth) throw new StrataPluginConfigError('useAuth: no auth configured');
+    if (!auth) throw new FyreDbPluginConfigError('useAuth: no auth configured');
     await auth.logout();
   }, [auth]);
 

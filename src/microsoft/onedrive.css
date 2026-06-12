@@ -1,24 +1,24 @@
 /* ═══════════════════════════════════════════════════════════
    OneDrive Explorer — data-slot CSS
    Every element in CloudFileExplorer carries a `data-slot`
-   attribute. Brand CSS targets `.strata-onedrive [data-slot="…"]`.
-   The overlay is a sibling, targeted via `+ .strata-onedrive`.
+   attribute. Brand CSS targets `.fyredb-onedrive [data-slot="…"]`.
+   The overlay is a sibling, targeted via `+ .fyredb-onedrive`.
    ═══════════════════════════════════════════════════════════ */
 
 /* ---------- overlay ---------- */
 
 /* Radix renders overlay just before content in the portal */
-[data-slot="overlay"]:has(+ .strata-onedrive) {
+[data-slot="overlay"]:has(+ .fyredb-onedrive) {
   position: fixed;
   inset: 0;
   background: rgba(32, 33, 36, 0.6);
   z-index: 1000;
-  animation: strata-onedrive-fade-in 120ms ease-out;
+  animation: fyredb-onedrive-fade-in 120ms ease-out;
 }
 
 /* ---------- content (root) ---------- */
 
-.strata-onedrive {
+.fyredb-onedrive {
   --onedrive-surface: #ffffff;
   --onedrive-surface-2: #faf9f8;
   --onedrive-hover: #f3f2f1;
@@ -47,12 +47,12 @@
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 14px;
   z-index: 1001;
-  animation: strata-onedrive-scale-in 140ms ease-out;
+  animation: fyredb-onedrive-scale-in 140ms ease-out;
 }
 
 /* ---------- dark mode (triggered by data-theme="dark" on the component root) ---------- */
 
-.strata-onedrive[data-theme="dark"] {
+.fyredb-onedrive[data-theme="dark"] {
   --onedrive-surface: #1b1b1b;
   --onedrive-surface-2: #292929;
   --onedrive-hover: #333333;
@@ -68,7 +68,7 @@
 
 /* ---------- header ---------- */
 
-.strata-onedrive [data-slot="header"] {
+.fyredb-onedrive [data-slot="header"] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -77,24 +77,24 @@
   flex-shrink: 0;
 }
 
-.strata-onedrive [data-slot="header-title"] {
+.fyredb-onedrive [data-slot="header-title"] {
   display: flex;
   flex-direction: column;
   min-width: 120px;
 }
 
-.strata-onedrive [data-slot="title"] {
+.fyredb-onedrive [data-slot="title"] {
   font-size: 18px;
   font-weight: 500;
   color: var(--onedrive-text);
   margin: 0;
 }
 
-.strata-onedrive [data-slot="description"] {
+.fyredb-onedrive [data-slot="description"] {
   display: none;
 }
 
-.strata-onedrive [data-slot="search-wrap"] {
+.fyredb-onedrive [data-slot="search-wrap"] {
   flex: 1;
   display: flex;
   align-items: center;
@@ -107,7 +107,7 @@
   font-size: 20px;
 }
 
-.strata-onedrive [data-slot="search"] {
+.fyredb-onedrive [data-slot="search"] {
   flex: 1;
   border: 0;
   background: transparent;
@@ -117,11 +117,11 @@
   font-size: 14px;
 }
 
-.strata-onedrive [data-slot="search"]::placeholder {
+.fyredb-onedrive [data-slot="search"]::placeholder {
   color: var(--onedrive-text-dim);
 }
 
-.strata-onedrive [data-slot="close"] {
+.fyredb-onedrive [data-slot="close"] {
   flex-shrink: 0;
   margin-left: auto;
   width: 40px;
@@ -137,20 +137,20 @@
   font-size: 20px;
 }
 
-.strata-onedrive [data-slot="close"]:hover {
+.fyredb-onedrive [data-slot="close"]:hover {
   background: var(--onedrive-hover);
 }
 
 /* ---------- body ---------- */
 
-.strata-onedrive [data-slot="body"] {
+.fyredb-onedrive [data-slot="body"] {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-.strata-onedrive [data-slot="sidebar"] {
+.fyredb-onedrive [data-slot="sidebar"] {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
@@ -161,7 +161,7 @@
   border-bottom: 1px solid var(--onedrive-divider);
 }
 
-.strata-onedrive [data-slot="sidebar-item"] {
+.fyredb-onedrive [data-slot="sidebar-item"] {
   display: inline-flex;
   align-items: center;
   height: 36px;
@@ -178,24 +178,24 @@
   white-space: nowrap;
 }
 
-.strata-onedrive [data-slot="sidebar-item"]:hover:not(:disabled) {
+.fyredb-onedrive [data-slot="sidebar-item"]:hover:not(:disabled) {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="sidebar-item"][data-active] {
+.fyredb-onedrive [data-slot="sidebar-item"][data-active] {
   background: var(--onedrive-selected);
   color: var(--onedrive-selected-text);
   border-color: transparent;
 }
 
-.strata-onedrive [data-slot="sidebar-item"]:disabled {
+.fyredb-onedrive [data-slot="sidebar-item"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- main column ---------- */
 
-.strata-onedrive [data-slot="main"] {
+.fyredb-onedrive [data-slot="main"] {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -203,14 +203,14 @@
   min-height: 0;
 }
 
-.strata-onedrive [data-slot="toolbar"] {
+.fyredb-onedrive [data-slot="toolbar"] {
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 8px 16px;
 }
 
-.strata-onedrive [data-slot="back"] {
+.fyredb-onedrive [data-slot="back"] {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
@@ -225,11 +225,11 @@
   font-size: 20px;
 }
 
-.strata-onedrive [data-slot="back"]:hover {
+.fyredb-onedrive [data-slot="back"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="breadcrumb"] {
+.fyredb-onedrive [data-slot="breadcrumb"] {
   flex: 1;
   display: flex;
   align-items: center;
@@ -241,7 +241,7 @@
   overflow: hidden;
 }
 
-.strata-onedrive [data-slot="breadcrumb-item"] {
+.fyredb-onedrive [data-slot="breadcrumb-item"] {
   border: 0;
   background: transparent;
   color: inherit;
@@ -255,17 +255,17 @@
   max-width: 100%;
 }
 
-.strata-onedrive [data-slot="breadcrumb-item"]:hover {
+.fyredb-onedrive [data-slot="breadcrumb-item"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="breadcrumb-sep"] {
+.fyredb-onedrive [data-slot="breadcrumb-sep"] {
   color: var(--onedrive-text-dim);
   font-size: 14px;
   padding: 0 2px;
 }
 
-.strata-onedrive [data-slot="refresh"] {
+.fyredb-onedrive [data-slot="refresh"] {
   flex-shrink: 0;
   margin-left: auto;
   width: 36px;
@@ -281,17 +281,17 @@
   font-size: 20px;
 }
 
-.strata-onedrive [data-slot="refresh"]:hover {
+.fyredb-onedrive [data-slot="refresh"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="refresh"][data-loading] {
-  animation: strata-onedrive-spin 1s linear infinite;
+.fyredb-onedrive [data-slot="refresh"][data-loading] {
+  animation: fyredb-onedrive-spin 1s linear infinite;
 }
 
 /* ---------- retry ---------- */
 
-.strata-onedrive [data-slot="retry-panel"] {
+.fyredb-onedrive [data-slot="retry-panel"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -302,7 +302,7 @@
   margin: 8px 24px;
 }
 
-.strata-onedrive [data-slot="retry"] {
+.fyredb-onedrive [data-slot="retry"] {
   border: 1px solid var(--onedrive-divider);
   background: transparent;
   color: var(--onedrive-accent);
@@ -314,13 +314,13 @@
   cursor: pointer;
 }
 
-.strata-onedrive [data-slot="retry"]:hover {
+.fyredb-onedrive [data-slot="retry"]:hover {
   background: var(--onedrive-hover);
 }
 
 /* ---------- list / rows ---------- */
 
-.strata-onedrive [data-slot="col-header"] {
+.fyredb-onedrive [data-slot="col-header"] {
   display: grid;
   grid-template-columns: 1fr 200px 140px 32px;
   gap: 16px;
@@ -331,14 +331,14 @@
   font-weight: 500;
 }
 
-.strata-onedrive [data-slot="list"] {
+.fyredb-onedrive [data-slot="list"] {
   flex: 1;
   position: relative;
   overflow-y: auto;
   padding: 4px 0 12px;
 }
 
-.strata-onedrive [data-slot="row"] {
+.fyredb-onedrive [data-slot="row"] {
   display: grid;
   grid-template-columns: 1fr 200px 140px 32px;
   gap: 16px;
@@ -355,21 +355,21 @@
   cursor: pointer;
 }
 
-.strata-onedrive [data-slot="row"]:hover:not([data-disabled]) {
+.fyredb-onedrive [data-slot="row"]:hover:not([data-disabled]) {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="row"][data-selected] {
+.fyredb-onedrive [data-slot="row"][data-selected] {
   background: var(--onedrive-selected);
   color: var(--onedrive-selected-text);
 }
 
-.strata-onedrive [data-slot="row"][data-disabled] {
+.fyredb-onedrive [data-slot="row"][data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-onedrive [data-slot="row-name"] {
+.fyredb-onedrive [data-slot="row-name"] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -377,13 +377,13 @@
   overflow: hidden;
 }
 
-.strata-onedrive [data-slot="row-name"] > span:last-child {
+.fyredb-onedrive [data-slot="row-name"] > span:last-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.strata-onedrive [data-slot="row-icon"] {
+.fyredb-onedrive [data-slot="row-icon"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -393,8 +393,8 @@
   flex-shrink: 0;
 }
 
-.strata-onedrive [data-slot="row-date"],
-.strata-onedrive [data-slot="row-size"] {
+.fyredb-onedrive [data-slot="row-date"],
+.fyredb-onedrive [data-slot="row-size"] {
   color: var(--onedrive-text-muted);
   font-size: 13px;
   white-space: nowrap;
@@ -402,12 +402,12 @@
   text-overflow: ellipsis;
 }
 
-.strata-onedrive [data-slot="row"][data-selected] [data-slot="row-date"],
-.strata-onedrive [data-slot="row"][data-selected] [data-slot="row-size"] {
+.fyredb-onedrive [data-slot="row"][data-selected] [data-slot="row-date"],
+.fyredb-onedrive [data-slot="row"][data-selected] [data-slot="row-size"] {
   color: var(--onedrive-selected-text);
 }
 
-.strata-onedrive [data-slot="row-open"] {
+.fyredb-onedrive [data-slot="row-open"] {
   border: 0;
   background: transparent;
   color: var(--onedrive-text-dim);
@@ -422,17 +422,17 @@
   flex-shrink: 0;
 }
 
-.strata-onedrive [data-slot="row-open"]:hover {
+.fyredb-onedrive [data-slot="row-open"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="empty"] {
+.fyredb-onedrive [data-slot="empty"] {
   padding: 48px 24px;
   text-align: center;
   color: var(--onedrive-text-dim);
 }
 
-.strata-onedrive [data-slot="loading"] {
+.fyredb-onedrive [data-slot="loading"] {
   position: absolute;
   inset: 0;
   display: flex;
@@ -445,13 +445,13 @@
   z-index: 1;
 }
 
-.strata-onedrive [data-slot="loading"] svg {
+.fyredb-onedrive [data-slot="loading"] svg {
   width: 48px;
   height: 48px;
-  animation: strata-onedrive-spin 1s linear infinite;
+  animation: fyredb-onedrive-spin 1s linear infinite;
 }
 
-.strata-onedrive [data-slot="loading"] > span {
+.fyredb-onedrive [data-slot="loading"] > span {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -462,7 +462,7 @@
 
 /* ---------- footer ---------- */
 
-.strata-onedrive [data-slot="footer"] {
+.fyredb-onedrive [data-slot="footer"] {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -472,11 +472,11 @@
   flex-shrink: 0;
 }
 
-.strata-onedrive [data-slot="spacer"] {
+.fyredb-onedrive [data-slot="spacer"] {
   flex: 1;
 }
 
-.strata-onedrive [data-slot="new-folder"] {
+.fyredb-onedrive [data-slot="new-folder"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -492,16 +492,16 @@
   font-size: 14px;
 }
 
-.strata-onedrive [data-slot="new-folder"]:hover:not(:disabled) {
+.fyredb-onedrive [data-slot="new-folder"]:hover:not(:disabled) {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="new-folder"]:disabled {
+.fyredb-onedrive [data-slot="new-folder"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Radix portals the popover outside .strata-onedrive, so target directly */
+/* Radix portals the popover outside .fyredb-onedrive, so target directly */
 [data-slot="new-folder-popover"] {
   background: var(--onedrive-surface, #ffffff);
   color: var(--onedrive-text, #242424);
@@ -554,8 +554,8 @@
   cursor: not-allowed;
 }
 
-.strata-onedrive [data-slot="cancel"],
-.strata-onedrive [data-slot="select"] {
+.fyredb-onedrive [data-slot="cancel"],
+.fyredb-onedrive [data-slot="select"] {
   padding: 0 20px;
   height: 36px;
   border: 0;
@@ -566,50 +566,50 @@
   cursor: pointer;
 }
 
-.strata-onedrive [data-slot="cancel"] {
+.fyredb-onedrive [data-slot="cancel"] {
   background: transparent;
   color: var(--onedrive-text);
   border: 1px solid var(--onedrive-divider);
 }
 
-.strata-onedrive [data-slot="cancel"]:hover {
+.fyredb-onedrive [data-slot="cancel"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="select"] {
+.fyredb-onedrive [data-slot="select"] {
   background: var(--onedrive-accent);
   color: #ffffff;
 }
 
-.strata-onedrive [data-slot="select"]:disabled {
+.fyredb-onedrive [data-slot="select"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- animations ---------- */
 
-@keyframes strata-onedrive-fade-in {
+@keyframes fyredb-onedrive-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes strata-onedrive-scale-in {
+@keyframes fyredb-onedrive-scale-in {
   from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
-@keyframes strata-onedrive-spin {
+@keyframes fyredb-onedrive-spin {
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
 }
 
 /* ═══════════════════════════════════════════════════════════
    Step forms — data-slot CSS for wizard steps
-   Steps rendered with `className="strata-onedrive"` pick up
+   Steps rendered with `className="fyredb-onedrive"` pick up
    these rules automatically.
    ═══════════════════════════════════════════════════════════ */
 
-.strata-onedrive[data-slot="step"] {
+.fyredb-onedrive[data-slot="step"] {
   font-family: 'Segoe UI', system-ui, sans-serif;
   color: var(--onedrive-text);
   background: var(--onedrive-surface-2);
@@ -625,20 +625,20 @@
   min-height: 0;
 }
 
-.strata-onedrive [data-slot="step-header"] {
+.fyredb-onedrive [data-slot="step-header"] {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.strata-onedrive [data-slot="step-header-text"] {
+.fyredb-onedrive [data-slot="step-header-text"] {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.strata-onedrive [data-slot="step-close"] {
+.fyredb-onedrive [data-slot="step-close"] {
   flex-shrink: 0;
   width: 32px;
   height: 32px;
@@ -654,24 +654,24 @@
   transition: background 120ms;
 }
 
-.strata-onedrive [data-slot="step-close"]:hover {
+.fyredb-onedrive [data-slot="step-close"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="step-title"] {
+.fyredb-onedrive [data-slot="step-title"] {
   font-size: 18px;
   font-weight: 500;
   color: var(--onedrive-text);
   margin: 0;
 }
 
-.strata-onedrive [data-slot="step-body"] {
+.fyredb-onedrive [data-slot="step-body"] {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.strata-onedrive [data-slot="step-input"] {
+.fyredb-onedrive [data-slot="step-input"] {
   font-family: inherit;
   font-size: 14px;
   padding: 8px 12px;
@@ -685,29 +685,29 @@
   transition: border-color 120ms;
 }
 
-.strata-onedrive [data-slot="step-input"]:focus {
+.fyredb-onedrive [data-slot="step-input"]:focus {
   border-color: var(--onedrive-accent);
 }
 
-.strata-onedrive [data-slot="step-input"]::placeholder {
+.fyredb-onedrive [data-slot="step-input"]::placeholder {
   color: var(--onedrive-text-dim);
 }
 
-.strata-onedrive [data-slot="step-divider"] {
+.fyredb-onedrive [data-slot="step-divider"] {
   border: none;
   border-top: 1px solid var(--onedrive-divider);
   margin: 0;
 }
 
-.strata-onedrive [data-slot="step-footer"] {
+.fyredb-onedrive [data-slot="step-footer"] {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   padding-top: 4px;
 }
 
-.strata-onedrive [data-slot="step-cancel"],
-.strata-onedrive [data-slot="step-submit"] {
+.fyredb-onedrive [data-slot="step-cancel"],
+.fyredb-onedrive [data-slot="step-submit"] {
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -718,63 +718,63 @@
   transition: background 120ms;
 }
 
-.strata-onedrive [data-slot="step-cancel"] {
+.fyredb-onedrive [data-slot="step-cancel"] {
   background: transparent;
   color: var(--onedrive-text);
   border: 1px solid var(--onedrive-divider);
 }
 
-.strata-onedrive [data-slot="step-cancel"]:hover {
+.fyredb-onedrive [data-slot="step-cancel"]:hover {
   background: var(--onedrive-hover);
 }
 
-.strata-onedrive [data-slot="step-submit"] {
+.fyredb-onedrive [data-slot="step-submit"] {
   background: var(--onedrive-accent);
   color: #fff;
 }
 
-.strata-onedrive [data-slot="step-submit"]:hover {
+.fyredb-onedrive [data-slot="step-submit"]:hover {
   background: #106ebe;
 }
 
-.strata-onedrive [data-slot="step-submit"]:disabled {
+.fyredb-onedrive [data-slot="step-submit"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- step extras (description, fields, checkbox, folder picker) ---------- */
 
-.strata-onedrive [data-slot="step-description"] {
+.fyredb-onedrive [data-slot="step-description"] {
   font-size: 13px;
   color: var(--onedrive-text-dim);
   margin: 2px 0 0;
 }
 
-.strata-onedrive [data-slot="step-field"] {
+.fyredb-onedrive [data-slot="step-field"] {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.strata-onedrive [data-slot="step-label"] {
+.fyredb-onedrive [data-slot="step-label"] {
   font-size: 13px;
   font-weight: 500;
   color: var(--onedrive-text-muted);
 }
 
-.strata-onedrive [data-slot="step-hint"] {
+.fyredb-onedrive [data-slot="step-hint"] {
   font-size: 12px;
   color: var(--onedrive-text-dim);
   margin: 0;
 }
 
-.strata-onedrive [data-slot="step-error"] {
+.fyredb-onedrive [data-slot="step-error"] {
   font-size: 13px;
   color: #d93025;
   margin: 0;
 }
 
-.strata-onedrive [data-slot="step-warning"] {
+.fyredb-onedrive [data-slot="step-warning"] {
   font-size: 12px;
   color: var(--onedrive-text-dim);
   margin: 0;
@@ -783,7 +783,7 @@
   border-radius: 4px;
 }
 
-.strata-onedrive [data-slot="step-checkbox-label"] {
+.fyredb-onedrive [data-slot="step-checkbox-label"] {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -792,7 +792,7 @@
   cursor: pointer;
 }
 
-.strata-onedrive [data-slot="step-checkbox"] {
+.fyredb-onedrive [data-slot="step-checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 18px;
@@ -806,12 +806,12 @@
   transition: background 120ms, border-color 120ms;
 }
 
-.strata-onedrive [data-slot="step-checkbox"]:checked {
+.fyredb-onedrive [data-slot="step-checkbox"]:checked {
   background: var(--onedrive-accent);
   border-color: var(--onedrive-accent);
 }
 
-.strata-onedrive [data-slot="step-checkbox"]:checked::after {
+.fyredb-onedrive [data-slot="step-checkbox"]:checked::after {
   content: '';
   position: absolute;
   left: 4px;
@@ -823,7 +823,7 @@
   transform: rotate(45deg);
 }
 
-.strata-onedrive [data-slot="step-folder-picker"] {
+.fyredb-onedrive [data-slot="step-folder-picker"] {
   display: flex;
   align-items: center;
   background: var(--onedrive-search-bg);
@@ -833,22 +833,22 @@
   transition: border-color 120ms;
 }
 
-.strata-onedrive [data-slot="step-folder-picker"]:hover {
+.fyredb-onedrive [data-slot="step-folder-picker"]:hover {
   border-bottom-color: var(--onedrive-accent);
 }
 
-.strata-onedrive [data-slot="step-folder-picker"] [data-slot="step-input"] {
+.fyredb-onedrive [data-slot="step-folder-picker"] [data-slot="step-input"] {
   flex: 1;
   border: none;
   border-radius: 0;
   background: transparent;
 }
 
-.strata-onedrive [data-slot="step-folder-picker"] [data-slot="step-input"]:focus {
+.fyredb-onedrive [data-slot="step-folder-picker"] [data-slot="step-input"]:focus {
   border-bottom-color: transparent;
 }
 
-.strata-onedrive [data-slot="step-browse"] {
+.fyredb-onedrive [data-slot="step-browse"] {
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -860,7 +860,7 @@
   white-space: nowrap;
 }
 
-.strata-onedrive [data-slot="step-browse"]:hover {
+.fyredb-onedrive [data-slot="step-browse"]:hover {
   text-decoration: underline;
 }
 

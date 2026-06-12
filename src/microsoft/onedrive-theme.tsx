@@ -15,7 +15,7 @@ export type OneDriveTheme = ProviderTheme;
 export const oneDriveTheme: OneDriveTheme = {
   color: '#0078D4',
   accent: '#0364B8',
-  className: 'strata-onedrive',
+  className: 'fyredb-onedrive',
   icons: {
     folder: (file: CloudFile) => <OneDriveFileIcon file={file} />,
     file: (file: CloudFile) => <OneDriveFileIcon file={file} />,

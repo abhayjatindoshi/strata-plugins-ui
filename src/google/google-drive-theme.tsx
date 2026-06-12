@@ -24,7 +24,7 @@ export type GoogleDriveTheme = ProviderTheme;
 export const googleDriveTheme: GoogleDriveTheme = {
   color: '#1A73E8',
   accent: '#34A853',
-  className: 'strata-gdrive',
+  className: 'fyredb-gdrive',
   icons: {
     folder: (file: CloudFile) => <GoogleDriveFileIcon file={file} />,
     file: (file: CloudFile) => <GoogleDriveFileIcon file={file} />,

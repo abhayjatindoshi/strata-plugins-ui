@@ -1,5 +1,5 @@
 import { type ReactNode, useMemo } from 'react';
-import { useStrataContext } from '../react/strata-provider';
+import { useFyreDbContext } from '../react/fyredb-provider';
 import { useOpRunner } from './use-op-runner';
 import type { CloudProvider, ProviderOp } from './provider';
 import type { WizardClassNames, WizardLabels } from '../wizard/use-wizard-host';
@@ -18,7 +18,7 @@ export type TenantOpsProps = {
  * Owns the wizard element for multi-step flows.
  */
 export function TenantOps(props: TenantOpsProps) {
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const ready = !!config.auth && !!config.commonSteps;
 
   const runner = useOpRunner({

@@ -1,10 +1,10 @@
 import type { ClientAuthService, SupportedAuth } from '@fyre-db/plugins';
-import { StrataPluginConfigError } from '@fyre-db/plugins';
-import { useStrataContext } from '../react/strata-provider';
+import { FyreDbPluginConfigError } from '@fyre-db/plugins';
+import { useFyreDbContext } from '../react/fyredb-provider';
 import { LoginButton, type LoginButtonTheme, type LoginButtonVariant } from '../react/components/login-button';
 
 export type LoginButtonsProps = {
-  /** Optional — falls back to `<StrataProvider>` context. */
+  /** Optional — falls back to `<FyreDbProvider>` context. */
   readonly authService?: ClientAuthService;
   /** Color mode — passed to each branded login button. */
   readonly mode?: LoginButtonTheme;
@@ -19,10 +19,10 @@ export type LoginButtonsProps = {
  * Layout is the consumer's responsibility.
  */
 export function LoginButtons(props: LoginButtonsProps) {
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const authService = props.authService ?? config.auth;
   if (!authService) {
-    throw new StrataPluginConfigError('LoginButtons: no ClientAuthService — pass authService prop or render under <StrataProvider>');
+    throw new FyreDbPluginConfigError('LoginButtons: no ClientAuthService — pass authService prop or render under <FyreDbProvider>');
   }
   const supported = authService.supportedAuths();
 

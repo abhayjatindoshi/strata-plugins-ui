@@ -35,7 +35,7 @@ function buildTenantLabels(label: string): TenantLabels {
 
 // ─── Input type ────────────────────────────────────────
 
-export type StrataConfigInput = {
+export type FyreDbConfigInput = {
   readonly appId: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly entities: ReadonlyArray<EntityDefinition<any>>;
@@ -61,7 +61,7 @@ export type StrataConfigInput = {
 
 // ─── Resolved config ───────────────────────────────────────
 
-export type StrataConfig = {
+export type FyreDbConfig = {
   readonly appId: string;
   readonly deviceId: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,7 +90,7 @@ function getOrCreateDeviceId(appId: string): string {
 
 // ─── Builder ───────────────────────────────────────────────
 
-export function createStrataConfig(input: StrataConfigInput): StrataConfig {
+export function createFyreDbConfig(input: FyreDbConfigInput): FyreDbConfig {
   const {
     appId,
     entities,

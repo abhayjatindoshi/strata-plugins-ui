@@ -1,24 +1,24 @@
 /* ═══════════════════════════════════════════════════════════
    Google Drive Explorer — data-slot CSS
    Every element in CloudFileExplorer carries a `data-slot`
-   attribute. Brand CSS targets `.strata-gdrive [data-slot="…"]`.
-   The overlay is a sibling, targeted via `+ .strata-gdrive`.
+   attribute. Brand CSS targets `.fyredb-gdrive [data-slot="…"]`.
+   The overlay is a sibling, targeted via `+ .fyredb-gdrive`.
    ═══════════════════════════════════════════════════════════ */
 
 /* ---------- overlay ---------- */
 
 /* Radix renders overlay just before content in the portal */
-[data-slot="overlay"]:has(+ .strata-gdrive) {
+[data-slot="overlay"]:has(+ .fyredb-gdrive) {
   position: fixed;
   inset: 0;
   background: rgba(32, 33, 36, 0.6);
   z-index: 1000;
-  animation: strata-gdrive-fade-in 120ms ease-out;
+  animation: fyredb-gdrive-fade-in 120ms ease-out;
 }
 
 /* ---------- content (root) ---------- */
 
-.strata-gdrive {
+.fyredb-gdrive {
   --gdrive-surface: #ffffff;
   --gdrive-surface-2: #f8fafd;
   --gdrive-hover: #f1f3f4;
@@ -47,12 +47,12 @@
   font-family: "Google Sans Text", "Google Sans", Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 14px;
   z-index: 1001;
-  animation: strata-gdrive-scale-in 140ms ease-out;
+  animation: fyredb-gdrive-scale-in 140ms ease-out;
 }
 
 /* ---------- dark mode (triggered by data-theme="dark" on the component root) ---------- */
 
-.strata-gdrive[data-theme="dark"] {
+.fyredb-gdrive[data-theme="dark"] {
   --gdrive-surface: #1b1b1b;
   --gdrive-surface-2: #1b1b1b;
   --gdrive-hover: #2f3235;
@@ -68,7 +68,7 @@
 
 /* ---------- header ---------- */
 
-.strata-gdrive [data-slot="header"] {
+.fyredb-gdrive [data-slot="header"] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -77,24 +77,24 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive [data-slot="header-title"] {
+.fyredb-gdrive [data-slot="header-title"] {
   display: flex;
   flex-direction: column;
   min-width: 120px;
 }
 
-.strata-gdrive [data-slot="title"] {
+.fyredb-gdrive [data-slot="title"] {
   font-size: 18px;
   font-weight: 500;
   color: var(--gdrive-text);
   margin: 0;
 }
 
-.strata-gdrive [data-slot="description"] {
+.fyredb-gdrive [data-slot="description"] {
   display: none;
 }
 
-.strata-gdrive [data-slot="search-wrap"] {
+.fyredb-gdrive [data-slot="search-wrap"] {
   flex: 1;
   display: flex;
   align-items: center;
@@ -107,7 +107,7 @@
   font-size: 20px;
 }
 
-.strata-gdrive [data-slot="search"] {
+.fyredb-gdrive [data-slot="search"] {
   flex: 1;
   border: 0;
   background: transparent;
@@ -117,11 +117,11 @@
   font-size: 14px;
 }
 
-.strata-gdrive [data-slot="search"]::placeholder {
+.fyredb-gdrive [data-slot="search"]::placeholder {
   color: var(--gdrive-text-dim);
 }
 
-.strata-gdrive [data-slot="close"] {
+.fyredb-gdrive [data-slot="close"] {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
@@ -136,20 +136,20 @@
   font-size: 20px;
 }
 
-.strata-gdrive [data-slot="close"]:hover {
+.fyredb-gdrive [data-slot="close"]:hover {
   background: var(--gdrive-hover);
 }
 
 /* ---------- body ---------- */
 
-.strata-gdrive [data-slot="body"] {
+.fyredb-gdrive [data-slot="body"] {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-.strata-gdrive [data-slot="sidebar"] {
+.fyredb-gdrive [data-slot="sidebar"] {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
@@ -160,7 +160,7 @@
   border-bottom: 1px solid var(--gdrive-divider);
 }
 
-.strata-gdrive [data-slot="sidebar-item"] {
+.fyredb-gdrive [data-slot="sidebar-item"] {
   display: inline-flex;
   align-items: center;
   height: 36px;
@@ -177,24 +177,24 @@
   white-space: nowrap;
 }
 
-.strata-gdrive [data-slot="sidebar-item"]:hover:not(:disabled) {
+.fyredb-gdrive [data-slot="sidebar-item"]:hover:not(:disabled) {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="sidebar-item"][data-active] {
+.fyredb-gdrive [data-slot="sidebar-item"][data-active] {
   background: var(--gdrive-selected);
   color: var(--gdrive-selected-text);
   border-color: transparent;
 }
 
-.strata-gdrive [data-slot="sidebar-item"]:disabled {
+.fyredb-gdrive [data-slot="sidebar-item"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- main column ---------- */
 
-.strata-gdrive [data-slot="main"] {
+.fyredb-gdrive [data-slot="main"] {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -202,14 +202,14 @@
   min-height: 0;
 }
 
-.strata-gdrive [data-slot="toolbar"] {
+.fyredb-gdrive [data-slot="toolbar"] {
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 8px 16px;
 }
 
-.strata-gdrive [data-slot="back"] {
+.fyredb-gdrive [data-slot="back"] {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
@@ -224,11 +224,11 @@
   font-size: 20px;
 }
 
-.strata-gdrive [data-slot="back"]:hover {
+.fyredb-gdrive [data-slot="back"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="breadcrumb"] {
+.fyredb-gdrive [data-slot="breadcrumb"] {
   flex: 1;
   display: flex;
   align-items: center;
@@ -240,7 +240,7 @@
   overflow: hidden;
 }
 
-.strata-gdrive [data-slot="breadcrumb-item"] {
+.fyredb-gdrive [data-slot="breadcrumb-item"] {
   border: 0;
   background: transparent;
   color: inherit;
@@ -254,17 +254,17 @@
   max-width: 100%;
 }
 
-.strata-gdrive [data-slot="breadcrumb-item"]:hover {
+.fyredb-gdrive [data-slot="breadcrumb-item"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="breadcrumb-sep"] {
+.fyredb-gdrive [data-slot="breadcrumb-sep"] {
   color: var(--gdrive-text-dim);
   font-size: 14px;
   padding: 0 2px;
 }
 
-.strata-gdrive [data-slot="refresh"] {
+.fyredb-gdrive [data-slot="refresh"] {
   flex-shrink: 0;
   margin-left: auto;
   width: 36px;
@@ -280,17 +280,17 @@
   font-size: 20px;
 }
 
-.strata-gdrive [data-slot="refresh"]:hover {
+.fyredb-gdrive [data-slot="refresh"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="refresh"][data-loading] {
-  animation: strata-gdrive-spin 1s linear infinite;
+.fyredb-gdrive [data-slot="refresh"][data-loading] {
+  animation: fyredb-gdrive-spin 1s linear infinite;
 }
 
 /* ---------- retry ---------- */
 
-.strata-gdrive [data-slot="retry-panel"] {
+.fyredb-gdrive [data-slot="retry-panel"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -301,7 +301,7 @@
   margin: 8px 24px;
 }
 
-.strata-gdrive [data-slot="retry"] {
+.fyredb-gdrive [data-slot="retry"] {
   border: 1px solid var(--gdrive-divider);
   background: transparent;
   color: var(--gdrive-accent);
@@ -313,13 +313,13 @@
   cursor: pointer;
 }
 
-.strata-gdrive [data-slot="retry"]:hover {
+.fyredb-gdrive [data-slot="retry"]:hover {
   background: var(--gdrive-hover);
 }
 
 /* ---------- list / rows ---------- */
 
-.strata-gdrive [data-slot="col-header"] {
+.fyredb-gdrive [data-slot="col-header"] {
   display: grid;
   grid-template-columns: 1fr 200px 140px 32px;
   gap: 16px;
@@ -330,14 +330,14 @@
   font-weight: 500;
 }
 
-.strata-gdrive [data-slot="list"] {
+.fyredb-gdrive [data-slot="list"] {
   flex: 1;
   position: relative;
   overflow-y: auto;
   padding: 4px 0 12px;
 }
 
-.strata-gdrive [data-slot="row"] {
+.fyredb-gdrive [data-slot="row"] {
   display: grid;
   grid-template-columns: 1fr 200px 140px 32px;
   gap: 16px;
@@ -354,21 +354,21 @@
   cursor: pointer;
 }
 
-.strata-gdrive [data-slot="row"]:hover:not([data-disabled]) {
+.fyredb-gdrive [data-slot="row"]:hover:not([data-disabled]) {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="row"][data-selected] {
+.fyredb-gdrive [data-slot="row"][data-selected] {
   background: var(--gdrive-selected);
   color: var(--gdrive-selected-text);
 }
 
-.strata-gdrive [data-slot="row"][data-disabled] {
+.fyredb-gdrive [data-slot="row"][data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-gdrive [data-slot="row-name"] {
+.fyredb-gdrive [data-slot="row-name"] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -376,13 +376,13 @@
   overflow: hidden;
 }
 
-.strata-gdrive [data-slot="row-name"] > span:last-child {
+.fyredb-gdrive [data-slot="row-name"] > span:last-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.strata-gdrive [data-slot="row-icon"] {
+.fyredb-gdrive [data-slot="row-icon"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -392,8 +392,8 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive [data-slot="row-date"],
-.strata-gdrive [data-slot="row-size"] {
+.fyredb-gdrive [data-slot="row-date"],
+.fyredb-gdrive [data-slot="row-size"] {
   color: var(--gdrive-text-muted);
   font-size: 13px;
   white-space: nowrap;
@@ -401,12 +401,12 @@
   text-overflow: ellipsis;
 }
 
-.strata-gdrive [data-slot="row"][data-selected] [data-slot="row-date"],
-.strata-gdrive [data-slot="row"][data-selected] [data-slot="row-size"] {
+.fyredb-gdrive [data-slot="row"][data-selected] [data-slot="row-date"],
+.fyredb-gdrive [data-slot="row"][data-selected] [data-slot="row-size"] {
   color: var(--gdrive-selected-text);
 }
 
-.strata-gdrive [data-slot="row-open"] {
+.fyredb-gdrive [data-slot="row-open"] {
   border: 0;
   background: transparent;
   color: var(--gdrive-text-dim);
@@ -421,17 +421,17 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive [data-slot="row-open"]:hover {
+.fyredb-gdrive [data-slot="row-open"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="empty"] {
+.fyredb-gdrive [data-slot="empty"] {
   padding: 48px 24px;
   text-align: center;
   color: var(--gdrive-text-dim);
 }
 
-.strata-gdrive [data-slot="loading"] {
+.fyredb-gdrive [data-slot="loading"] {
   position: absolute;
   inset: 0;
   display: flex;
@@ -444,7 +444,7 @@
   z-index: 1;
 }
 
-.strata-gdrive [data-slot="loading"] > span {
+.fyredb-gdrive [data-slot="loading"] > span {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -455,7 +455,7 @@
 
 /* ---------- footer ---------- */
 
-.strata-gdrive [data-slot="footer"] {
+.fyredb-gdrive [data-slot="footer"] {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -465,11 +465,11 @@
   flex-shrink: 0;
 }
 
-.strata-gdrive [data-slot="spacer"] {
+.fyredb-gdrive [data-slot="spacer"] {
   flex: 1;
 }
 
-.strata-gdrive [data-slot="new-folder"] {
+.fyredb-gdrive [data-slot="new-folder"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -485,16 +485,16 @@
   font-size: 14px;
 }
 
-.strata-gdrive [data-slot="new-folder"]:hover:not(:disabled) {
+.fyredb-gdrive [data-slot="new-folder"]:hover:not(:disabled) {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="new-folder"]:disabled {
+.fyredb-gdrive [data-slot="new-folder"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-gdrive [data-slot="new-folder-popover"] {
+.fyredb-gdrive [data-slot="new-folder-popover"] {
   background: var(--gdrive-surface, #ffffff);
   color: var(--gdrive-text, #1f1f1f);
   border: 1px solid var(--gdrive-divider, #e0e3e7);
@@ -507,7 +507,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .strata-gdrive [data-slot="new-folder-popover"] {
+  .fyredb-gdrive [data-slot="new-folder-popover"] {
     --gdrive-surface: #2d2e30;
     --gdrive-text: #e3e3e3;
     --gdrive-divider: #3c4043;
@@ -515,7 +515,7 @@
   }
 }
 
-.strata-gdrive [data-slot="new-folder-input"] {
+.fyredb-gdrive [data-slot="new-folder-input"] {
   border: 1px solid var(--gdrive-divider);
   border-radius: 4px;
   padding: 8px 12px;
@@ -526,11 +526,11 @@
   outline: none;
 }
 
-.strata-gdrive [data-slot="new-folder-input"]:focus {
+.fyredb-gdrive [data-slot="new-folder-input"]:focus {
   border-color: var(--gdrive-accent);
 }
 
-.strata-gdrive [data-slot="new-folder-create"] {
+.fyredb-gdrive [data-slot="new-folder-create"] {
   border: 0;
   background: var(--gdrive-accent);
   color: white;
@@ -541,13 +541,13 @@
   cursor: pointer;
 }
 
-.strata-gdrive [data-slot="new-folder-create"]:disabled {
+.fyredb-gdrive [data-slot="new-folder-create"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.strata-gdrive [data-slot="cancel"],
-.strata-gdrive [data-slot="select"] {
+.fyredb-gdrive [data-slot="cancel"],
+.fyredb-gdrive [data-slot="select"] {
   padding: 0 24px;
   height: 40px;
   border: 0;
@@ -558,49 +558,49 @@
   cursor: pointer;
 }
 
-.strata-gdrive [data-slot="cancel"] {
+.fyredb-gdrive [data-slot="cancel"] {
   background: transparent;
   color: var(--gdrive-accent);
 }
 
-.strata-gdrive [data-slot="cancel"]:hover {
+.fyredb-gdrive [data-slot="cancel"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="select"] {
+.fyredb-gdrive [data-slot="select"] {
   background: var(--gdrive-accent);
   color: var(--gdrive-surface);
 }
 
-.strata-gdrive [data-slot="select"]:disabled {
+.fyredb-gdrive [data-slot="select"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- animations ---------- */
 
-@keyframes strata-gdrive-fade-in {
+@keyframes fyredb-gdrive-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes strata-gdrive-scale-in {
+@keyframes fyredb-gdrive-scale-in {
   from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
-@keyframes strata-gdrive-spin {
+@keyframes fyredb-gdrive-spin {
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
 }
 
 /* ═══════════════════════════════════════════════════════════
    Step forms — data-slot CSS for wizard steps
-   Steps rendered with `className="strata-gdrive"` pick up
+   Steps rendered with `className="fyredb-gdrive"` pick up
    these rules automatically.
    ═══════════════════════════════════════════════════════════ */
 
-.strata-gdrive[data-slot="step"] {
+.fyredb-gdrive[data-slot="step"] {
   font-family: 'Google Sans', Roboto, Arial, sans-serif;
   color: var(--gdrive-text);
   background: var(--gdrive-surface);
@@ -616,20 +616,20 @@
   min-height: 0;
 }
 
-.strata-gdrive [data-slot="step-header"] {
+.fyredb-gdrive [data-slot="step-header"] {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.strata-gdrive [data-slot="step-header-text"] {
+.fyredb-gdrive [data-slot="step-header-text"] {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.strata-gdrive [data-slot="step-close"] {
+.fyredb-gdrive [data-slot="step-close"] {
   flex-shrink: 0;
   width: 32px;
   height: 32px;
@@ -645,24 +645,24 @@
   transition: background 120ms;
 }
 
-.strata-gdrive [data-slot="step-close"]:hover {
+.fyredb-gdrive [data-slot="step-close"]:hover {
   background: var(--gdrive-hover);
 }
 
-.strata-gdrive [data-slot="step-title"] {
+.fyredb-gdrive [data-slot="step-title"] {
   font-size: 18px;
   font-weight: 500;
   color: var(--gdrive-text);
   margin: 0;
 }
 
-.strata-gdrive [data-slot="step-body"] {
+.fyredb-gdrive [data-slot="step-body"] {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.strata-gdrive [data-slot="step-input"] {
+.fyredb-gdrive [data-slot="step-input"] {
   font-family: inherit;
   font-size: 14px;
   padding: 12px 14px;
@@ -677,29 +677,29 @@
   transition: border-color 120ms;
 }
 
-.strata-gdrive [data-slot="step-input"]:focus {
+.fyredb-gdrive [data-slot="step-input"]:focus {
   border-bottom-color: var(--gdrive-accent);
 }
 
-.strata-gdrive [data-slot="step-input"]::placeholder {
+.fyredb-gdrive [data-slot="step-input"]::placeholder {
   color: var(--gdrive-text-dim);
 }
 
-.strata-gdrive [data-slot="step-divider"] {
+.fyredb-gdrive [data-slot="step-divider"] {
   border: none;
   border-top: 1px solid var(--gdrive-divider);
   margin: 0;
 }
 
-.strata-gdrive [data-slot="step-footer"] {
+.fyredb-gdrive [data-slot="step-footer"] {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   padding-top: 4px;
 }
 
-.strata-gdrive [data-slot="step-cancel"],
-.strata-gdrive [data-slot="step-submit"] {
+.fyredb-gdrive [data-slot="step-cancel"],
+.fyredb-gdrive [data-slot="step-submit"] {
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -710,63 +710,63 @@
   transition: background 120ms;
 }
 
-.strata-gdrive [data-slot="step-cancel"] {
+.fyredb-gdrive [data-slot="step-cancel"] {
   background: transparent;
   color: var(--gdrive-accent);
 }
 
-.strata-gdrive [data-slot="step-cancel"]:hover {
+.fyredb-gdrive [data-slot="step-cancel"]:hover {
   background: rgba(11, 87, 208, 0.08);
 }
 
-.strata-gdrive [data-slot="step-submit"] {
+.fyredb-gdrive [data-slot="step-submit"] {
   background: var(--gdrive-accent);
   color: #fff;
 }
 
-.strata-gdrive [data-slot="step-submit"]:hover {
+.fyredb-gdrive [data-slot="step-submit"]:hover {
   background: #0842a0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.strata-gdrive [data-slot="step-submit"]:disabled {
+.fyredb-gdrive [data-slot="step-submit"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ---------- step extras (description, fields, checkbox, folder picker) ---------- */
 
-.strata-gdrive [data-slot="step-description"] {
+.fyredb-gdrive [data-slot="step-description"] {
   font-size: 13px;
   color: var(--gdrive-text-dim);
   margin: 2px 0 0;
 }
 
-.strata-gdrive [data-slot="step-field"] {
+.fyredb-gdrive [data-slot="step-field"] {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.strata-gdrive [data-slot="step-label"] {
+.fyredb-gdrive [data-slot="step-label"] {
   font-size: 13px;
   font-weight: 500;
   color: var(--gdrive-text-muted);
 }
 
-.strata-gdrive [data-slot="step-hint"] {
+.fyredb-gdrive [data-slot="step-hint"] {
   font-size: 12px;
   color: var(--gdrive-text-dim);
   margin: 0;
 }
 
-.strata-gdrive [data-slot="step-error"] {
+.fyredb-gdrive [data-slot="step-error"] {
   font-size: 13px;
   color: #d93025;
   margin: 0;
 }
 
-.strata-gdrive [data-slot="step-warning"] {
+.fyredb-gdrive [data-slot="step-warning"] {
   font-size: 12px;
   color: var(--gdrive-text-dim);
   margin: 0;
@@ -775,7 +775,7 @@
   border-radius: 4px;
 }
 
-.strata-gdrive [data-slot="step-checkbox-label"] {
+.fyredb-gdrive [data-slot="step-checkbox-label"] {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -784,7 +784,7 @@
   cursor: pointer;
 }
 
-.strata-gdrive [data-slot="step-checkbox"] {
+.fyredb-gdrive [data-slot="step-checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 18px;
@@ -798,12 +798,12 @@
   transition: background 120ms, border-color 120ms;
 }
 
-.strata-gdrive [data-slot="step-checkbox"]:checked {
+.fyredb-gdrive [data-slot="step-checkbox"]:checked {
   background: var(--gdrive-accent);
   border-color: var(--gdrive-accent);
 }
 
-.strata-gdrive [data-slot="step-checkbox"]:checked::after {
+.fyredb-gdrive [data-slot="step-checkbox"]:checked::after {
   content: '';
   position: absolute;
   left: 4px;
@@ -815,7 +815,7 @@
   transform: rotate(45deg);
 }
 
-.strata-gdrive [data-slot="step-folder-picker"] {
+.fyredb-gdrive [data-slot="step-folder-picker"] {
   display: flex;
   align-items: center;
   background: var(--gdrive-search-bg);
@@ -825,22 +825,22 @@
   transition: border-color 120ms;
 }
 
-.strata-gdrive [data-slot="step-folder-picker"]:hover {
+.fyredb-gdrive [data-slot="step-folder-picker"]:hover {
   border-bottom-color: var(--gdrive-accent);
 }
 
-.strata-gdrive [data-slot="step-folder-picker"] [data-slot="step-input"] {
+.fyredb-gdrive [data-slot="step-folder-picker"] [data-slot="step-input"] {
   flex: 1;
   border: none;
   border-radius: 0;
   background: transparent;
 }
 
-.strata-gdrive [data-slot="step-folder-picker"] [data-slot="step-input"]:focus {
+.fyredb-gdrive [data-slot="step-folder-picker"] [data-slot="step-input"]:focus {
   border-bottom-color: transparent;
 }
 
-.strata-gdrive [data-slot="step-browse"] {
+.fyredb-gdrive [data-slot="step-browse"] {
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -852,6 +852,6 @@
   white-space: nowrap;
 }
 
-.strata-gdrive [data-slot="step-browse"]:hover {
+.fyredb-gdrive [data-slot="step-browse"]:hover {
   text-decoration: underline;
 }

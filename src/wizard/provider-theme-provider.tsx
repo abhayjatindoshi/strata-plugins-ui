@@ -6,7 +6,7 @@ const ProviderThemeContext = createContext<ProviderTheme | null>(null);
 /**
  * Wraps step bodies whose `theme === 'provider'` so brand colors apply via
  * CSS variables. Inner components can read the theme with `useProviderTheme`
- * or via the `--strata-provider-color` / `--strata-provider-accent` CSS vars
+ * or via the `--fyredb-provider-color` / `--fyredb-provider-accent` CSS vars
  * exposed on the wrapper.
  */
 export function ProviderThemeProvider({
@@ -19,10 +19,10 @@ export function ProviderThemeProvider({
   return (
     <ProviderThemeContext.Provider value={theme}>
       <div
-        data-strata-provider-theme=""
+        data-fyredb-provider-theme=""
         style={{
-          ['--strata-provider-color' as string]: theme.color,
-          ['--strata-provider-accent' as string]: theme.accent ?? theme.color,
+          ['--fyredb-provider-color' as string]: theme.color,
+          ['--fyredb-provider-accent' as string]: theme.accent ?? theme.color,
         }}
       >
         {children}

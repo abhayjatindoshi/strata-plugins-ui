@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
 import type { Tenant, CreateTenantOptions, JoinTenantOptions, ProbeResult } from '@fyre-db/core';
-import { StrataError, StrataPluginConfigError } from '@fyre-db/plugins';
-import { useStrataContext } from './strata-provider';
+import { FyreDbError, FyreDbPluginConfigError } from '@fyre-db/plugins';
+import { useFyreDbContext } from './fyredb-provider';
 import { xorEncode, xorDecode } from '../utils/xor';
 import type { PlacedOp } from '../tenants/cloud-provider-service';
 import { log } from '@/log';
@@ -27,11 +27,11 @@ type TenantContextValue = {
 };
 
 const noOps: TenantOps = {
-  close: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
-  probe: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
-  create: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
-  join: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
-  remove: () => Promise.reject(new StrataPluginConfigError('TenantProvider not mounted')),
+  close: () => Promise.reject(new FyreDbPluginConfigError('TenantProvider not mounted')),
+  probe: () => Promise.reject(new FyreDbPluginConfigError('TenantProvider not mounted')),
+  create: () => Promise.reject(new FyreDbPluginConfigError('TenantProvider not mounted')),
+  join: () => Promise.reject(new FyreDbPluginConfigError('TenantProvider not mounted')),
+  remove: () => Promise.reject(new FyreDbPluginConfigError('TenantProvider not mounted')),
 };
 
 const TenantContext = createContext<TenantContextValue>({
@@ -53,10 +53,10 @@ export type TenantProviderProps = {
  * - `requestOpen(id)` triggers open + hydration
  * - Deduplicates concurrent requests for the same tenant
  * - Tracks `status` ('idle' | 'loading' | 'hydrated' | 'error')
- * - Resets when the Strata instance changes
+ * - Resets when the FyreDb instance changes
  */
 export function TenantProvider({ children }: TenantProviderProps) {
-  const { strata, config } = useStrataContext();
+  const { fyredb, config } = useFyreDbContext();
   const credentialCacheKey = config.credentialCacheKey;
   const [active, setActive] = useState<Tenant | undefined>(undefined);
   const [statusState, setStatusState] = useState<TenantStatus>('idle');
@@ -71,8 +71,8 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setStatusState(s);
   }, []);
 
-  // Subscribe to active tenant + reset on strata change.
-  // Note: we do NOT clear the credential cache here — strata can transition
+  // Subscribe to active tenant + reset on fyredb change.
+  // Note: we do NOT clear the credential cache here — fyredb can transition
   // through null during init/refresh. Credentials are cleared by explicit
   // signals: ops.close(), ops.remove(), or tab close (sessionStorage).
   useEffect(() => {
@@ -81,11 +81,11 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setStatus('idle');
     setError(null);
     inflightRef.current = null;
-    if (!strata) return;
-    const activeSub = strata.tenants.activeTenant$.subscribe(setActive);
-    const listSub = strata.tenants.tenants$.subscribe(setAll);
+    if (!fyredb) return;
+    const activeSub = fyredb.tenants.activeTenant$.subscribe(setActive);
+    const listSub = fyredb.tenants.tenants$.subscribe(setAll);
     return () => { activeSub.unsubscribe(); listSub.unsubscribe(); };
-  }, [strata, setStatus]);
+  }, [fyredb, setStatus]);
 
   // Subscribe to cloud adapter changes to derive page actions
   useEffect(() => {
@@ -102,10 +102,10 @@ export function TenantProvider({ children }: TenantProviderProps) {
   }, [config.cloud, config.providers]);
 
   const requestOpen = useCallback((tenantId: string, opts?: { credential?: string }) => {
-    if (!strata) return;
+    if (!fyredb) return;
 
     // Already hydrated for this tenant — no-op
-    if (strata.tenants.activeTenant?.id === tenantId && statusRef.current === 'hydrated') return;
+    if (fyredb.tenants.activeTenant?.id === tenantId && statusRef.current === 'hydrated') return;
 
     // Already inflight for this tenant — no-op
     if (inflightRef.current?.tenantId === tenantId && !inflightRef.current.aborted) return;
@@ -135,7 +135,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       } catch { /* best-effort */ }
     }
 
-    strata.tenants.open(tenantId, credential ? { credential } : undefined).then(() => {
+    fyredb.tenants.open(tenantId, credential ? { credential } : undefined).then(() => {
       if (flight.aborted) return;
       log.tenant('hydrated %s', tenantId);
       setStatus('hydrated');
@@ -151,40 +151,40 @@ export function TenantProvider({ children }: TenantProviderProps) {
     }).catch((err: unknown) => {
       if (flight.aborted) return;
       inflightRef.current = null;
-      const e = err instanceof Error ? err : new StrataError(String(err), { kind: 'unknown' });
+      const e = err instanceof Error ? err : new FyreDbError(String(err), { kind: 'unknown' });
       log.tenant.error('open failed for %s: %s', tenantId, e.message);
       setStatus('error');
       setError(e);
     });
-  }, [strata, credentialCacheKey, config.deviceId, setStatus]);
+  }, [fyredb, credentialCacheKey, config.deviceId, setStatus]);
 
   const ops: TenantOps = useMemo(() => ({
     close: async () => {
-      if (!strata) return;
+      if (!fyredb) return;
       if (inflightRef.current) inflightRef.current.aborted = true;
-      await strata.tenants.close();
+      await fyredb.tenants.close();
       if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
       setStatus('idle');
       setError(null);
     },
     probe: async (ref) => {
-      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
-      return strata.tenants.probe(ref);
+      if (!fyredb) throw new FyreDbPluginConfigError('FyreDb not initialized');
+      return fyredb.tenants.probe(ref);
     },
     create: async (createOpts) => {
-      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
-      return strata.tenants.create(createOpts);
+      if (!fyredb) throw new FyreDbPluginConfigError('FyreDb not initialized');
+      return fyredb.tenants.create(createOpts);
     },
     join: async (joinOpts) => {
-      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
-      return strata.tenants.join(joinOpts);
+      if (!fyredb) throw new FyreDbPluginConfigError('FyreDb not initialized');
+      return fyredb.tenants.join(joinOpts);
     },
     remove: async (id, removeOpts) => {
-      if (!strata) throw new StrataPluginConfigError('Strata not initialized');
-      await strata.tenants.remove(id, removeOpts);
+      if (!fyredb) throw new FyreDbPluginConfigError('FyreDb not initialized');
+      await fyredb.tenants.remove(id, removeOpts);
       if (credentialCacheKey) sessionStorage.removeItem(credentialCacheKey);
     },
-  }), [strata, credentialCacheKey, setStatus]);
+  }), [fyredb, credentialCacheKey, setStatus]);
 
   return (
     <TenantContext.Provider value={{ active, status: statusState, error, all, ops, pageActions, requestOpen }}>

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
 import type { Tenant } from '@fyre-db/core';
-import { StrataError } from '@fyre-db/plugins';
+import { FyreDbError } from '@fyre-db/plugins';
 import {
   useWizardHost,
   type WizardClassNames,
@@ -14,7 +14,7 @@ import type {
   TenantOpsApi,
 } from './provider';
 import { useTenant } from '../react/tenant-provider';
-import { useStrataContext } from '../react/strata-provider';
+import { useFyreDbContext } from '../react/fyredb-provider';
 import { log } from '@/log';
 
 export type UseOpRunnerOptions = {
@@ -35,11 +35,11 @@ export type UseOpRunnerResult = {
 /**
  * Builds an `OpContext` per invocation, mounts a `WizardController`, and
  * dispatches `op.run(ctx)`. Reads auth, encryption, and commonSteps from
- * StrataProvider context. Tenant operations route through TenantProvider.
+ * FyreDbProvider context. Tenant operations route through TenantProvider.
  */
 export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const { ops: tenantOps, requestOpen } = useTenant();
   const optsRef = useRef(opts);
   // eslint-disable-next-line react-hooks/refs
@@ -92,7 +92,7 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
           log.ops('cancelled %s:%s', provider.name, op.name);
           return;
         }
-        const e = err instanceof Error ? err : new StrataError(String(err), { kind: 'unknown' });
+        const e = err instanceof Error ? err : new FyreDbError(String(err), { kind: 'unknown' });
         log.ops.error('failed %s:%s: %s', provider.name, op.name, e.message);
         optsRef.current.onError?.(e, op, provider);
         throw e;

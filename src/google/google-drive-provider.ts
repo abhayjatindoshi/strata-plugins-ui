@@ -24,7 +24,7 @@ export type GoogleDriveProviderOptions = {
 /**
  * Bundled Google Drive provider. Implements `CloudProvider`, `StorageAdapter`,
  * and `CloudFileService` from a single instance — the same object can be
- * passed to `new Strata({ storage: { cloud } })`, `<TenantsPage providers>`,
+ * passed to `new FyreDb({ storage: { cloud } })`, `<TenantsPage providers>`,
  * and `<GoogleDriveExplorer service>`.
  *
  * Per PLUGGABLES_V2 §11.

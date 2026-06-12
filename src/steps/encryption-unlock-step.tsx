@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Step } from '../wizard/types';
 import type { ProviderTheme } from '../tenants/provider';
-import { useStrataContext } from '../react/strata-provider';
+import { useFyreDbContext } from '../react/fyredb-provider';
 
 export type EncryptionUnlockStepOptions = {
   readonly mode?: 'light' | 'dark';
@@ -38,7 +38,7 @@ function EncryptionUnlockBody({
   readonly onComplete: (password: string) => void;
   readonly onCancel: () => void;
 }) {
-  const { config } = useStrataContext();
+  const { config } = useFyreDbContext();
   const tl = config.tenantLabels;
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

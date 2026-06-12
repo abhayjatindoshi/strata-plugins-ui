@@ -41,9 +41,9 @@ export default defineConfig({
         'react/jsx-runtime',
         'react-router',
         /^@radix-ui\//,
-        /^@strata\/plugins($|\/)/,
-        /^@strata\/core($|\/)/,
-        /^@strata\/plugins-ui($|\/)/,
+        /^@fyredb\/plugins($|\/)/,
+        /^@fyredb\/core($|\/)/,
+        /^@fyredb\/plugins-ui($|\/)/,
       ],
       output: {
         entryFileNames: 'index.js',

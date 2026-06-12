@@ -73,10 +73,10 @@ export type { OneDriveCreateWorkspaceResult, OneDriveCreateWorkspaceOptions } fr
 export * from './microsoft/icons';
 
 // react
-export { createStrataConfig } from './react/create-strata-config';
-export type { StrataConfigInput, StrataConfig, TenantLabels } from './react/create-strata-config';
-export { StrataProvider } from './react/strata-provider';
-export type { StrataProviderProps } from './react/strata-provider';
+export { createFyreDbConfig } from './react/create-fyredb-config';
+export type { FyreDbConfigInput, FyreDbConfig, TenantLabels } from './react/create-fyredb-config';
+export { FyreDbProvider } from './react/fyredb-provider';
+export type { FyreDbProviderProps } from './react/fyredb-provider';
 export { TenantProvider } from './react/tenant-provider';
 export type { TenantProviderProps, TenantOps as TenantOpsReact, TenantStatus } from './react/tenant-provider';
 export { AuthGuard } from './react/guards/auth-guard';
@@ -90,8 +90,8 @@ export type {
   LoginButtonTheme,
   LoginButtonVariant,
 } from './react/components/login-button';
-export { useAuth, useStrata } from './react/strata-provider';
-export type { UseAuthResult, SupportedAuthEntry } from './react/strata-provider';
+export { useAuth, useFyreDb } from './react/fyredb-provider';
+export type { UseAuthResult, SupportedAuthEntry } from './react/fyredb-provider';
 export { useTenant } from './react/tenant-provider';
 export type { UseTenantResult } from './react/tenant-provider';
 

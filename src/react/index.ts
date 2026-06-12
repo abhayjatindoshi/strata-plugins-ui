@@ -1,10 +1,10 @@
 // Config builder
-export { createStrataConfig } from './create-strata-config';
-export type { StrataConfigInput, StrataConfig, TenantLabels } from './create-strata-config';
+export { createFyreDbConfig } from './create-fyredb-config';
+export type { FyreDbConfigInput, FyreDbConfig, TenantLabels } from './create-fyredb-config';
 
 // Providers
-export { StrataProvider } from './strata-provider';
-export type { StrataProviderProps } from './strata-provider';
+export { FyreDbProvider } from './fyredb-provider';
+export type { FyreDbProviderProps } from './fyredb-provider';
 export { TenantProvider } from './tenant-provider';
 export type { TenantProviderProps, TenantOps, TenantStatus } from './tenant-provider';
 
@@ -24,7 +24,7 @@ export type {
 } from './components/login-button';
 
 // Hooks
-export { useAuth, useStrata } from './strata-provider';
-export type { UseAuthResult, SupportedAuthEntry } from './strata-provider';
+export { useAuth, useFyreDb } from './fyredb-provider';
+export type { UseAuthResult, SupportedAuthEntry } from './fyredb-provider';
 export { useTenant } from './tenant-provider';
 export type { UseTenantResult } from './tenant-provider';

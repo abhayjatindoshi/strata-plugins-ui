@@ -1,0 +1,107 @@
+/*
+ * Microsoft "Sign in with Microsoft" branded button.
+ * Follows the official branding guidelines:
+ * https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps
+ */
+.ms-login-button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  background-image: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  height: 41px;
+  letter-spacing: 0;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+  vertical-align: middle;
+  white-space: nowrap;
+  max-width: 400px;
+  min-width: min-content;
+  border: none;
+}
+
+/* Variant: pill (default) — rounded corners to match other provider buttons */
+.ms-login-button[data-ms-variant="pill"] { padding: 0 12px; width: auto; border-radius: 20px; }
+
+/* Variant: icon-only */
+.ms-login-button[data-ms-variant="icon"] { padding: 0; width: 41px; border-radius: 20px; }
+
+/* Theme: light — white bg, 1px #8c8c8c border, text #5e5e5e */
+.ms-login-button[data-ms-theme="light"] {
+  background-color: #ffffff;
+  color: #5e5e5e;
+  border: 1px solid #8c8c8c;
+}
+.ms-login-button[data-ms-theme="light"]:disabled { background-color: #ffffff61; border-color: #1f1f1f1f; }
+.ms-login-button[data-ms-theme="light"]:not(:disabled):active .ms-login-button-state,
+.ms-login-button[data-ms-theme="light"]:not(:disabled):focus .ms-login-button-state { background-color: #303030; opacity: 12%; }
+.ms-login-button[data-ms-theme="light"]:not(:disabled):hover .ms-login-button-state { background-color: #303030; opacity: 8%; }
+
+/* Theme: dark — #2f2f2f bg, no border, text #fff */
+.ms-login-button[data-ms-theme="dark"] {
+  background-color: #2f2f2f;
+  color: #ffffff;
+  border: 1px solid #2f2f2f;
+}
+.ms-login-button[data-ms-theme="dark"]:disabled { background-color: #2f2f2f61; }
+.ms-login-button[data-ms-theme="dark"]:disabled .ms-login-button-state { background-color: #e3e3e31f; }
+.ms-login-button[data-ms-theme="dark"]:not(:disabled):active .ms-login-button-state,
+.ms-login-button[data-ms-theme="dark"]:not(:disabled):focus .ms-login-button-state { background-color: white; opacity: 12%; }
+.ms-login-button[data-ms-theme="dark"]:not(:disabled):hover .ms-login-button-state { background-color: white; opacity: 8%; }
+
+/* Logo: 21×21 per official four-square mark */
+.ms-login-button .ms-login-button-icon {
+  box-sizing: border-box;
+  height: 21px;
+  min-width: 21px;
+  width: 21px;
+  margin-right: 12px;
+}
+
+.ms-login-button[data-ms-variant="icon"] .ms-login-button-icon {
+  box-sizing: content-box;
+  margin: 0;
+  padding: 9px;
+}
+
+.ms-login-button .ms-login-button-content-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.ms-login-button .ms-login-button-contents {
+  flex-grow: 1;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+.ms-login-button .ms-login-button-state {
+  transition: opacity .218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.ms-login-button:disabled { cursor: default; }
+.ms-login-button:disabled .ms-login-button-contents { opacity: 38%; }
+.ms-login-button:disabled .ms-login-button-icon { opacity: 38%; }

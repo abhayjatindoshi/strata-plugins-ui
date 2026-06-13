@@ -1,0 +1,136 @@
+import {
+  LocalStorageAdapter,
+  Pbkdf2EncryptionService,
+  AesGcmEncryptionStrategy,
+} from '@fyre-db/plugins';
+import type { ClientAuthService, CloudService } from '@fyre-db/plugins';
+import type {
+  BlobMigration,
+  EncryptionService,
+  EntityDefinition,
+  StorageAdapter,
+} from '@fyre-db/core';
+import {
+  encryptionSetupStep,
+  encryptionUnlockStep,
+} from '../steps/index';
+import type { CommonStepFactories } from '../tenants/provider';
+import type { CloudProviderService } from '../tenants/cloud-provider-service';
+
+// ─── Tenant labels ─────────────────────────────────────────
+
+export type TenantLabels = {
+  readonly lower: string;
+  readonly sentence: string;
+  readonly upper: string;
+};
+
+function buildTenantLabels(label: string): TenantLabels {
+  return {
+    lower: label.toLowerCase(),
+    sentence: label.charAt(0).toUpperCase() + label.slice(1).toLowerCase(),
+    upper: label.toUpperCase(),
+  };
+}
+
+// ─── Input type ────────────────────────────────────────
+
+export type FyreDbConfigInput = {
+  readonly appId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly entities: ReadonlyArray<EntityDefinition<any>>;
+  /** Cloud service — resolves the active storage adapter from auth state. */
+  readonly cloud?: CloudService;
+  /** Cloud provider service — UI ops for the tenants page. */
+  readonly providers?: CloudProviderService;
+  /** Auth service. */
+  readonly auth?: ClientAuthService;
+  /** Display label for a tenant (e.g. 'household', 'workspace'). Defaults to 'workspace'. */
+  readonly tenantLabel?: string;
+
+  // ── overrides (all optional, sensible defaults applied) ──
+  readonly deviceId?: string;
+  readonly localAdapter?: StorageAdapter;
+  /** Pass `false` to disable default encryption. */
+  readonly encryption?: EncryptionService | false;
+  readonly commonSteps?: CommonStepFactories;
+  readonly migrations?: ReadonlyArray<BlobMigration>;
+  /** sessionStorage key for caching encryption credentials across page refreshes. */
+  readonly credentialCacheKey?: string;
+};
+
+// ─── Resolved config ───────────────────────────────────────
+
+export type FyreDbConfig = {
+  readonly appId: string;
+  readonly deviceId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly entities: ReadonlyArray<EntityDefinition<any>>;
+  readonly migrations?: ReadonlyArray<BlobMigration>;
+  readonly localAdapter: StorageAdapter;
+  readonly cloud?: CloudService;
+  readonly providers?: CloudProviderService;
+  readonly auth?: ClientAuthService;
+  readonly encryption?: EncryptionService;
+  readonly commonSteps: CommonStepFactories | null;
+  readonly credentialCacheKey?: string;
+  readonly tenantLabels: TenantLabels;
+};
+
+// ─── Device ID helper ──────────────────────────────────────
+
+function getOrCreateDeviceId(appId: string): string {
+  const key = `${appId}_device_id`;
+  const existing = localStorage.getItem(key);
+  if (existing) return existing;
+  const id = crypto.randomUUID();
+  localStorage.setItem(key, id);
+  return id;
+}
+
+// ─── Builder ───────────────────────────────────────────────
+
+export function createFyreDbConfig(input: FyreDbConfigInput): FyreDbConfig {
+  const {
+    appId,
+    entities,
+    auth,
+    migrations,
+  } = input;
+
+  const deviceId = input.deviceId ?? getOrCreateDeviceId(appId);
+  const localAdapter = input.localAdapter ?? new LocalStorageAdapter(appId);
+  const cloud = input.cloud;
+
+  const encryption =
+    input.encryption === false
+      ? undefined
+      : input.encryption ??
+        new Pbkdf2EncryptionService({
+          targets: ['cloud'],
+          strategy: new AesGcmEncryptionStrategy(),
+        });
+
+  const tenantLabels = buildTenantLabels(input.tenantLabel ?? 'workspace');
+
+  const commonSteps: CommonStepFactories | null =
+    input.commonSteps ?? {
+      encryptionSetup: encryptionSetupStep,
+      encryptionUnlock: encryptionUnlockStep,
+    };
+
+  return {
+    appId,
+    deviceId,
+    entities,
+    migrations,
+    localAdapter,
+    cloud,
+    providers: input.providers,
+    auth,
+    encryption,
+    commonSteps,
+    credentialCacheKey: input.credentialCacheKey,
+    tenantLabels,
+  };
+}

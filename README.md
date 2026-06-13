@@ -1,1 +1,1 @@
-# strata-plugins-ui
+# fyre-db/plugins-ui

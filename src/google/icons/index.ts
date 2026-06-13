@@ -1,0 +1,14 @@
+export { default as FolderIcon } from './folder.svg?react';
+export { default as GenericFileIcon } from './generic-file.svg?react';
+export { default as GoogleDocIcon } from './google-doc.svg?react';
+export { default as GoogleSheetIcon } from './google-sheet.svg?react';
+export { default as GoogleSlidesIcon } from './google-slides.svg?react';
+export { default as GoogleFormIcon } from './google-form.svg?react';
+export { default as PdfIcon } from './pdf.svg?react';
+export { default as ImageIcon } from './image.svg?react';
+export { default as SearchIcon } from './search.svg?react';
+export { default as CloseIcon } from './close.svg?react';
+export { default as RefreshIcon } from './refresh.svg?react';
+export { default as NewFolderIcon } from './new-folder.svg?react';
+export { default as BackIcon } from './back.svg?react';
+export { default as DriveSpinnerIcon } from './drive-spinner.svg?react';

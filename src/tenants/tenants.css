@@ -1,0 +1,217 @@
+/* ═══════════════════════════════════════════════════════════
+   Tenant List & Tenant Ops — data-slot CSS
+   Light mode by default. Dark mode via data-theme="dark".
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Variables ──────────────────────────────────────── */
+
+[data-slot="tenant-ops"],
+[data-slot="tenant-list"] {
+  --tenant-bg: #ffffff;
+  --tenant-bg-hover: #f4f4f5;
+  --tenant-border: #e4e4e7;
+  --tenant-text: #18181b;
+  --tenant-text-muted: #71717a;
+  --tenant-popover-bg: #ffffff;
+  --tenant-popover-border: #e4e4e7;
+  --tenant-popover-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --tenant-radius: 8px;
+  --tenant-radius-sm: 6px;
+  --tenant-focus-ring: rgba(59, 130, 246, 0.5);
+}
+
+[data-slot="tenant-ops"][data-theme="dark"],
+[data-slot="tenant-list"][data-theme="dark"] {
+  --tenant-bg: #27272a;
+  --tenant-bg-hover: #3f3f46;
+  --tenant-border: #3f3f46;
+  --tenant-text: #fafafa;
+  --tenant-text-muted: #a1a1aa;
+  --tenant-popover-bg: #27272a;
+  --tenant-popover-border: #3f3f46;
+  --tenant-popover-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Tenant Ops ─────────────────────────────────────── */
+
+[data-slot="tenant-ops"] {
+  display: flex;
+  gap: 8px;
+}
+
+[data-slot="tenant-ops-button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--tenant-border);
+  border-radius: var(--tenant-radius);
+  background: var(--tenant-bg);
+  color: var(--tenant-text);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  outline: none;
+}
+
+[data-slot="tenant-ops-button"]:hover {
+  background: var(--tenant-bg-hover);
+}
+
+[data-slot="tenant-ops-button"]:focus-visible {
+  box-shadow: 0 0 0 2px var(--tenant-focus-ring);
+}
+
+[data-slot="tenant-ops-button"]:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+[data-slot="tenant-ops-button"] svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ─── Tenant List ────────────────────────────────────── */
+
+[data-slot="tenant-list"] {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 420px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+[data-slot="tenant-empty"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 24px;
+  border: 1px dashed var(--tenant-border);
+  border-radius: var(--tenant-radius);
+  color: var(--tenant-text-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ─── Tenant Row ─────────────────────────────────────── */
+
+[data-slot="tenant-row"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--tenant-border);
+  border-radius: var(--tenant-radius);
+  background: var(--tenant-bg);
+  transition: background-color 150ms;
+}
+
+[data-slot="tenant-row"]:hover {
+  background: var(--tenant-bg-hover);
+}
+
+[data-slot="tenant-row-name"] {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tenant-text);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+[data-slot="tenant-row-name"]:focus-visible {
+  text-decoration: underline;
+}
+
+/* ─── Menu (details/summary dropdown) ────────────────── */
+
+[data-slot="tenant-menu"] {
+  position: relative;
+}
+
+[data-slot="tenant-menu-trigger"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--tenant-radius-sm);
+  color: var(--tenant-text-muted);
+  cursor: pointer;
+  list-style: none;
+  transition: background-color 150ms, color 150ms;
+}
+
+[data-slot="tenant-menu-trigger"]::-webkit-details-marker {
+  display: none;
+}
+
+[data-slot="tenant-menu-trigger"]:hover {
+  background: var(--tenant-bg-hover);
+  color: var(--tenant-text);
+}
+
+[data-slot="tenant-menu-trigger"] svg {
+  width: 16px;
+  height: 16px;
+}
+
+[data-slot="tenant-actions"] {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 10;
+  margin-top: 4px;
+  min-width: 140px;
+  padding: 4px;
+  border: 1px solid var(--tenant-popover-border);
+  border-radius: var(--tenant-radius);
+  background: var(--tenant-popover-bg);
+  box-shadow: var(--tenant-popover-shadow);
+  list-style: none;
+}
+
+[data-slot="tenant-action"] {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: var(--tenant-radius-sm);
+  background: none;
+  color: var(--tenant-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+[data-slot="tenant-action"]:hover {
+  background: var(--tenant-bg-hover);
+}
+
+[data-slot="tenant-action"] svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}

@@ -112,6 +112,7 @@ function TenantRow({
               <button
                 type="button"
                 data-slot="tenant-action"
+                /* v8 ignore next -- `provider` is always defined here: action buttons only render when allOps is non-empty, which requires a defined provider. The else branch is unreachable defensive code. */
                 onClick={() => { if (provider) void onRunOp(provider, op); }}
               >
                 {labels.actionLabels?.[op.name] ?? <>{op.icon}{op.label}</>}

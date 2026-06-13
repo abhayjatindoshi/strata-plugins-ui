@@ -42,6 +42,12 @@ export default defineConfig({
         'src/**/icons/**',
         'src/log.ts',
       ],
+      thresholds: {
+        statements: 97,
+        branches: 97,
+        functions: 97,
+        lines: 97,
+      },
     },
   },
 });

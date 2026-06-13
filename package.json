@@ -34,8 +34,8 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@fyre-db/core": "^0.1.0",
-    "@fyre-db/plugins": "^0.1.0",
+    "@fyre-db/core": "*",
+    "@fyre-db/plugins": "*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.0.0",
@@ -43,8 +43,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@fyre-db/core": "^0.1.0",
-    "@fyre-db/plugins": "^0.1.0",
+    "@fyre-db/core": "*",
+    "@fyre-db/plugins": "*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

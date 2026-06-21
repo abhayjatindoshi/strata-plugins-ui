@@ -13,8 +13,7 @@ import type {
   ProviderOp,
   TenantOpsApi,
 } from './provider';
-import { useTenant } from '../react/tenant-provider';
-import { useFyreDbContext } from '../react/fyredb-provider';
+import { useFyreDbAppContext } from '../react/fyredb-app-provider';
 import { log } from '@/log';
 
 export type UseOpRunnerOptions = {
@@ -39,8 +38,7 @@ export type UseOpRunnerResult = {
  */
 export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   const themeRef = useRef({ color: '#1A73E8', accent: undefined as string | undefined });
-  const { config } = useFyreDbContext();
-  const { ops: tenantOps, requestOpen } = useTenant();
+  const { app, commonSteps } = useFyreDbAppContext();
   const optsRef = useRef(opts);
   // eslint-disable-next-line react-hooks/refs
   optsRef.current = opts;
@@ -56,30 +54,31 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
   wizardRef.current = wizard;
 
   const tenants: TenantOpsApi = useMemo(() => ({
-    probe: (ref) => tenantOps.probe(ref),
-    create: (o) => tenantOps.create(o),
-    join: (o) => tenantOps.join(o),
-    open: (id, o) => { requestOpen(id, o); return Promise.resolve(); },
-    remove: (id, o) => tenantOps.remove(id, o),
-  }), [tenantOps, requestOpen]);
+    probe: (ref) => app.probeTenant(ref),
+    create: (o) => app.createTenant(o),
+    join: (o) => app.joinTenant(o),
+    open: (id, o) => app.openTenant(id, o),
+    remove: (id, o) => app.removeTenant(id, o),
+  }), [app]);
   const tenantsRef = useRef(tenants);
   // eslint-disable-next-line react-hooks/refs
   tenantsRef.current = tenants;
 
   const runOp = useCallback(
     async (provider: CloudProvider, op: ProviderOp, tenant?: Tenant) => {
-      if (!config.auth || !config.commonSteps) return;
+      const auth = app.auth;
+      if (!auth) return;
       themeRef.current = {
         color: provider.theme.color,
         accent: provider.theme.accent,
       };
       wizardRef.current.open();
       const ctx: OpContext = {
-        auth: config.auth,
+        auth,
         tenants: tenantsRef.current,
-        encryption: config.encryption,
+        encryption: app.encryption,
         wizard: wizardRef.current.controller,
-        commonSteps: config.commonSteps,
+        commonSteps,
         providerTheme: provider.theme,
         mode: optsRef.current.mode,
         tenant,
@@ -100,7 +99,7 @@ export function useOpRunner(opts: UseOpRunnerOptions = {}): UseOpRunnerResult {
         wizardRef.current.close();
       }
     },
-    [config],
+    [app, commonSteps],
   );
 
   return {

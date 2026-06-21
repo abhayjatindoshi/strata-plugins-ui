@@ -6,9 +6,9 @@ import type { CloudFileService } from '@fyre-db/plugins';
 const pickedFolder = { id: 'fold', name: 'PickedFolder', isFolder: true };
 const pickedSpace = { id: 'personal', displayName: 'OneDrive' };
 
-vi.mock('@/react/fyredb-provider', () => ({
-  useFyreDbContext: () => ({
-    config: { tenantLabels: { lower: 'workspace', sentence: 'Workspace', upper: 'WORKSPACE' } },
+vi.mock('@/react/fyredb-app-provider', () => ({
+  useFyreDbAppContext: () => ({
+    tenantLabels: { lower: 'workspace', sentence: 'Workspace', upper: 'WORKSPACE' },
   }),
 }));
 

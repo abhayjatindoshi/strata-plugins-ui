@@ -1,6 +1,6 @@
 {
   "name": "@fyre-db/plugins-ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "UI components and React integration for @fyre-db plugins (cloud file explorer, provider-themed UIs)",
   "homepage": "https://github.com/fyre-db/plugins-ui#readme",
   "bugs": {

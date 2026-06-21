@@ -28,8 +28,8 @@ vi.mock('@/react/components/login-button', () => ({
 }));
 
 let mockConfig: { auth?: unknown };
-vi.mock('@/react/fyredb-provider', () => ({
-  useFyreDbContext: () => ({ config: mockConfig }),
+vi.mock('@/react/fyredb-app-provider', () => ({
+  useFyreDbApp: () => ({ auth: mockConfig.auth }),
 }));
 
 // ── Fixtures ─────────────────────────────────────────────

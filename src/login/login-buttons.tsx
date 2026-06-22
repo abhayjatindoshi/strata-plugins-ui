@@ -1,10 +1,10 @@
 import type { ClientAuthService, SupportedAuth } from '@fyre-db/plugins';
 import { FyreDbPluginConfigError } from '@fyre-db/plugins';
-import { useFyreDbContext } from '../react/fyredb-provider';
+import { useFyreDbApp } from '../react/fyredb-app-provider';
 import { LoginButton, type LoginButtonTheme, type LoginButtonVariant } from '../react/components/login-button';
 
 export type LoginButtonsProps = {
-  /** Optional — falls back to `<FyreDbProvider>` context. */
+  /** Optional — falls back to `<FyreDbAppProvider>` context. */
   readonly authService?: ClientAuthService;
   /** Color mode — passed to each branded login button. */
   readonly mode?: LoginButtonTheme;
@@ -19,10 +19,10 @@ export type LoginButtonsProps = {
  * Layout is the consumer's responsibility.
  */
 export function LoginButtons(props: LoginButtonsProps) {
-  const { config } = useFyreDbContext();
-  const authService = props.authService ?? config.auth;
+  const app = useFyreDbApp();
+  const authService = props.authService ?? app.auth;
   if (!authService) {
-    throw new FyreDbPluginConfigError('LoginButtons: no ClientAuthService — pass authService prop or render under <FyreDbProvider>');
+    throw new FyreDbPluginConfigError('LoginButtons: no ClientAuthService — pass authService prop or render under <FyreDbAppProvider>');
   }
   const supported = authService.supportedAuths();
 

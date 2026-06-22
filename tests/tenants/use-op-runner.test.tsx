@@ -19,27 +19,20 @@ vi.mock('@/wizard/use-wizard-host', () => ({
   }),
 }));
 
-const tenantOps = {
-  probe: vi.fn(() => Promise.resolve({ exists: true })),
-  create: vi.fn(() => Promise.resolve({ id: 'created' })),
-  join: vi.fn(() => Promise.resolve({ id: 'joined' })),
-  remove: vi.fn(() => Promise.resolve()),
+const appOps = {
+  probeTenant: vi.fn(() => Promise.resolve({ exists: true })),
+  createTenant: vi.fn(() => Promise.resolve({ id: 'created' })),
+  joinTenant: vi.fn(() => Promise.resolve({ id: 'joined' })),
+  openTenant: vi.fn(() => Promise.resolve()),
+  removeTenant: vi.fn(() => Promise.resolve()),
 };
-const requestOpen = vi.fn();
 
-vi.mock('@/react/tenant-provider', () => ({
-  useTenant: () => ({ ops: tenantOps, requestOpen }),
-}));
+type TestApp = { auth?: unknown; encryption?: unknown } & typeof appOps;
+let mockApp: TestApp;
+let mockCommonSteps: unknown;
 
-type TestConfig = {
-  auth?: unknown;
-  commonSteps?: unknown;
-  encryption?: unknown;
-};
-let mockConfig: TestConfig;
-
-vi.mock('@/react/fyredb-provider', () => ({
-  useFyreDbContext: () => ({ config: mockConfig }),
+vi.mock('@/react/fyredb-app-provider', () => ({
+  useFyreDbAppContext: () => ({ app: mockApp, commonSteps: mockCommonSteps }),
 }));
 
 vi.mock('@fyre-db/plugins', () => ({
@@ -67,7 +60,8 @@ function makeOp(run: ProviderOp['run']): ProviderOp {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockConfig = { auth: { id: 'auth' }, commonSteps: { encryptionSetup: vi.fn() }, encryption: { id: 'enc' } };
+  mockApp = { auth: { id: 'auth' }, encryption: { id: 'enc' }, ...appOps };
+  mockCommonSteps = { encryptionSetup: vi.fn() };
 });
 
 describe('useOpRunner', () => {
@@ -78,22 +72,11 @@ describe('useOpRunner', () => {
   });
 
   it('no-ops when auth is missing', async () => {
-    mockConfig = { auth: undefined, commonSteps: { x: 1 } };
+    mockApp = { auth: undefined, ...appOps };
     const { result } = renderHook(() => useOpRunner());
     await act(async () => {
       await result.current.runOp(makeProvider(), makeOp(vi.fn()));
     });
-    expect(wizardOpen).not.toHaveBeenCalled();
-  });
-
-  it('no-ops when commonSteps is missing', async () => {
-    mockConfig = { auth: { id: 'auth' }, commonSteps: undefined };
-    const run = vi.fn();
-    const { result } = renderHook(() => useOpRunner());
-    await act(async () => {
-      await result.current.runOp(makeProvider(), makeOp(run));
-    });
-    expect(run).not.toHaveBeenCalled();
     expect(wizardOpen).not.toHaveBeenCalled();
   });
 
@@ -114,16 +97,16 @@ describe('useOpRunner', () => {
     expect(run).toHaveBeenCalledTimes(1);
     expect(wizardClose).toHaveBeenCalledTimes(1);
     expect(captured).toBeDefined();
-    expect(captured?.auth).toBe(mockConfig.auth);
-    expect(captured?.encryption).toBe(mockConfig.encryption);
-    expect(captured?.commonSteps).toBe(mockConfig.commonSteps);
+    expect(captured?.auth).toBe(mockApp.auth);
+    expect(captured?.encryption).toBe(mockApp.encryption);
+    expect(captured?.commonSteps).toBe(mockCommonSteps);
     expect(captured?.providerTheme).toBe(provider.theme);
     expect(captured?.mode).toBe('dark');
     expect(captured?.tenant).toBe(tenant);
     expect(captured?.wizard).toBe(wizardController);
   });
 
-  it('routes tenant operations through the TenantProvider', async () => {
+  it('routes tenant operations through the FyreDbApp', async () => {
     const run = vi.fn(async (ctx: OpContext) => {
       await ctx.tenants.probe({ meta: {} });
       await ctx.tenants.create({ name: 'n', meta: {} });
@@ -137,11 +120,11 @@ describe('useOpRunner', () => {
       await result.current.runOp(makeProvider(), makeOp(run));
     });
 
-    expect(tenantOps.probe).toHaveBeenCalledWith({ meta: {} });
-    expect(tenantOps.create).toHaveBeenCalledWith({ name: 'n', meta: {} });
-    expect(tenantOps.join).toHaveBeenCalledWith({ name: 'n', meta: {} });
-    expect(requestOpen).toHaveBeenCalledWith('t-1', { credential: 'c' });
-    expect(tenantOps.remove).toHaveBeenCalledWith('t-1', { purge: true });
+    expect(appOps.probeTenant).toHaveBeenCalledWith({ meta: {} });
+    expect(appOps.createTenant).toHaveBeenCalledWith({ name: 'n', meta: {} });
+    expect(appOps.joinTenant).toHaveBeenCalledWith({ name: 'n', meta: {} });
+    expect(appOps.openTenant).toHaveBeenCalledWith('t-1', { credential: 'c' });
+    expect(appOps.removeTenant).toHaveBeenCalledWith('t-1', { purge: true });
   });
 
   it('swallows WizardCancelled without calling onError', async () => {

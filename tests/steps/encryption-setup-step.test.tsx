@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { encryptionSetupStep } from '@/steps/encryption-setup-step';
 
-vi.mock('@/react/fyredb-provider', () => ({
-  useFyreDbContext: () => ({
-    config: { tenantLabels: { lower: 'household', sentence: 'Household', upper: 'HOUSEHOLD' } },
+vi.mock('@/react/fyredb-app-provider', () => ({
+  useFyreDbAppContext: () => ({
+    tenantLabels: { lower: 'household', sentence: 'Household', upper: 'HOUSEHOLD' },
   }),
 }));
 

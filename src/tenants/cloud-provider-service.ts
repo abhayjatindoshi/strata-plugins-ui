@@ -1,6 +1,5 @@
 import { BehaviorSubject, distinctUntilChanged, type Observable, type Subscription } from 'rxjs';
 import type { Tenant } from '@fyre-db/core';
-import type { CloudService } from '@fyre-db/plugins';
 import { FyreDbPluginConfigError } from '@fyre-db/plugins';
 import type { CloudProvider, ProviderOp } from './provider';
 
@@ -10,11 +9,9 @@ export type PlacedOp = {
 };
 
 /**
- * Aggregates cloud providers and tracks the active one based on
- * `CloudService.active$`. Provides helpers for op placement lookups.
- *
- * Mirrors the `ClientAuthService` → `CloudService` cascade:
- * `CloudService.active$` drives `activeProvider$`.
+ * Aggregates cloud providers and tracks the active one based on the
+ * `FyreDbApp`'s `provider$` (active provider name). Provides helpers for op
+ * placement lookups.
  */
 export class CloudProviderService {
   private readonly byName: ReadonlyMap<string, CloudProvider>;
@@ -26,7 +23,7 @@ export class CloudProviderService {
 
   constructor(
     providers: readonly CloudProvider[],
-    cloud: CloudService,
+    provider$: Observable<string | null>,
   ) {
     const byName = new Map<string, CloudProvider>();
     for (const p of providers) {
@@ -38,12 +35,8 @@ export class CloudProviderService {
     this.activeProvider$$ = new BehaviorSubject<CloudProvider | null>(null);
     this.activeProvider$ = this.activeProvider$$.pipe(distinctUntilChanged());
 
-    this.sub = cloud.active$.subscribe((adapter) => {
-      if (adapter) {
-        this.activeProvider$$.next(byName.get(adapter.name) ?? null);
-      } else {
-        this.activeProvider$$.next(null);
-      }
+    this.sub = provider$.subscribe((name) => {
+      this.activeProvider$$.next(name ? byName.get(name) ?? null : null);
     });
   }
 

@@ -34,13 +34,6 @@ export { CloudProviderService } from './tenants/cloud-provider-service';
 export type { PlacedOp } from './tenants/cloud-provider-service';
 export { useOpRunner } from './tenants/use-op-runner';
 export type { UseOpRunnerOptions, UseOpRunnerResult } from './tenants/use-op-runner';
-export { TenantOps } from './tenants/tenant-ops';
-export type { TenantOpsProps } from './tenants/tenant-ops';
-export { TenantList } from './tenants/tenant-list';
-export type {
-  TenantListProps,
-  TenantListLabels,
-} from './tenants/tenant-list';
 
 export { LoginButtons } from './login/login-buttons';
 export type { LoginButtonsProps } from './login/login-buttons';
@@ -73,16 +66,24 @@ export type { OneDriveCreateWorkspaceResult, OneDriveCreateWorkspaceOptions } fr
 export * from './microsoft/icons';
 
 // react
-export { createFyreDbConfig } from './react/create-fyredb-config';
-export type { FyreDbConfigInput, FyreDbConfig, TenantLabels } from './react/create-fyredb-config';
-export { FyreDbProvider } from './react/fyredb-provider';
-export type { FyreDbProviderProps } from './react/fyredb-provider';
-export { TenantProvider } from './react/tenant-provider';
-export type { TenantProviderProps, TenantOps as TenantOpsReact, TenantStatus } from './react/tenant-provider';
-export { AuthGuard } from './react/guards/auth-guard';
-export type { AuthGuardProps } from './react/guards/auth-guard';
-export { TenantGuard } from './react/guards/tenant-guard';
-export type { TenantGuardProps } from './react/guards/tenant-guard';
+export {
+  FyreDbAppProvider,
+  useFyreDbApp,
+  useFyreDbAppContext,
+  useStatus,
+  useProvider,
+  useTenant,
+  useSession,
+  useDb,
+  useAuthActions,
+} from './react/fyredb-app-provider';
+export type {
+  FyreDbAppProviderProps,
+  TenantLabels,
+  UseProviderResult,
+  UseTenantResult,
+  UseAuthActionsResult,
+} from './react/fyredb-app-provider';
 export { LoginButton } from './react/components/login-button';
 export type {
   LoginButtonProps,
@@ -90,10 +91,3 @@ export type {
   LoginButtonTheme,
   LoginButtonVariant,
 } from './react/components/login-button';
-export { useAuth, useFyreDb } from './react/fyredb-provider';
-export type { UseAuthResult, SupportedAuthEntry } from './react/fyredb-provider';
-export { useTenant } from './react/tenant-provider';
-export type { UseTenantResult } from './react/tenant-provider';
-
-export { encryptionUnlockStep } from './steps/encryption-unlock-step';
-export type { EncryptionUnlockStepOptions } from './steps/encryption-unlock-step';

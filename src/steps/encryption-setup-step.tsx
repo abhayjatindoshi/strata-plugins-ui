@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Step } from '../wizard/types';
 import type { ProviderTheme } from '../tenants/provider';
-import { useFyreDbContext } from '../react/fyredb-provider';
+import { useFyreDbAppContext } from '../react/fyredb-app-provider';
 
 export type EncryptionSetupStepOptions = {
   readonly mode?: 'light' | 'dark';
@@ -39,8 +39,7 @@ function EncryptionSetupBody({
   readonly onComplete: (password: string | null) => void;
   readonly onCancel: () => void;
 }) {
-  const { config } = useFyreDbContext();
-  const tl = config.tenantLabels;
+  const { tenantLabels: tl } = useFyreDbAppContext();
   const [enabled, setEnabled] = useState(false);
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');

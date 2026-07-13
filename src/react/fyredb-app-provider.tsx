@@ -6,8 +6,8 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from 'react';
-import type { Observable } from 'rxjs';
-import type { FyreDbApp, FyreDbStatus, Session } from '@fyre-db/plugins';
+import { EMPTY, type Observable } from 'rxjs';
+import type { FyreDbApp, FyreDbStatus, Session, AuthState } from '@fyre-db/plugins';
 import { FyreDbPluginConfigError } from '@fyre-db/plugins';
 import type { FyreDb, Tenant } from '@fyre-db/core';
 import { encryptionSetupStep } from '../steps/encryption-setup-step';
@@ -124,6 +124,20 @@ export function useTenant(): UseTenantResult {
 export function useSession(): Session | null {
   const app = useFyreDbApp();
   return useObservableValue(app.session$, () => app.session);
+}
+
+const SIGNED_OUT_STATE: AuthState = { status: 'signed-out' };
+
+/**
+ * The current auth state — status, active adapter `name`, and the signed-in
+ * account's `profile` (id/email/name/picture) when the server resolved it.
+ * Returns a stable signed-out state for local-only apps (no auth service).
+ */
+export function useAuthState(): AuthState {
+  const app = useFyreDbApp();
+  const auth = app.auth;
+  const obs: Observable<AuthState> = auth ? auth.state$ : EMPTY;
+  return useObservableValue(obs, () => auth?.state ?? SIGNED_OUT_STATE);
 }
 
 /** The active core `FyreDb` while a tenant is open, else `null`. */

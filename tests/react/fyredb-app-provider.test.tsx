@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, renderHook, act, screen } from '@testing-library/react';
 import { BehaviorSubject } from 'rxjs';
 import type { ReactNode } from 'react';
-import type { FyreDbApp, FyreDbStatus, Session } from '@fyre-db/plugins';
+import type { FyreDbApp, FyreDbStatus, Session, AuthState } from '@fyre-db/plugins';
 import type { Tenant } from '@fyre-db/core';
 import {
   FyreDbAppProvider,
@@ -14,6 +14,7 @@ import {
   useSession,
   useDb,
   useAuthActions,
+  useAuthState,
 } from '@/react/fyredb-app-provider';
 
 function tenant(id: string): Tenant {
@@ -26,11 +27,13 @@ function makeApp() {
   const tenant$ = new BehaviorSubject<Tenant | undefined>(undefined);
   const tenants$ = new BehaviorSubject<readonly Tenant[]>([]);
   const session$ = new BehaviorSubject<Session | null>(null);
+  const authState$ = new BehaviorSubject<AuthState>({ status: 'loading' });
   const dbInstance = { tag: 'db' };
   const signIn = vi.fn(() => Promise.resolve());
   const signOut = vi.fn(() => Promise.resolve());
   const useLocalOnly = vi.fn(() => Promise.resolve());
   const unlock = vi.fn(() => Promise.resolve());
+  const auth = { state$: authState$, get state() { return authState$.value; } };
   const app = {
     status$, get status() { return status$.value; },
     provider$, get provider() { return provider$.value; },
@@ -39,10 +42,11 @@ function makeApp() {
     tenants$, get tenants() { return tenants$.value; },
     session$, get session() { return session$.value; },
     get db() { return dbInstance; },
+    get auth() { return auth; },
     signIn, signOut, useLocalOnly, unlock,
   } as unknown as FyreDbApp;
   return {
-    app, status$, provider$, tenant$, tenants$, session$, dbInstance,
+    app, status$, provider$, tenant$, tenants$, session$, authState$, dbInstance,
     spies: { signIn, signOut, useLocalOnly, unlock },
   };
 }
@@ -148,5 +152,21 @@ describe('FyreDbAppProvider', () => {
     expect(spies.signOut).toHaveBeenCalledTimes(1);
     expect(spies.useLocalOnly).toHaveBeenCalledTimes(1);
     expect(spies.unlock).toHaveBeenCalledWith('pw');
+  });
+
+  it('useAuthState tracks the auth service state$', () => {
+    const { app, authState$ } = makeApp();
+    const { result } = renderHook(() => useAuthState(), { wrapper: wrapperFor(app) });
+    expect(result.current).toEqual({ status: 'loading' });
+    const profile = { provider: 'google', userId: 'u-1', email: 'a@b.com', name: 'Ada', picture: '' };
+    act(() => { authState$.next({ status: 'signed-in', name: 'google', profile }); });
+    expect(result.current).toEqual({ status: 'signed-in', name: 'google', profile });
+  });
+
+  it('useAuthState returns signed-out for a local-only app (no auth service)', () => {
+    const { app } = makeApp();
+    Object.defineProperty(app, 'auth', { get: () => undefined });
+    const { result } = renderHook(() => useAuthState(), { wrapper: wrapperFor(app) });
+    expect(result.current).toEqual({ status: 'signed-out' });
   });
 });

@@ -9,6 +9,7 @@ export {
   useSession,
   useDb,
   useAuthActions,
+  useAuthState,
 } from './fyredb-app-provider';
 export type {
   FyreDbAppProviderProps,

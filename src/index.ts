@@ -76,6 +76,7 @@ export {
   useSession,
   useDb,
   useAuthActions,
+  useAuthState,
 } from './react/fyredb-app-provider';
 export type {
   FyreDbAppProviderProps,
